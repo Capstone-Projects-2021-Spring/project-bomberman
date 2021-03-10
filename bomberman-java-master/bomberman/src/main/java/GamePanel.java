@@ -222,6 +222,12 @@ public class GamePanel extends JPanel implements Runnable {
                         GameObjectCollection.spawn(powerTimer);
                         break;
 
+                    case ("EB"):    //Enemy Balloon
+
+
+
+                        break;
+
                     default:
                         break;
                 }
