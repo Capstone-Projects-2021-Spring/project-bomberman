@@ -28,20 +28,10 @@ public class Enemy extends TileObject {
      * @param sprite
      */
 
-    Enemy(Point2D.Float position, BufferedImage sprite) {
+    public Enemy(Point2D.Float position, BufferedImage sprite) {
         super(position, sprite);
     }
 
-
-    /*
-     public enum Type{
-         Enemy(ResourceCollection.Images.ENEMY_BAlLOON.getImage()) {
-
-         }
-    };
-
-
-    */
 
 
 
