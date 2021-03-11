@@ -113,7 +113,16 @@ public class Enemy extends TileObject {
 
     @Override
     public void update() {
-
+        double d = Math.random() *3;
+        int rd = (int)Math.round(d);
+        if (rd == 0)
+            moveUp();
+        if (rd == 1)
+            moveDown();
+        if (rd == 2)
+            moveLeft();
+        if (rd == 3)
+            moveRight();
     }
 
     @Override

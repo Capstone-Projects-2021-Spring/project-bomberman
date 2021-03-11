@@ -268,4 +268,16 @@ public class Bomber extends Player {
         collidingObj.destroy();
     }
 
+    /**
+     *
+     * @param collidingObj
+     */
+    @Override
+    public void handleCollision(Enemy collidingObj) {
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+        }
+
+    }
 }
