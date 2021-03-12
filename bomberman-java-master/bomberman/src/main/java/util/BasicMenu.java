@@ -4,8 +4,9 @@ import java.io.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.nio.file.*;
+
 class BasicMenu{
-    public static void main(String args[]){
+    public static void main(String[] args){
         //Create Frame
         JFrame frame = new JFrame("Bomber Man");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,9 +18,27 @@ class BasicMenu{
         JButton Start = new JButton("Start Game");
 
         buttonPanel.add(Start);
-        //Add panel to the frame
-        frame.add(buttonPanel, BorderLayout.NORTH);
 
+
+        Start.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                            try{
+                            //GameLauncher method = new GameLauncher();
+                            GameLauncher.main();
+                                //GameLauncher.main(args); //this should run the main function in GameLauncher.java
+                            }
+                            catch(IOException e){
+                                e.printStackTrace();
+                            }
+                    }
+              });
+        }
+
+
+
+        //Add panel to the frame
+        //frame.add(buttonPanel, BorderLayout.NORTH);
+}
         /*
         Look into JFrame
 
@@ -62,5 +81,3 @@ class BasicMenu{
         buttonPanel.add(addMap);
         //Add panel to the frame
         frame.add(buttonPanel, BorderLayout.SOUTH);*/
-    }
-}
