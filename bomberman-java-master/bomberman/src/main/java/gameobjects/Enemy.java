@@ -35,9 +35,9 @@ public class Enemy extends TileObject {
         this.image = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
         //set stats
-        this.speed =2;
+        this.speed =1;
         this.dead=false;
-        this.direction =1; //facing down
+        this.direction =3; //facing down
 
 
 
@@ -83,13 +83,18 @@ public class Enemy extends TileObject {
 
     @Override
     public void handleCollision(Bomber collidingObj) {
-        collidingObj.handleCollision(this);
+        if (!collidingObj.dead) {
+            collidingObj.dead = true;
+            collidingObj.spriteIndex = 0;
+        }
 
     }
 
     @Override
     public void handleCollision(Wall collidingObj) {
-        collidingObj.handleCollision(this);
+
+
+
     }
 
     @Override
@@ -113,16 +118,12 @@ public class Enemy extends TileObject {
 
     @Override
     public void update() {
-        double d = Math.random() *3;
-        int rd = (int)Math.round(d);
-        if (rd == 0)
-            moveUp();
-        if (rd == 1)
-            moveDown();
-        if (rd == 2)
-            moveLeft();
-        if (rd == 3)
-            moveRight();
+
+       
+
+
+
+
     }
 
     @Override
