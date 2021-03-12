@@ -112,6 +112,9 @@ public class spriteSheet {
     public BufferedImage getSubimage(int x, int y, int w, int h) {
         return SPRITESHEET.getSubimage(x, y, w, h);
     }
+    public BufferedImage getSpriteSheet(){
+        return SPRITESHEET;
+    }
 
     public BufferedImage[] getSpriteArray(int i) {
         return spriteArray[i];
@@ -121,13 +124,13 @@ public class spriteSheet {
         return spriteArray;
     }
 
-    public static void drawArray(Graphics2D g, ArrayList<BufferedImage> img, Vector pos, int width, int height, int xOffset, int yOffset) {
+    public static void drawArray(Graphics2D game, ArrayList<BufferedImage> img, Vector pos, int width, int height, int xOffset, int yOffset) {
         float x = pos.x;
         float y = pos.y;
 
         for (int i = 0; i < img.size(); i++) {
             if (img.get(i) != null) {
-                g.drawImage(img.get(i), (int) x, (int) y, width, height, null);
+                game.drawImage(img.get(i), (int) x, (int) y, width, height, null);
             }
             x += xOffset;
             y += yOffset;
