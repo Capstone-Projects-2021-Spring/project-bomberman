@@ -14,24 +14,31 @@ public class GameLauncher {
     static GameWindow window;
     static String singlePlayer = "single";
     
+    
     public static void main(String[] args) {
-        ResourceCollection.readFiles();
-        ResourceCollection.init();
+        
+        if(singlePlayer.equalsIgnoreCase("single")){
+            window = new GameWindow();
+        }else{
+            ResourceCollection.readFiles();
+            ResourceCollection.init();
 
-        GamePanel game;
-        try {
-            //game = new GamePanel(args[0]);
-            game = new GamePanel(singlePlayer);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println(e + ": Program args not given");
-            game = new GamePanel(null);
+            GamePanel game;
+            try {
+                game = new GamePanel(args[0]);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println(e + ": Program args not given");
+                game = new GamePanel(null);
+            }
+
+            game.init();
+            window = new GameWindow(game);
+
+            System.gc();
         }
-
-        game.init();
-        window = new GameWindow(game);
-
-        System.gc();
     }
+
+  
 
 }
 
@@ -47,7 +54,7 @@ class GameWindow extends JFrame {
      */
 
     static final int HUD_HEIGHT = 48;   // Size of the HUD. The HUD displays score.
-    static final String TITLE = "Bomberman by Brian Lai";
+    static final String TITLE = "Bomberman";
 
     /**
      * Constructs a game window with the necessary configurations.
@@ -60,6 +67,16 @@ class GameWindow extends JFrame {
         this.add(game, BorderLayout.CENTER);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
+    }
+    
+    GameWindow(){ //single player
+        this.setTitle(TITLE);
+        this.setResizable(true);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setContentPane(new GamePanelSingle(1280,720));
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);

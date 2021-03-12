@@ -33,7 +33,7 @@ public class GameObjectCollection {
         gameObjects.add(explosionObjects);
         gameObjects.add(bomberObjects);
     }
-
+    
     /**
      * Add a game object to the collection to be observed and painted.
      * @param spawnObj Game object to be added
