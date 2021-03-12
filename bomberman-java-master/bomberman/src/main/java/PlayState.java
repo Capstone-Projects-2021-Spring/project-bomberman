@@ -21,6 +21,9 @@ public class PlayState extends GameStateSingle{
     public void update(){
     }
     public void input(keyhandler key){
+        if(key.up.down){
+            System.out.println("w is pressed");
+        }
     }
     public void render(Graphics2D graphics){
         graphics.setColor(Color.red);
