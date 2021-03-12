@@ -59,7 +59,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
     }
-
+    GamePanel() { // single Player
+        this.setFocusable(true);
+        this.requestFocus();
+        this.setControls();
+        this.bg = ResourceCollection.Images.BACKGROUND.getImage();
+        this.loadMapFile();
+        this.addKeyListener(new GameController(this));
+    }
     /**
      * Initialize the game panel with a HUD, window size, collection of game objects, and start the game loop.
      */
@@ -265,6 +272,19 @@ public class GamePanel extends JPanel implements Runnable {
         this.controls4.put(KeyEvent.VK_J, Key.left);
         this.controls4.put(KeyEvent.VK_L, Key.right);
         this.controls4.put(KeyEvent.VK_O, Key.action);
+    }
+    
+    private void setControlSingle() {
+        this.controls1 = new HashMap<>();
+       
+
+        // Set Player 1 controls
+        this.controls1.put(KeyEvent.VK_UP, Key.up);
+        this.controls1.put(KeyEvent.VK_DOWN, Key.down);
+        this.controls1.put(KeyEvent.VK_LEFT, Key.left);
+        this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
+        this.controls1.put(KeyEvent.VK_SPACE, Key.action);
+
     }
 
     /**
