@@ -4,6 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.*;
+import java.util.*;
+import java.io.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.nio.file.*;
 
 /**
  * Contains the main method to launch the game.
@@ -18,10 +24,18 @@ public class GameLauncher {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,400);
         frame.setVisible(true);
-
-
-        RunGame();
-
+        JPanel Menu = new JPanel();
+        frame.add(Menu, BorderLayout.NORTH);
+        JPanel buttonPanel = new JPanel();
+        JButton LocalGame = new JButton("Start Local Game");
+        LocalGame.addActionListener(new ActionListener(){
+            try{
+                RunGame();
+            }
+            catch(IOException e){
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void RunGame(){
