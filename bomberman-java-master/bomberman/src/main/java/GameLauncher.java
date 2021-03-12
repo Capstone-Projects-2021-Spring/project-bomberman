@@ -14,6 +14,17 @@ public class GameLauncher {
     static GameWindow window;
 
     public static void main(String[] args) {
+        JFrame frame = new JFrame("Bomber Man");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400,400);
+        frame.setVisible(true);
+
+
+        RunGame();
+
+    }
+
+    public static void RunGame(){
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
@@ -30,7 +41,6 @@ public class GameLauncher {
 
         System.gc();
     }
-
 }
 
 /**
