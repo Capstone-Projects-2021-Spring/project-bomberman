@@ -12,14 +12,16 @@ public class GameLauncher {
 
     // The one and only window for the game to run
     static GameWindow window;
-
+    static String singlePlayer = "single";
+    
     public static void main(String[] args) {
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel(args[0]);
+            //game = new GamePanel(args[0]);
+            game = new GamePanel(singlePlayer);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
             game = new GamePanel(null);
