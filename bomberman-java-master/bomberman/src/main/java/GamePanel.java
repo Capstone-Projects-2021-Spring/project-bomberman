@@ -82,7 +82,11 @@ public class GamePanel extends JPanel implements Runnable {
     private void loadMapFile(String mapFile) {
         // Loading map file
         try {
-            this.bufferedReader = new BufferedReader(new FileReader(mapFile));
+            if(mapFile.equalsIgnoreCase("single")){
+                this.bufferedReader = new BufferedReader(ResourceCollection.FileBIG.BIGMAP.getFile());
+            }else{
+                this.bufferedReader = new BufferedReader(new FileReader(mapFile));
+            }
         } catch (IOException | NullPointerException e) {
             // Load default map when map file could not be loaded
             System.err.println(e + ": Cannot load map file, loading default map");

@@ -63,6 +63,43 @@ public class ResourceCollection {
             return this.file;
         }
     }
+    public enum FileBIG {
+        BIGMAP;
+
+        private InputStreamReader fileb = null;
+
+        public InputStreamReader getFile() {
+            return this.fileb;
+        }
+    }
+    public enum FileSINGLE1 {
+        SINGLE1;
+
+        private InputStreamReader file1 = null;
+
+        public InputStreamReader getFile() {
+            return this.file1;
+        }
+    }
+    public enum FileSINGLE2 {
+        SINGLE2;
+
+        private InputStreamReader file2 = null;
+
+        public InputStreamReader getFile() {
+            return this.file2;
+        }
+    }
+    public enum FileSINGLE3 {
+        SINGLE3;
+
+        private InputStreamReader file3 = null;
+
+        public InputStreamReader getFile() {
+            return this.file3;
+        }
+    }
+    
 
     /**
      * Retrieve correct tile for hard walls specified by bit mask key.
@@ -98,7 +135,12 @@ public class ResourceCollection {
             SpriteMaps.BOMB.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb.png"));
             SpriteMaps.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
             SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
-
+            
+            FileBIG.BIGMAP.fileb = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map.csv"));
+            FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map_single_player.csv"));
+            FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/cool_map_single_player.csv"));
+            FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/Arena_map_single_player.csv"));
+            
             Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
         } catch (IOException e) {
             System.err.println(e + ": Cannot read image file");

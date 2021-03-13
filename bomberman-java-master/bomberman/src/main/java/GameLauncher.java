@@ -14,28 +14,25 @@ public class GameLauncher {
     static GameWindow window;
     static String singlePlayer = "single";
     
-    
     public static void main(String[] args) {
-        
+        ResourceCollection.readFiles();
+        ResourceCollection.init();
+        GamePanel game;
         if(singlePlayer.equalsIgnoreCase("single")){
-            window = new GameWindow();
+            
+            game = new GamePanel(singlePlayer);
         }else{
-            ResourceCollection.readFiles();
-            ResourceCollection.init();
-
-            GamePanel game;
             try {
                 game = new GamePanel(args[0]);
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println(e + ": Program args not given");
                 game = new GamePanel(null);
             }
-
-            game.init();
-            window = new GameWindow(game);
-
-            System.gc();
         }
+        game.init();
+        window = new GameWindow(game);
+
+        System.gc();
     }
 
   
@@ -72,15 +69,6 @@ class GameWindow extends JFrame {
         this.setVisible(true);
     }
     
-    GameWindow(){ //single player
-        this.setTitle(TITLE);
-        this.setResizable(true);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setContentPane(new GamePanelSingle(1280,720));
-        this.pack();
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-    }
 
     /**
      * Called every second. Updates the FPS and Ticks counters and prints them to the console with the current time.
