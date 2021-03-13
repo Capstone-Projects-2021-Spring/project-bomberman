@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     private BufferedImage bg;
     private GameHUD gameHUD;
     private GameHUDSingle gameHUDSingle;
-    private int GameType;
+    private int GameType = 0;
     private int mapWidth;
     private int mapHeight;
     private ArrayList<ArrayList<String>> mapLayout;
@@ -54,24 +54,26 @@ public class GamePanel extends JPanel implements Runnable {
      * Construct game panel and load in a map file.
      *
      * @param filename Name of the map file
+     * @param type game type of the map
      */
-    GamePanel(String filename, String type) {
+    GamePanel(String filename, int type) {
+        this.GameType = 1;//single player
         this.setFocusable(true);
         this.requestFocus();
         this.setControlSingle();
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
-        this.GameType = 1;//single player
+        
     }
     GamePanel(String filename) {
+        this.GameType = 0;//multi player
         this.setFocusable(true);
         this.requestFocus();
         this.setControls();
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
-        this.GameType = 0;//multi player
     }
 
     /**
@@ -93,7 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.resetDelay = 0;
         GameObjectCollection.init();
         this.gameHUDSingle = new GameHUDSingle();
-        this.generateMap();
+        this.generateMapSingle();
         this.gameHUDSingle.init();
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         System.gc();
@@ -304,7 +306,7 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
 
                     case ("1"):     // Player 1; Bomber
-                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMapSingle.PLAYER_1.getSprites();
                         Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1);
                         PlayerController playerController1 = new PlayerController(player1, this.controls1);
                         this.addKeyListener(playerController1);
@@ -359,7 +361,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void setControls() {
         
-             this.controls1 = new HashMap<>();
+        this.controls1 = new HashMap<>();
         this.controls2 = new HashMap<>();
         this.controls3 = new HashMap<>();
         this.controls4 = new HashMap<>();
@@ -397,13 +399,13 @@ public class GamePanel extends JPanel implements Runnable {
     
      private void setControlSingle() {
         
-           this.controls1 = new HashMap<>();
+        this.controls1 = new HashMap<>();
          // Set Player 1 controls
          this.controls1.put(KeyEvent.VK_UP, Key.up);
          this.controls1.put(KeyEvent.VK_DOWN, Key.down);
          this.controls1.put(KeyEvent.VK_LEFT, Key.left);
          this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
-         this.controls1.put(KeyEvent.VK_SLASH, Key.action);
+         this.controls1.put(KeyEvent.VK_SPACE, Key.action);
 
 
     }

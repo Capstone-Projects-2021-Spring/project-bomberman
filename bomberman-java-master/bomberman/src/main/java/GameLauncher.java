@@ -21,8 +21,8 @@ public class GameLauncher {
         if(singlePlayer.equalsIgnoreCase("single")){
             ResourceCollection.readFileSingle();
             ResourceCollection.initSingle();
-            game = new GamePanel(singlePlayer);
-            
+            game = new GamePanel(singlePlayer, 1);
+            game.initSingle();
         }else{
             ResourceCollection.readFiles();
             ResourceCollection.init();
@@ -32,10 +32,9 @@ public class GameLauncher {
                 System.err.println(e + ": Program args not given");
                 game = new GamePanel(null);
             }
+            game.init();
         }
-        game.init();
         window = new GameWindow(game);
-
         System.gc();
     }
 
