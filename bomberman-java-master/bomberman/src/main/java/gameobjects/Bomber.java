@@ -5,7 +5,6 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import static java.sql.DriverManager.println;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -76,7 +75,7 @@ public class Bomber extends Player {
 
     // --- ACTION ---
     private void plantBomb() {
-        println("Bomber Class: 78: PlantBomb()");
+       
         // Snap bombs to the grid on the map
         float x = Math.round(this.position.getX() / 32) * 32;
         float y = Math.round((this.position.getY() + 16) / 32) * 32;
@@ -84,13 +83,13 @@ public class Bomber extends Player {
 
         // Only one tile object allowed per tile; Cannot place a bomb on another object
         for (int i = 0; i < GameObjectCollection.tileObjects.size(); i++) {
-             println("Bomber Class: 86: PlantBomb()");
+             
             GameObject obj = GameObjectCollection.tileObjects.get(i);
             if (obj.collider.contains(spawnLocation)) {
                 return;
             }
         }
-        println("Bomber Class: 92: PlantBomb()");
+        
         // Spawn the bomb
         this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
         GameObjectCollection.spawn(bomb);
@@ -98,7 +97,7 @@ public class Bomber extends Player {
     }
 
     public void restoreAmmo() {
-        println("Bomber class: 100: RestoreAmmo()");
+        
         this.bombAmmo = Math.min(this.maxBombs, this.bombAmmo + 1);
     }
 
@@ -185,7 +184,7 @@ public class Bomber extends Player {
 
             // Action
             if (this.ActionPressed && this.bombAmmo > 0) {
-                println("Bomber Class: 183: Action is pressed");
+                
                 this.plantBomb();
             }
         } else {
@@ -234,7 +233,7 @@ public class Bomber extends Player {
     @Override
     public void handleCollision(Bomb collidingObj) {
         Rectangle2D intersection = this.collider.createIntersection(collidingObj.collider);
-        println("Bomber class: 236: handleCollision(BOMB)");
+        
         // Vertical collision
         if (intersection.getWidth() >= intersection.getHeight() && intersection.getHeight() <= 6 && Math.abs(this.collider.getCenterX() - collidingObj.collider.getCenterX()) <= 8) {
             if (this.kick && !collidingObj.isKicked()) {
