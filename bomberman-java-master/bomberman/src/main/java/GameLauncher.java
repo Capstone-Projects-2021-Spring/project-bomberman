@@ -15,13 +15,17 @@ public class GameLauncher {
     static String singlePlayer = "single";
     
     public static void main(String[] args) {
-        ResourceCollection.readFiles();
-        ResourceCollection.init();
+        //ResourceCollection.readFiles();
+        //ResourceCollection.init();
         GamePanel game;
         if(singlePlayer.equalsIgnoreCase("single")){
-            
+            ResourceCollection.readFileSingle();
+            ResourceCollection.initSingle();
             game = new GamePanel(singlePlayer);
+            
         }else{
+            ResourceCollection.readFiles();
+            ResourceCollection.init();
             try {
                 game = new GamePanel(args[0]);
             } catch (ArrayIndexOutOfBoundsException e) {
