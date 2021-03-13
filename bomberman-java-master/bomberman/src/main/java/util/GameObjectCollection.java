@@ -1,6 +1,7 @@
 package util;
 
 import gameobjects.*;
+import static java.sql.DriverManager.println;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -39,6 +40,7 @@ public class GameObjectCollection {
      * @param spawnObj Game object to be added
      */
     public static void spawn(TileObject spawnObj) {
+        println("GameobjectCollection class: 43: spawn()");
         tileObjects.add(spawnObj);
     }
     public static void spawn(Explosion spawnObj) {
@@ -52,6 +54,7 @@ public class GameObjectCollection {
      * Sort object lists by y position. Used to draw objects in order according to y position.
      */
     public static void sortTileObjects() {
+        println("GameobjectCollection class: 57: sortTileObject()");
         tileObjects.sort(Comparator.comparing(GameObject::getPositionY));
     }
     public static void sortExplosionObjects() {

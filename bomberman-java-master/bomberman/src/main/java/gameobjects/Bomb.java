@@ -59,6 +59,27 @@ public class Bomb extends TileObject {
         this.kicked = false;
         this.kickDirection = KickDirection.Nothing;
     }
+    public Bomb(Point2D.Float position, int firepower, boolean pierce, int timer, Bomber bomber, int GameType) {
+        super(position, pierce ? ResourceCollection.SpriteMapSingle.BOMB_PIERCE.getSprites()[0][0] : ResourceCollection.SpriteMapSingle.BOMB.getSprites()[0][0]);
+        this.collider.setRect(this.position.x, this.position.y, this.width, this.height);
+
+        // Animation
+        this.sprites = pierce ? ResourceCollection.SpriteMapSingle.BOMB_PIERCE.getSprites() : ResourceCollection.SpriteMapSingle.BOMB.getSprites();
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+
+        // Stats
+        this.firepower = firepower;
+        this.pierce = pierce;
+        this.timeToDetonate = timer;
+        this.bomber = bomber;
+        this.timeElapsed = 0;
+        this.breakable = true;
+
+        // Kicking bomb
+        this.kicked = false;
+        this.kickDirection = KickDirection.Nothing;
+    }
 
     /**
      * Bomb detonates upon destroy and creates explosions. Also replenishes ammo for original bomber.

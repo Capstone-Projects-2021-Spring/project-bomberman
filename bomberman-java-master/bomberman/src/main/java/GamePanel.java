@@ -188,7 +188,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("1"):     // Player 1; Bomber
                         BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
-                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1);
+                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1,GameType);
                         PlayerController playerController1 = new PlayerController(player1, this.controls1);
                         this.addKeyListener(playerController1);
                         this.gameHUD.assignPlayer(player1, 0);
@@ -197,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("2"):     // Player 2; Bomber
                         BufferedImage[][] sprMapP2 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2);
+                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2,GameType);
                         PlayerController playerController2 = new PlayerController(player2, this.controls2);
                         this.addKeyListener(playerController2);
                         this.gameHUD.assignPlayer(player2, 1);
@@ -206,7 +206,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("3"):     // Player 3; Bomber
                         BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_3.getSprites();
-                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3);
+                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,GameType);
                         PlayerController playerController3 = new PlayerController(player3, this.controls3);
                         this.addKeyListener(playerController3);
                         this.gameHUD.assignPlayer(player3, 2);
@@ -215,7 +215,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("4"):     // Player 4; Bomber
                         BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
-                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4);
+                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType);
                         PlayerController playerController4 = new PlayerController(player4, this.controls4);
                         this.addKeyListener(playerController4);
                         this.gameHUD.assignPlayer(player4, 3);
@@ -263,7 +263,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
-    public void generateMapSingle() {
+    public void generateMapSingle() { //single player version
         // Map dimensions
         this.mapWidth = mapLayout.get(0).size();
         this.mapHeight = mapLayout.size();
@@ -307,7 +307,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("1"):     // Player 1; Bomber
                         BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMapSingle.PLAYER_1.getSprites();
-                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1);
+                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1, GameType);
                         PlayerController playerController1 = new PlayerController(player1, this.controls1);
                         this.addKeyListener(playerController1);
                         this.gameHUDSingle.assignPlayer(player1);
@@ -405,7 +405,7 @@ public class GamePanel extends JPanel implements Runnable {
          this.controls1.put(KeyEvent.VK_DOWN, Key.down);
          this.controls1.put(KeyEvent.VK_LEFT, Key.left);
          this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
-         this.controls1.put(KeyEvent.VK_SPACE, Key.action);
+         this.controls1.put(KeyEvent.VK_SLASH, Key.action);
 
 
     }
@@ -624,7 +624,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Draw HUD
         if(GameType == 1){ // if single player
             int infoBoxWidth = panelWidth;
-            g2.drawImage(this.gameHUDSingle.getPlayerinfo(), infoBoxWidth * 0, 0, null);
+            g2.drawImage(this.gameHUDSingle.getPlinfo(), infoBoxWidth * 0, 0, null);
         } else {
             int infoBoxWidth = panelWidth / 4;
             g2.drawImage(this.gameHUD.getP1info(), infoBoxWidth * 0, 0, null);
@@ -685,7 +685,7 @@ class GameController implements KeyListener {
                 {"Down", "Down", "S", "G", "K"},
                 {"Left", "Left", "A", "F", "J"},
                 {"Right", "Right", "D", "H", "L"},
-                {"Bomb", "/", "E", "Y", "O"},
+                {"Bomb", "SPACE", "E", "Y", "O"},
                 {"", "", "", "", ""},
                 {"Help", "F1", "", "", ""},
                 {"Reset", "F5", "", "", ""},

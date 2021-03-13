@@ -41,7 +41,7 @@ public class GameHUDSingle {
         this.Wallobjects = 0;
         
     }
-    BufferedImage getPlayerinfo() {
+    BufferedImage getPlinfo() {
         return this.playerInfo;
     }
     int getwall(){

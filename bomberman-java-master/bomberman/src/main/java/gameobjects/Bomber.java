@@ -5,6 +5,7 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import static java.sql.DriverManager.println;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -19,7 +20,7 @@ public class Bomber extends Player {
     private int direction;  // 0: up, 1: down, 2: left, 3: right
     private int spriteIndex;
     private int spriteTimer;
-
+    private int GameType= 0;
     // Stats
     private float moveSpeed;
     private int firepower;
@@ -33,17 +34,18 @@ public class Bomber extends Player {
      * Constructs a bomber at position with a two-dimensional array of sprites.
      * @param position Coordinates of this object in the game world
      * @param spriteMap 2D array of sprites used for animation
+     * @param GameType Game type single or multi
      */
-    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap) {
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType) {
         super(position, spriteMap[1][0]);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
-
+        this.GameType = GameType;
         // Animation
         this.sprites = spriteMap;
         this.direction = 1;     // Facing down
         this.spriteIndex = 0;
         this.spriteTimer = 0;
-
+        
         // Default stats
         this.moveSpeed = 1;
         this.firepower = 1;
@@ -74,6 +76,7 @@ public class Bomber extends Player {
 
     // --- ACTION ---
     private void plantBomb() {
+        println("Bomber Class: 78: PlantBomb()");
         // Snap bombs to the grid on the map
         float x = Math.round(this.position.getX() / 32) * 32;
         float y = Math.round((this.position.getY() + 16) / 32) * 32;
@@ -81,19 +84,25 @@ public class Bomber extends Player {
 
         // Only one tile object allowed per tile; Cannot place a bomb on another object
         for (int i = 0; i < GameObjectCollection.tileObjects.size(); i++) {
+             println("Bomber Class: 86: PlantBomb()");
             GameObject obj = GameObjectCollection.tileObjects.get(i);
             if (obj.collider.contains(spawnLocation)) {
                 return;
             }
         }
-
+        println("Bomber Class: 92: PlantBomb()");
         // Spawn the bomb
-        this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this);
+        if(this.GameType == 1){
+            this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this,GameType);// single player
+        }else{
+            this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
+        }
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
     }
 
     public void restoreAmmo() {
+        println("Bomber class: 100: RestoreAmmo()");
         this.bombAmmo = Math.min(this.maxBombs, this.bombAmmo + 1);
     }
 
@@ -180,6 +189,7 @@ public class Bomber extends Player {
 
             // Action
             if (this.ActionPressed && this.bombAmmo > 0) {
+                println("Bomber Class: 183: Action is pressed");
                 this.plantBomb();
             }
         } else {
@@ -228,6 +238,7 @@ public class Bomber extends Player {
     @Override
     public void handleCollision(Bomb collidingObj) {
         Rectangle2D intersection = this.collider.createIntersection(collidingObj.collider);
+        println("Bomber class: 236: handleCollision(BOMB)");
         // Vertical collision
         if (intersection.getWidth() >= intersection.getHeight() && intersection.getHeight() <= 6 && Math.abs(this.collider.getCenterX() - collidingObj.collider.getCenterX()) <= 8) {
             if (this.kick && !collidingObj.isKicked()) {
