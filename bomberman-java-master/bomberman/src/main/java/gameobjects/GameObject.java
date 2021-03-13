@@ -177,6 +177,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
         return Float.compare(this.position.y, o.position.y);
     }
 
+
 }
 
 /**
@@ -232,6 +233,9 @@ interface Collidable {
 
     default void handleCollision(Powerup collidingObj) {
 
+    }
+    default void handleCollision(Ai collidingObj){
+        
     }
 
 }
