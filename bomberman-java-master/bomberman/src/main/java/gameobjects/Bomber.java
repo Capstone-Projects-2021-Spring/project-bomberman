@@ -92,11 +92,7 @@ public class Bomber extends Player {
         }
         println("Bomber Class: 92: PlantBomb()");
         // Spawn the bomb
-        if(this.GameType == 1){
-            this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this,GameType);// single player
-        }else{
-            this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
-        }
+        this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
     }

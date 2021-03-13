@@ -306,7 +306,7 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
 
                     case ("1"):     // Player 1; Bomber
-                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMapSingle.PLAYER_1.getSprites();
+                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
                         Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1, GameType);
                         PlayerController playerController1 = new PlayerController(player1, this.controls1);
                         this.addKeyListener(playerController1);
@@ -405,7 +405,7 @@ public class GamePanel extends JPanel implements Runnable {
          this.controls1.put(KeyEvent.VK_DOWN, Key.down);
          this.controls1.put(KeyEvent.VK_LEFT, Key.left);
          this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
-         this.controls1.put(KeyEvent.VK_SLASH, Key.action);
+         this.controls1.put(KeyEvent.VK_SPACE, Key.action);
 
 
     }

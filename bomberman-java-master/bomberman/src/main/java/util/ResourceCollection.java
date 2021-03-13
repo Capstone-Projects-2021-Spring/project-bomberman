@@ -53,25 +53,6 @@ public class ResourceCollection {
             return this.sprites;
         }
     }
-    public enum SpriteMapSingle {
-        PLAYER_1,
-        HARD_WALLS,
-        BOMB,
-        BOMB_PIERCE,
-        EXPLOSION_SPRITEMAP;
-
-        private BufferedImage image = null;
-        private BufferedImage[][] sprites = null;
-
-        public BufferedImage getImage() {
-            return this.image;
-        }
-
-        public BufferedImage[][] getSprites() {
-            return this.sprites;
-        }
-    }
-    
 
     public enum Files {
         DEFAULT_MAP;
@@ -155,11 +136,6 @@ public class ResourceCollection {
             SpriteMaps.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
             SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
             
-            FileBIG.BIGMAP.fileb = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map.csv"));
-            //FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map_single_player.csv"));
-            //FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/cool_map_single_player.csv"));
-            //FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/Arena_map_single_player.csv"));
-            
             Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
         } catch (IOException e) {
             System.err.println(e + ": Cannot read image file");
@@ -180,21 +156,19 @@ public class ResourceCollection {
             Images.POWER_KICK.image = ImageIO.read(ResourceCollection.class.getResource("/resources/power_kick.png"));
             Images.POWER_TIMER.image = ImageIO.read(ResourceCollection.class.getResource("/resources/power_timer.png"));
 
-            SpriteMapSingle.PLAYER_1.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber1.png"));
-            //.PLAYER_2.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber2.png"));
-            //SpriteMaps.PLAYER_3.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber3.png"));
-            //SpriteMaps.PLAYER_4.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber4.png"));
-            SpriteMapSingle.HARD_WALLS.image = ImageIO.read(ResourceCollection.class.getResource("/resources/hardWalls.png"));
-            SpriteMapSingle.BOMB.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb.png"));
-            SpriteMapSingle.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
-            SpriteMapSingle.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
+            SpriteMaps.PLAYER_1.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber1.png"));
+            
+            SpriteMaps.HARD_WALLS.image = ImageIO.read(ResourceCollection.class.getResource("/resources/hardWalls.png"));
+            SpriteMaps.BOMB.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb.png"));
+            SpriteMaps.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
+            SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
             
             //FileBIG.BIGMAP.fileb = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map.csv"));
             FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map_single_player.csv"));
             //FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/cool_map_single_player.csv"));
             //FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/Arena_map_single_player.csv"));
             
-            //Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
+            Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
         } catch (IOException e) {
             System.err.println(e + ": Cannot read image file");
             e.printStackTrace();
@@ -216,12 +190,12 @@ public class ResourceCollection {
         loadHardWallTiles(SpriteMaps.HARD_WALLS.sprites);   // Load hard wall tiles into hashmap for bit masking
     }
     public static void initSingle(){
-        SpriteMapSingle.PLAYER_1.sprites = sliceSpriteMap(SpriteMapSingle.PLAYER_1.image, 32, 48);
-        SpriteMapSingle.HARD_WALLS.sprites = sliceSpriteMap(SpriteMapSingle.HARD_WALLS.image, 32, 32);
-        SpriteMapSingle.BOMB.sprites = sliceSpriteMap(SpriteMapSingle.BOMB.image, 32, 32);
-        SpriteMapSingle.BOMB_PIERCE.sprites = sliceSpriteMap(SpriteMapSingle.BOMB_PIERCE.image, 32, 32);
-        SpriteMapSingle.EXPLOSION_SPRITEMAP.sprites = sliceSpriteMap(SpriteMapSingle.EXPLOSION_SPRITEMAP.image, 32, 32);
-        loadHardWallTiles(SpriteMapSingle.HARD_WALLS.sprites);   // Load hard wall tiles into hashmap for bit masking
+        SpriteMaps.PLAYER_1.sprites = sliceSpriteMap(SpriteMaps.PLAYER_1.image, 32, 48);
+        SpriteMaps.HARD_WALLS.sprites = sliceSpriteMap(SpriteMaps.HARD_WALLS.image, 32, 32);
+        SpriteMaps.BOMB.sprites = sliceSpriteMap(SpriteMaps.BOMB.image, 32, 32);
+        SpriteMaps.BOMB_PIERCE.sprites = sliceSpriteMap(SpriteMaps.BOMB_PIERCE.image, 32, 32);
+        SpriteMaps.EXPLOSION_SPRITEMAP.sprites = sliceSpriteMap(SpriteMaps.EXPLOSION_SPRITEMAP.image, 32, 32);
+        loadHardWallTiles(SpriteMaps.HARD_WALLS.sprites);   // Load hard wall tiles into hashmap for bit masking
     }
 
     /**
