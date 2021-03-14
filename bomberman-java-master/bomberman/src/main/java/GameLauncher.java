@@ -19,9 +19,9 @@ public class GameLauncher {
         //ResourceCollection.init();
         GamePanel game;
         if(singlePlayer.equalsIgnoreCase("single")){
-            ResourceCollection.readFileSingle();
-            ResourceCollection.initSingle();
-            game = new GamePanel(singlePlayer, 1);
+            ResourceCollection.readFileSingle(); // dont need this method when loading next map
+            ResourceCollection.initSingle(); // dont need this method when making next map
+            game = new GamePanel(singlePlayer, 1); // mapphase 1 
             game.initSingle();
         }else{
             ResourceCollection.readFiles();

@@ -31,7 +31,9 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread thread;
     private boolean running;
     int resetDelay;
-
+    
+    private int mapPhase; // map phase for single player, decide which map to load
+    
     private BufferedImage world;
     private Graphics2D buffer;
     private BufferedImage bg;
@@ -55,11 +57,11 @@ public class GamePanel extends JPanel implements Runnable {
      * Construct game panel and load in a map file.
      *
      * @param filename Name of the map file
-     * @param type game type of the map
+     * @param type game, type of the map 
      */
-    GamePanel(String filename, int type) {
+    GamePanel(String filename, int type) {//single player
         this.GameType = 1;//single player
-        //this.enemyAi = 0; //amount of enemies
+        this.mapPhase = type; // starting map
         this.setFocusable(true);
         this.requestFocus();
         this.setControlSingle();
@@ -68,7 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(new GameController(this));
         
     }
-    GamePanel(String filename) {
+    GamePanel(String filename) {//multi player
         this.GameType = 0;//multi player
         this.setFocusable(true);
         this.requestFocus();
@@ -93,7 +95,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.running = true;
     }
 
-    void initSingle() {
+    void initSingle() { // initialize for starting single player
         this.resetDelay = 0;
         GameObjectCollection.init();
         this.gameHUDSingle = new GameHUDSingle();
@@ -103,6 +105,16 @@ public class GamePanel extends JPanel implements Runnable {
         System.gc();
         this.running = true;
     }
+    //void initSingle(int playerScore){ // to carry over info of previous map, single player
+         //this.resetDelay = 0;
+        //GameObjectCollection.init();
+        //this.gameHUDSingle = new GameHUDSingle();
+        //this.generateMapSingle();
+        //this.gameHUDSingle.init(playerScore);
+        //this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        //System.gc();
+        //this.running = true;
+    //}
 
     /**
      * Loads the map file into buffered reader or load default map when no file
@@ -115,7 +127,20 @@ public class GamePanel extends JPanel implements Runnable {
         // Loading map file
         try {
             if (mapFile.equalsIgnoreCase("single")) {
-                this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE1.SINGLE1.getFile());
+                switch (this.mapPhase) { // change maps depending on mapPhase
+                    case 1:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE1.SINGLE1.getFile());
+                        break;
+                    case 2:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE2.SINGLE2.getFile());
+                        break;
+                    case 3:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE3.SINGLE3.getFile());
+                        break;
+                    default:
+                        break;
+                }
+                
             } else {
                 this.bufferedReader = new BufferedReader(new FileReader(mapFile));
             }
@@ -450,6 +475,18 @@ public class GamePanel extends JPanel implements Runnable {
         this.generateMapSingle();
         System.gc();
     }
+    private void nextMap(int playerScore){ // hopefully loads next map
+        this.mapPhase++;
+        this.loadMapFile("single");
+        this.resetDelay = 0;
+        GameObjectCollection.init();
+        this.generateMapSingle();
+        this.gameHUDSingle.init(playerScore);
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        
+
+    }
 
     public void addNotify() {
         super.addNotify();
@@ -610,7 +647,7 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead
-                this.resetMapSingle();
+                this.nextMap(gameHUDSingle.playerScore);
                 this.gameHUDSingle.matchSet = false;
             }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
                 this.resetMapSingle();

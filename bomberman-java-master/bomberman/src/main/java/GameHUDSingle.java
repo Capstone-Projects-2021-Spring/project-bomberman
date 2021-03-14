@@ -21,11 +21,10 @@ public class GameHUDSingle {
     private Bomber player;
     private Ai[] enemies;
     private BufferedImage playerInfo;
-    private int playerScore;
+    protected int playerScore;
     boolean matchSet;
     
     GameHUDSingle(){
-        
         this.player = null;
         this.playerInfo = null;
         this.playerScore = 0;
@@ -34,14 +33,20 @@ public class GameHUDSingle {
         
     }
     void init() {
+        this.playerScore = 0;
         // Height of the HUD
         int height = GameWindow.HUD_HEIGHT;
         // Width of each player's information in the HUD, 4 players, 4 info boxes
         int infoWidth = GamePanel.panelWidth;
         this.playerInfo = new BufferedImage(infoWidth, height, BufferedImage.TYPE_INT_RGB);
-        //this.enemies[0] = new BufferedImage(BufferedImage.TYPE_INT_ARGB);
-   
-   
+    }
+    void init(int playerScore){
+        this.playerScore = playerScore;
+        // Height of the HUD
+        int height = GameWindow.HUD_HEIGHT;
+        // Width of each player's information in the HUD, 4 players, 4 info boxes
+        int infoWidth = GamePanel.panelWidth;
+        this.playerInfo = new BufferedImage(infoWidth, height, BufferedImage.TYPE_INT_RGB);
     }
     BufferedImage getPlinfo() {
         return this.playerInfo;
@@ -54,7 +59,7 @@ public class GameHUDSingle {
     }
     public void updateScore() {
         // Count dead AI's
-        int deadAi = 0;
+        int deadAi = this.playerScore;
         for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
             System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
             if (this.enemies[i].isDead()) {
