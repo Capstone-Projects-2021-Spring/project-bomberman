@@ -35,7 +35,7 @@ public class S_A_M_G_1 {
         return index;
     }
 
-    public static void main(String[] args) {
+    public static void rand_map() {
 
         Random rand = new Random();
         int length = rand.nextInt(50)+21;
