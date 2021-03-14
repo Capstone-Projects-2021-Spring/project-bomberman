@@ -30,11 +30,7 @@ public class GameLauncher extends JFrame{
 
     //Variables for the game and map creator
     static GameWindow window;
-    static boolean tutorial = true;
-//    game.tutorial_init();    
-//    if(tutorial){
-//        window.tutorial();
-//    }
+    
     public static String mapBlock = "";
     public static String[][] map = new String[32][32];
     public static Boolean spawn1Set = false;
