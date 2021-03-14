@@ -609,7 +609,6 @@ public class GamePanel extends JPanel implements Runnable {
             this.gameHUDSingle.updateScore();
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
-            // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
             if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead
                 this.resetMapSingle();
                 this.gameHUDSingle.matchSet = false;
