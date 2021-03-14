@@ -625,6 +625,10 @@ public class GameLauncher extends JFrame{
 class GameWindow extends JFrame {
 
     /**
+     *
+     */
+    private static final long serialVersionUID = 2028565439286949793L;
+    /**
      * Screen width and height is determined by the map size. Map size is set when loading the map in
      * the GamePanel class. For best results, do not use a map that is smaller than the default map
      * provided in resources.
