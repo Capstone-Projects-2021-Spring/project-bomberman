@@ -483,6 +483,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.generateMapSingle();
         this.gameHUDSingle.init(playerScore);
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        GameLauncher.window.pack();
         System.gc();
         
 
