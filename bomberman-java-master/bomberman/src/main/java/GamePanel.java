@@ -37,7 +37,7 @@ public class GamePanel extends JPanel implements Runnable {
     private BufferedImage bg;
     private GameHUD gameHUD;
     private GameHUDSingle gameHUDSingle;
-    private int GameType = 0;
+    public final int GameType;
     private int mapWidth;
     private int mapHeight;
     private ArrayList<ArrayList<String>> mapLayout;
@@ -430,16 +430,24 @@ public class GamePanel extends JPanel implements Runnable {
      * When F5 is pressed, reset game object collection, collect garbage,
      * reinitialize game panel, reload map
      */
-    void resetGame() {
+    void resetGame() { //reset for multiplayer
         this.init();
+    }
+    void resetGameSingle(){ //single player reset
+        this.initSingle();
     }
 
     /**
      * Reset only the map, keeping the score
      */
-    private void resetMap() {
+    private void resetMap() { // reset for multi local co-op
         GameObjectCollection.init();
         this.generateMap();
+        System.gc();
+    }
+    private void resetMapSingle(){ // reset map for single player
+        GameObjectCollection.init();
+        this.generateMapSingle();
         System.gc();
     }
 
@@ -602,8 +610,11 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
-            if (GameObjectCollection.enemyObjects.isEmpty()) {
-                this.resetMap();
+            if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead
+                this.resetMapSingle();
+                this.gameHUDSingle.matchSet = false;
+            }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
+                this.resetMapSingle();
                 this.gameHUDSingle.matchSet = false;
             }
         }
@@ -732,7 +743,12 @@ class GameController implements KeyListener {
         if (e.getKeyCode() == KeyEvent.VK_F5) {
             if (this.gamePanel.resetDelay >= 20) {
                 System.out.println("F5 key pressed: Resetting game");
-                this.gamePanel.resetGame();
+                if(this.gamePanel.GameType == 1){
+                    this.gamePanel.resetGameSingle();
+                }else{
+                    this.gamePanel.resetGame();
+                }
+                
             }
         }
     }

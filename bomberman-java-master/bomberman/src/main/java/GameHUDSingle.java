@@ -66,20 +66,19 @@ public class GameHUDSingle {
         this.playerScore = deadAi;
         // Check for no enemy standing and conclude the match
         System.out.println(deadAi+" dead,line:68"); 
-        if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist
-            System.out.println(deadAi+" line:69"); 
-            for (int i = 0; i < this.enemies.length; i++) {
-                System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:72"); 
-                if (!this.enemies[i].isDead()) {
-                    this.playerScore++;
-                    this.matchSet = true;
-                }
-            }
-       //
-        }else if (deadAi >= this.enemies.length) {
-            // This should only be reached two or more of the last players die at the same time
+        if (deadAi >= this.enemies.length) {// check for amount dead to total enemies in arraylist
+            //System.out.println(deadAi+" line:69"); 
+            //for (int i = 0; i < this.enemies.length; i++) {
+                //System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:72"); 
+                //if (!this.enemies[i].isDead()) {
+                    //this.playerScore++;
             this.matchSet = true;
-        }
+                //}
+            //}
+        }//else if (deadAi >= this.enemies.length) {
+            // This should only be reached two or more of the last players die at the same time
+            //this.matchSet = true;
+        //}
         
     }
      void drawHUD() {
