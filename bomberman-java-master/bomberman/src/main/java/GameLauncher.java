@@ -4,12 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.*;
-import java.util.*;
-import java.io.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.nio.file.*;
 
 /**
  * Contains the main method to launch the game.
@@ -20,25 +14,6 @@ public class GameLauncher {
     static GameWindow window;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Bomber Man");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400,400);
-        frame.setVisible(true);
-        JPanel Menu = new JPanel();
-        frame.add(Menu, BorderLayout.NORTH);
-        JPanel buttonPanel = new JPanel();
-        JButton LocalGame = new JButton("Start Local Game");
-        LocalGame.addActionListener(new ActionListener(){
-            try{
-                RunGame();
-            }
-            catch(IOException e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void RunGame(){
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
@@ -55,6 +30,7 @@ public class GameLauncher {
 
         System.gc();
     }
+
 }
 
 /**
@@ -63,13 +39,17 @@ public class GameLauncher {
 class GameWindow extends JFrame {
 
     /**
+     *
+     */
+    private static final long serialVersionUID = 2028565439286949793L;
+    /**
      * Screen width and height is determined by the map size. Map size is set when loading the map in
      * the GamePanel class. For best results, do not use a map that is smaller than the default map
      * provided in resources.
      */
 
     static final int HUD_HEIGHT = 48;   // Size of the HUD. The HUD displays score.
-    static final String TITLE = "Bomberman by Brian Lai";
+    static final String TITLE = "Bomberman";
 
     /**
      * Constructs a game window with the necessary configurations.
