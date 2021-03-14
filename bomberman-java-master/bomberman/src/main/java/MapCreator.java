@@ -4,7 +4,7 @@ import java.io.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.nio.file.*;
-class MapCreator{
+class MapCreator extends JFrame{
 
     //Status of the current type of block being placed
     public static String mapBlock = "";
