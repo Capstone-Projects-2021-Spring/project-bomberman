@@ -88,10 +88,15 @@ public class S_A_M_G_1 {
                         int player_i = findIndex(location, i, 0);
                         if (player_i == player_j) {
                             //System.out.println(player_count);
+                            if(player_j==1){
                             sb.append(Integer.toString(player_j + 1));
                             sb.append(",");
                             j++;
-
+                            }else{
+                               sb.append(Integer.toString(3));
+                                sb.append(",");
+                                j++; 
+                            }
                             if (location[1][player_j] <= length - 2) {
                                 sb.append("-1,");
                                 j++;
