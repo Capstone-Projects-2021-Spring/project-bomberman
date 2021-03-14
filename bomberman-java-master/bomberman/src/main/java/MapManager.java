@@ -1,5 +1,7 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.*;
+import java.util.List;
 import java.io.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -12,11 +14,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CreateBucketRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 class MapManager{
     public static void main(String args[]){
     	//Create AWS Objects
         BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
-        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-1").build();
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-2").build();
     	
         //Create Frame
         JFrame frame = new JFrame("Bomber Man");
@@ -26,7 +30,14 @@ class MapManager{
         //Get the map names
         final File folder = new File("../maps");
         ArrayList<String> maps = getMapFiles(folder);
-        JList<String> list = new JList(maps.toArray());
+        DefaultListModel model = new DefaultListModel();
+        JList<String> list = new JList(model);
+        for(int x = 0; x < maps.size(); x++) {
+        	if(maps.get(x).contains(".csv")) {
+        		model.addElement(maps.get(x));
+        	}
+        }
+        list.setModel(model);
         //Set styling for the list
         list.setBounds(80,80,50,50);
         list.setLayoutOrientation(JList.VERTICAL);
@@ -45,6 +56,8 @@ class MapManager{
         addMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("*.csv","csv");
+                fileChooser.setFileFilter(filter);
                 int retVal = fileChooser.showOpenDialog(null);
                 if (retVal == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
@@ -52,6 +65,8 @@ class MapManager{
                         Path src = Paths.get(selectedFile.getPath());
                         Path dest = Paths.get("../maps/" + selectedFile.getName());
                         Files.copy(src,dest,StandardCopyOption.REPLACE_EXISTING);
+                        model.addElement(selectedFile.getName());
+                        list.setModel(model);
                     }
                     catch(IOException e){
                         e.printStackTrace();
@@ -59,6 +74,50 @@ class MapManager{
                 }
             }
         });
+        
+        //Make panels for download
+        DefaultListModel modelDownload = new DefaultListModel();
+        JList<String> listDownload = new JList(modelDownload);
+        ArrayList<String> serverMaps = getServerMaps(s3);
+        for(int y = 0; y < serverMaps.size(); y++) {
+        	if(serverMaps.get(y).contains(".csv")) {
+        		modelDownload.addElement(serverMaps.get(y));
+        	}
+        }
+        listDownload.setModel(modelDownload);
+        //Set styling for the list
+        listDownload.setBounds(80,80,50,50);
+        listDownload.setLayoutOrientation(JList.VERTICAL);
+        DefaultListCellRenderer renderer2 = (DefaultListCellRenderer) listDownload.getCellRenderer();
+        renderer2.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        JPanel listDownloadPanel = new JPanel();
+        listDownloadPanel.add(listDownload);
+        listDownloadPanel.setVisible(false);
+        frame.add(listDownloadPanel, BorderLayout.NORTH);
+        
+        JPanel buttonPanel2 = new JPanel();
+        //Create add map button
+        JButton download = new JButton("Download");
+        JButton back = new JButton("Back");
+        
+        
+        buttonPanel2.add(download);
+        buttonPanel2.add(back);
+        buttonPanel2.setVisible(false);
+        frame.add(buttonPanel2, BorderLayout.CENTER);
+
+        
+        
+        back.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	listPanel.setVisible(true);
+                buttonPanel.setVisible(true);
+                listDownloadPanel.setVisible(false);
+                buttonPanel2.setVisible(false);
+            }
+        });
+        
         JButton uploadMap = new JButton("Upload Map");
         uploadMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -68,11 +127,23 @@ class MapManager{
                 uploadMap(s3,bucket,currentMap,currentMapPath);
             }
         });
+        JButton downloadMap = new JButton("Download Map");
+        downloadMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	listPanel.setVisible(false);
+                buttonPanel.setVisible(false);
+                listDownloadPanel.setVisible(true);
+                buttonPanel2.setVisible(true);
+            }
+        });
+        
         buttonPanel.add(addMap);
         buttonPanel.add(uploadMap);
+        buttonPanel.add(downloadMap);
+        
         //Add panel to the frame
         frame.add(buttonPanel, BorderLayout.SOUTH);
-        		
+        
     }
 
     public static ArrayList<String> getMapFiles(final File directory){
@@ -90,5 +161,15 @@ class MapManager{
         catch (AmazonS3Exception e) {
         	System.err.println(e.getErrorMessage());
         }
+    }
+    
+    public static ArrayList<String> getServerMaps(final AmazonS3 s3){
+    	ArrayList<String> serverMaps = new ArrayList<String>();
+    	ObjectListing maps = s3.listObjects("bombermanmaps");
+    	List<S3ObjectSummary> obj = maps.getObjectSummaries();
+    	for(S3ObjectSummary o: obj) {
+    		serverMaps.add("" + o.getKey());
+    	}
+		return serverMaps;
     }
 }

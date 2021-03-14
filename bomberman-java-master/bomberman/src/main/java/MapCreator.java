@@ -176,7 +176,7 @@ class MapCreator{
             }
         });
 
-        //Create button for enemy ballon
+        //Create button for enemy balloon
         JButton enemyBallon = new JButton("Enemy");
         enemyBallon.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -203,7 +203,7 @@ class MapCreator{
             public void actionPerformed(ActionEvent ae) {
                   String name = mapName.getText();
                   try {
-                    FileWriter writer = new FileWriter("./maps/" + name + ".csv");
+                    FileWriter writer = new FileWriter("../maps/" + name + ".csv");
                     for(int i = 0; i < 32; i++){
                         for(int j = 0; j < 32; j++){
                             String currentTile = map[i][j];
