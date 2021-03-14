@@ -30,6 +30,11 @@ public class GameLauncher extends JFrame{
 
     //Variables for the game and map creator
     static GameWindow window;
+    static boolean tutorial = true;
+    game.tutorial_init();    
+    if(tutorial){
+        window.tutorial();
+    }
     public static String mapBlock = "";
     public static String[][] map = new String[32][32];
     public static Boolean spawn1Set = false;
@@ -665,4 +670,19 @@ class GameWindow extends JFrame {
         GameLauncher.window.setTitle(GameWindow.TITLE + " | " + "FPS: " + fps + ", Ticks: " + ticks);
     }
 
+    public void tutorial(){
+        JPanel p = new JPanel();
+        JFrame f = new JFrame("panel");
+        JLabel l = new JLabel("This is the Tutorial!");
+        JLabel lb = new JLabel("This is the Tutorial!");
+        String prompt_1 = "Welcome to the Tutorial, to view controls press f1.";
+        String prompt_2 = " To pass, you must kill the other Bombermen.";
+        l.setText(prompt_1);
+        lb.setText(prompt_2);
+        p.add(l);
+        p.add(lb);
+        f.add(p);
+        f.setSize(300, 300);
+        f.setVisible(true);
+    }
 }
