@@ -15,6 +15,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.CreateBucketRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 class MapManager{
     public static void main(String args[]){
@@ -25,7 +26,7 @@ class MapManager{
         //Create Frame
         JFrame frame = new JFrame("Bomber Man");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400,400);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
         //Get the map names
         final File folder = new File("../maps");
@@ -45,7 +46,7 @@ class MapManager{
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
         //Create panel for the list
         JPanel listPanel = new JPanel();
-        listPanel.add(list);
+        listPanel.add(new JScrollPane(list));
         //Add the panel to the frame
         frame.add(listPanel, BorderLayout.NORTH);
         //Create Panel for button
@@ -118,13 +119,54 @@ class MapManager{
             }
         });
         
+        download.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	String currentMap = listDownload.getSelectedValue();
+            	if(!(currentMap == null)) {
+            		String bucket = "bombermanmaps";
+                	S3Object retMap = downloadMap(s3,bucket,currentMap);
+                	InputStream reader = new BufferedInputStream(
+        			   retMap.getObjectContent());
+        			File file = new File("../Maps/" + currentMap);      
+        			OutputStream writer = null;
+					try {
+						writer = new BufferedOutputStream(new FileOutputStream(file));
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}
+
+        			int read = -1;
+
+        			try {
+						while ( ( read = reader.read() ) != -1 ) {
+						    writer.write(read);
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+        			try {
+						writer.flush();
+						writer.close();
+	        			reader.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+        			model.addElement(currentMap);
+                }
+            }
+        });
+        
         JButton uploadMap = new JButton("Upload Map");
         uploadMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
                 String currentMap = list.getSelectedValue();
-                String currentMapPath = "../maps/" + list.getSelectedValue();
-                String bucket = "bombermanmaps";
-                uploadMap(s3,bucket,currentMap,currentMapPath);
+                if(!(currentMap == null)) {
+	                String currentMapPath = "../maps/" + list.getSelectedValue();
+	                String bucket = "bombermanmaps";
+                	uploadMap(s3,bucket,currentMap,currentMapPath);
+                	modelDownload.addElement(currentMap);
+                }
             }
         });
         JButton downloadMap = new JButton("Download Map");
@@ -136,10 +178,26 @@ class MapManager{
                 buttonPanel2.setVisible(true);
             }
         });
+        JButton deleteMap = new JButton("Delete");
+        deleteMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	String currentMap = list.getSelectedValue();
+                if(!(currentMap == null)) {
+	                String currentMapPath = "../maps/" + list.getSelectedValue();
+	                File fileToDelete = new File(currentMapPath);
+	                fileToDelete.delete();
+                	model.removeElement(currentMap);
+                }
+            }
+        });
+        
+        GridLayout blockTypeLayout = new GridLayout(0,4);
+        buttonPanel.setLayout(blockTypeLayout);
         
         buttonPanel.add(addMap);
         buttonPanel.add(uploadMap);
         buttonPanel.add(downloadMap);
+        buttonPanel.add(deleteMap);
         
         //Add panel to the frame
         frame.add(buttonPanel, BorderLayout.SOUTH);
@@ -161,6 +219,17 @@ class MapManager{
         catch (AmazonS3Exception e) {
         	System.err.println(e.getErrorMessage());
         }
+    }
+    
+    public static S3Object downloadMap(final AmazonS3 s3, String bucket, String key) {
+    	S3Object retMap = null;
+    	try {
+        	retMap = s3.getObject(bucket, key);
+        }
+        catch (AmazonS3Exception e) {
+        	System.err.println(e.getErrorMessage());
+        }
+    	return retMap;
     }
     
     public static ArrayList<String> getServerMaps(final AmazonS3 s3){
