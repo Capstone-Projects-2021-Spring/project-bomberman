@@ -52,7 +52,6 @@ class MapManager{
                         Path src = Paths.get(selectedFile.getPath());
                         Path dest = Paths.get("../maps/" + selectedFile.getName());
                         Files.copy(src,dest,StandardCopyOption.REPLACE_EXISTING);
-                        
                     }
                     catch(IOException e){
                         e.printStackTrace();
@@ -60,10 +59,19 @@ class MapManager{
                 }
             }
         });
+        JButton uploadMap = new JButton("Upload Map");
+        uploadMap.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                String currentMap = list.getSelectedValue();
+                String currentMapPath = "../maps/" + list.getSelectedValue();
+                String bucket = "bombermanmaps";
+                uploadMap(s3,bucket,currentMap,currentMapPath);
+            }
+        });
         buttonPanel.add(addMap);
+        buttonPanel.add(uploadMap);
         //Add panel to the frame
         frame.add(buttonPanel, BorderLayout.SOUTH);
-        
         		
     }
 
@@ -77,7 +85,7 @@ class MapManager{
     
     public static void uploadMap(final AmazonS3 s3, String bucket, String key, String filePath) {
     	try {
-        	s3.putObject(bucket,key,new File("../maps/cool_map.csv"));
+        	s3.putObject(bucket,key,new File(filePath));
         }
         catch (AmazonS3Exception e) {
         	System.err.println(e.getErrorMessage());
