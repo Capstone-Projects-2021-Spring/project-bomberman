@@ -222,6 +222,13 @@ public class GamePanel extends JPanel implements Runnable {
                         GameObjectCollection.spawn(powerTimer);
                         break;
 
+                    case ("EB"):    //Enemy Balloon
+                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+                        GameObjectCollection.spawn(enemyBalloon);
+
+                        break;
+
                     default:
                         break;
                 }

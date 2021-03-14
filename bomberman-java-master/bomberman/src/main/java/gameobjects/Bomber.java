@@ -12,12 +12,12 @@ import java.awt.image.BufferedImage;
 public class Bomber extends Player {
 
     private Bomb bomb;
-    private boolean dead;
+    public boolean dead;
 
     // Animation
     private BufferedImage[][] sprites;
     private int direction;  // 0: up, 1: down, 2: left, 3: right
-    private int spriteIndex;
+    public int spriteIndex;
     private int spriteTimer;
 
     // Stats
@@ -268,4 +268,16 @@ public class Bomber extends Player {
         collidingObj.destroy();
     }
 
+    /**
+     *
+     * @param collidingObj
+     */
+    @Override
+    public void handleCollision(Enemy collidingObj) {
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+        }
+
+    }
 }
