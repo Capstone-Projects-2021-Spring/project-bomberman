@@ -4,15 +4,27 @@ import java.io.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.nio.file.*;
+import com.amazonaws.*;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.partitions.model.Region;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.CreateBucketRequest;
 class MapManager{
     public static void main(String args[]){
+    	//Create AWS Objects
+        BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-1").build();
+    	
         //Create Frame
         JFrame frame = new JFrame("Bomber Man");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400,400);
         frame.setVisible(true);
         //Get the map names
-        final File folder = new File("./maps");
+        final File folder = new File("../maps");
         ArrayList<String> maps = getMapFiles(folder);
         JList<String> list = new JList(maps.toArray());
         //Set styling for the list
@@ -38,8 +50,9 @@ class MapManager{
                 File selectedFile = fileChooser.getSelectedFile();
                     try{
                         Path src = Paths.get(selectedFile.getPath());
-                        Path dest = Paths.get("./maps/" + selectedFile.getName());
+                        Path dest = Paths.get("../maps/" + selectedFile.getName());
                         Files.copy(src,dest,StandardCopyOption.REPLACE_EXISTING);
+                        
                     }
                     catch(IOException e){
                         e.printStackTrace();
@@ -50,6 +63,8 @@ class MapManager{
         buttonPanel.add(addMap);
         //Add panel to the frame
         frame.add(buttonPanel, BorderLayout.SOUTH);
+        
+        		
     }
 
     public static ArrayList<String> getMapFiles(final File directory){
@@ -58,5 +73,14 @@ class MapManager{
             files.add(fileEntry.getName());
         }
         return files;
+    }
+    
+    public static void uploadMap(final AmazonS3 s3, String bucket, String key, String filePath) {
+    	try {
+        	s3.putObject(bucket,key,new File("../maps/cool_map.csv"));
+        }
+        catch (AmazonS3Exception e) {
+        	System.err.println(e.getErrorMessage());
+        }
     }
 }
