@@ -573,6 +573,7 @@ public class GameLauncher extends JFrame{
             }
         });
         frame.add(mainMenuPanel, BorderLayout.NORTH);
+        frame.add(new JLabel(new ImageIcon("./bomberman.jpg")));
         frame.pack();
     }
     
