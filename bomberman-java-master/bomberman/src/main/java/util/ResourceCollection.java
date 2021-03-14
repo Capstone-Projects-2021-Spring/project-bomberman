@@ -56,6 +56,7 @@ public class ResourceCollection {
 
     public enum Files {
         DEFAULT_MAP;
+        
 
         private InputStreamReader file = null;
 

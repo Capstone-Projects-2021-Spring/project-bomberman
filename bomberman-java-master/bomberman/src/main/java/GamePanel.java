@@ -6,6 +6,7 @@ import util.ResourceCollection;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
@@ -29,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread thread;
     private boolean running;
     int resetDelay;
+    boolean tutorial = false;
 
     private BufferedImage world;
     private Graphics2D buffer;
@@ -64,6 +66,18 @@ public class GamePanel extends JPanel implements Runnable {
      * Initialize the game panel with a HUD, window size, collection of game objects, and start the game loop.
      */
     void init() {
+        this.resetDelay = 0;
+        GameObjectCollection.init();
+        this.gameHUD = new GameHUD();
+        this.generateMap();
+        this.gameHUD.init();
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        this.running = true;
+    }
+
+    void tutorial_init(){
+        this.tutorial = true;
         this.resetDelay = 0;
         GameObjectCollection.init();
         this.gameHUD = new GameHUD();
@@ -129,6 +143,12 @@ public class GamePanel extends JPanel implements Runnable {
                             Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
                             GameObjectCollection.spawn(softWall);
                         }
+                        break;
+                    
+                    case ("GS"):      //Generate Soft wall
+                        BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                        GameObjectCollection.spawn(softWall);
                         break;
 
                     case ("H"):     // Hard wall; unbreakable
@@ -447,7 +467,7 @@ public class GamePanel extends JPanel implements Runnable {
 /**
  * Used to control the game
  */
-class GameController implements KeyListener {
+class GameController  extends JFrame implements KeyListener {
 
     private GamePanel gamePanel;
 
@@ -468,7 +488,7 @@ class GameController implements KeyListener {
      * @param e Keyboard key pressed
      */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e){
         // Close game
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             System.out.println("Escape key pressed: Closing game");

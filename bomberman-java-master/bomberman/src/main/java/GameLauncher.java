@@ -12,6 +12,7 @@ public class GameLauncher {
 
     // The one and only window for the game to run
     static GameWindow window;
+    static boolean tutorial = true;
 
     public static void main(String[] args) {
         ResourceCollection.readFiles();
@@ -24,10 +25,15 @@ public class GameLauncher {
             System.err.println(e + ": Program args not given");
             game = new GamePanel(null);
         }
-
-        game.init();
+        if(tutorial){
+            game.tutorial_init();    
+        }else{
+            game.init();
+        }
         window = new GameWindow(game);
-
+        if(tutorial){
+            window.tutorial();
+        }
         System.gc();
     }
 
@@ -75,4 +81,19 @@ class GameWindow extends JFrame {
         GameLauncher.window.setTitle(GameWindow.TITLE + " | " + "FPS: " + fps + ", Ticks: " + ticks);
     }
 
+    public void tutorial(){
+        JPanel p = new JPanel();
+        JFrame f = new JFrame("panel");
+        JLabel l = new JLabel("This is the Tutorial!");
+        JLabel lb = new JLabel("This is the Tutorial!");
+        String prompt_1 = "Welcome to the Tutorial, to view controls press f1.";
+        String prompt_2 = " To pass, you must kill the other Bombermen.";
+        l.setText(prompt_1);
+        lb.setText(prompt_2);
+        p.add(l);
+        p.add(lb);
+        f.add(p);
+        f.setSize(300, 300);
+        f.setVisible(true);
+    }
 }
