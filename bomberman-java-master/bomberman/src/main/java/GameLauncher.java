@@ -17,6 +17,8 @@ public class GameLauncher {
     public static void main(String[] args) {
         //ResourceCollection.readFiles();
         //ResourceCollection.init();
+        S_A_M_G_1 rand = new S_A_M_G_1();
+        rand.rand_map();
         GamePanel game;
         if(singlePlayer.equalsIgnoreCase("single")){
             ResourceCollection.readFileSingle(); // dont need this method when loading next map
