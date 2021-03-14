@@ -273,5 +273,13 @@ public class Bomber extends Player {
         collidingObj.grantBonus(this);
         collidingObj.destroy();
     }
+    @Override
+    public void handleCollision(Ai collidingObj) {
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+        }
+
+    }
 
 }

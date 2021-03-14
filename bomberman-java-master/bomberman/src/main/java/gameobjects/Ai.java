@@ -4,7 +4,6 @@ package gameobjects;
 
 import gameobjects.Player;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 /*
@@ -32,16 +31,16 @@ public class Ai extends Player{
     public Ai(Point2D.Float position, BufferedImage[][] spriteMap){
         super(position, spriteMap[1][0]);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
-        
         // Animation
         this.sprites = spriteMap;
         this.direction = 1;     // Facing down
         this.spriteIndex = 0;
-        this.spriteTimer = 0;
-        
+        this.spriteTimer = 0;  
+        //default stats
         this.moveSpeed = 1;
+        this.dead = false;
         
-        
+  
     }
     
     // --- MOVEMENT ---
@@ -86,7 +85,7 @@ public class Ai extends Player{
                 this.spriteTimer = 0;
             }
             if ((!this.UpPressed && !this.DownPressed && !this.LeftPressed && !this.RightPressed) || (this.spriteIndex >= this.sprites[0].length)) {
-                this.spriteIndex = 0;
+              this.spriteIndex = 0;
             }
             this.sprite = this.sprites[this.direction][this.spriteIndex];
 
@@ -103,7 +102,7 @@ public class Ai extends Player{
             if (this.RightPressed) {
                 this.moveRight();
             }
-            
+
         } else {
             // Animate dying animation
             if (this.spriteTimer++ >= 30) {
@@ -130,22 +129,16 @@ public class Ai extends Player{
         if (!this.dead) {
             this.dead = true;
             this.spriteIndex = 0;
+            this.destroy();
         }
     }
     
     @Override
     public void handleCollision(Bomb collidingObj) {
-        Rectangle2D intersection = this.collider.createIntersection(collidingObj.collider);
-        
-        // Vertical collision
-        if (intersection.getWidth() >= intersection.getHeight() && intersection.getHeight() <= 6 && Math.abs(this.collider.getCenterX() - collidingObj.collider.getCenterX()) <= 8) {
-            
-            this.solidCollision(collidingObj);
-        }
-        // Horizontal collision
-        if (intersection.getHeight() >= intersection.getWidth() && intersection.getWidth() <= 6 && Math.abs(this.collider.getCenterY() - collidingObj.collider.getCenterY()) <= 8) {
-            
-            this.solidCollision(collidingObj);
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+            this.destroy();
         }
     }
     

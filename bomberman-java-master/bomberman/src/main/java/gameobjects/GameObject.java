@@ -218,7 +218,6 @@ interface Collidable {
     default void handleCollision(Bomber collidingObj) {
 
     }
-
     default void handleCollision(Wall collidingObj) {
 
     }

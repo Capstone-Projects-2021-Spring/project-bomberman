@@ -47,7 +47,8 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls2;
     private HashMap<Integer, Key> controls3;
     private HashMap<Integer, Key> controls4;
-
+    
+    //private int enemyAi; //used for enemy ID for enemy generation
     private static final double SOFTWALL_RATE = 0.825;
 
     /**
@@ -58,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     GamePanel(String filename, int type) {
         this.GameType = 1;//single player
+        //this.enemyAi = 0; //amount of enemies
         this.setFocusable(true);
         this.requestFocus();
         this.setControlSingle();
@@ -269,7 +271,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.mapHeight = mapLayout.size();
         panelWidth = this.mapWidth * 32;
         panelHeight = this.mapHeight * 32;
-
+        int enemyID = 0; // enemy ID/ amount
         this.world = new BufferedImage(this.mapWidth * 32, this.mapHeight * 32, BufferedImage.TYPE_INT_RGB);
 
         // Generate entire map
@@ -313,7 +315,15 @@ public class GamePanel extends JPanel implements Runnable {
                         this.gameHUDSingle.assignPlayer(player1);
                         GameObjectCollection.spawn(player1);
                         break;
-
+                    case ("A1"):     // AI 1; enemy
+                        BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
+                        Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
+                        //PlayerController playerController1 = new PlayerController(player1, this.controls1);
+                        //this.addKeyListener(playerController1);
+                        this.gameHUDSingle.assignAi(enemy1, enemyID);
+                        enemyID++;
+                        GameObjectCollection.spawn(enemy1);
+                        break;
                     case ("PB"):    // Powerup Bomb
                         Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
                         GameObjectCollection.spawn(powerBomb);
@@ -552,6 +562,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
     private void updateSingle() {
         GameObjectCollection.sortBomberObjects();
+        GameObjectCollection.sortEnemyobjects();
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
@@ -581,6 +592,19 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                     objIndex++;
                 }
+            }
+        }
+        // Check for enemies that is dead and increase score
+        // Score is added immediately so there is no harm of dying when you are the last one
+        // Reset map when there are 1 or less bombers left
+        if (!this.gameHUDSingle.matchSet) { // check if the game has not already been done, if not check for score kills
+            this.gameHUDSingle.updateScore();
+        } else {
+            // Checking size of array list because when a enemy dies, they do not immediately get deleted
+            // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
+            if (GameObjectCollection.enemyObjects.size() <= 0) {
+                this.resetMap();
+                this.gameHUDSingle.matchSet = false;
             }
         }
         // Used to prevent resetting the game really fast

@@ -1,4 +1,5 @@
 
+import gameobjects.Ai;
 import gameobjects.Bomber;
 import java.awt.Color;
 import java.awt.Font;
@@ -18,10 +19,10 @@ import java.awt.image.BufferedImage;
 public class GameHUDSingle {
     
     private Bomber player;
+    private Ai[] enemies;
     private BufferedImage playerInfo;
     private int playerScore;
     boolean matchSet;
-    int Wallobjects;
     
     GameHUDSingle(){
         
@@ -29,38 +30,47 @@ public class GameHUDSingle {
         this.playerInfo = null;
         this.playerScore = 0;
         this.matchSet = false;
-        this.Wallobjects = 0;
+        this.enemies = new Ai[3]; //amount of enemies, must be set to the extract amount of enemies or get null pointer error in code
         
     }
     void init() {
         // Height of the HUD
         int height = GameWindow.HUD_HEIGHT;
         // Width of each player's information in the HUD, 4 players, 4 info boxes
-        int infoWidth = GamePanel.panelWidth/1;
+        int infoWidth = GamePanel.panelWidth;
         this.playerInfo = new BufferedImage(infoWidth, height, BufferedImage.TYPE_INT_RGB);
-        this.Wallobjects = 0;
-        
+        //this.enemies[0] = new BufferedImage(BufferedImage.TYPE_INT_ARGB);
+   
+   
     }
     BufferedImage getPlinfo() {
         return this.playerInfo;
     }
-    int getwall(){
-        return this.Wallobjects;
+    void assignAi(Ai enemies, int enemyID){
+        this.enemies[enemyID] = enemies;
     }
     void assignPlayer(Bomber player) {
         this.player = player;
     }
-    void assignNumWall(GamePanel game){
-        this.Wallobjects = game.softwallnumber;
-    }
     public void updateScore() {
-        // Count dead players
-        int deadSoftWalls = 0;
-        if(Wallobjects <= 0) {
-            this.matchSet = true;
+        // Count dead AI's
+        int deadAi = 0;
+        for (int i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].isDead()) {
+                deadAi++;
+            }
         }
-       //need work 
+        // Check for no enemy standing and conclude the match
+        if (deadAi == this.enemies.length) {
+            for (int i = 0; i < this.enemies.length; i++) {
+                if (!this.enemies[i].isDead()) {
+                    this.playerScore++;
+                    this.matchSet = true;
+                }
+            }
        //
+        }
+        
     }
      void drawHUD() {
         Graphics playerGraphics = this.playerInfo.createGraphics();
