@@ -673,8 +673,8 @@ class GameWindow extends JFrame {
     public void tutorial(){
         JPanel p = new JPanel();
         JFrame f = new JFrame("panel");
-        JLabel l = new JLabel("This is the Tutorial!");
-        JLabel lb = new JLabel("This is the Tutorial!");
+        JLabel l = new JLabel("");
+        JLabel lb = new JLabel("");
         String prompt_1 = "Welcome to the Tutorial, to view controls press f1.";
         String prompt_2 = " To pass, you must kill the other Bombermen.";
         l.setText(prompt_1);
