@@ -35,10 +35,10 @@ public class S_A_M_G_1 {
         return index;
     }
 
-    public static void rand_map() {
+    public static void main(String[] args) {
 
         Random rand = new Random();
-        int length = rand.nextInt(50);
+        int length = rand.nextInt(50)+21;
 
         try ( PrintWriter writer = new PrintWriter(new File("src\\main\\resources\\default.csv"))) {
 
