@@ -31,10 +31,10 @@ public class GameLauncher extends JFrame{
     //Variables for the game and map creator
     static GameWindow window;
     static boolean tutorial = true;
-    game.tutorial_init();    
-    if(tutorial){
-        window.tutorial();
-    }
+//    game.tutorial_init();    
+//    if(tutorial){
+//        window.tutorial();
+//    }
     public static String mapBlock = "";
     public static String[][] map = new String[32][32];
     public static Boolean spawn1Set = false;
@@ -52,6 +52,7 @@ public class GameLauncher extends JFrame{
         
         //Create buttons for main menu
         JButton startButton = new JButton("Start");
+        JButton tutorialButton = new JButton("Tutorial");
         JButton mapManagerButton = new JButton("Map Manager");
         JButton mapCreatorButton = new JButton("Map Creator");
         
@@ -60,6 +61,7 @@ public class GameLauncher extends JFrame{
         
         //Add main menu buttons to main menu panel
         mainMenuPanel.add(startButton);
+        mainMenuPanel.add(tutorialButton);
         mainMenuPanel.add(mapManagerButton);
         mainMenuPanel.add(mapCreatorButton);
         
@@ -79,6 +81,27 @@ public class GameLauncher extends JFrame{
 
                 game.init();
                 window = new GameWindow(game);
+
+                System.gc();
+            }
+        });
+        
+        tutorialButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	ResourceCollection.readFiles();
+                ResourceCollection.init();
+
+                GamePanel game;
+                try {
+                    game = new GamePanel("../Maps/tutorialpart1.csv");
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.err.println(e + ": Program args not given");
+                    game = new GamePanel(null);
+                }
+
+                game.tutorial_init();
+                window = new GameWindow(game);
+                window.tutorial();
 
                 System.gc();
             }
