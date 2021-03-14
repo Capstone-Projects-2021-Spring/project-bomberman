@@ -74,6 +74,8 @@ public class Ai extends Player{
     }
     
     
+    
+    
     @Override
     public void update() {
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
@@ -138,7 +140,7 @@ public class Ai extends Player{
         if (!this.dead) {
             this.dead = true;
             this.spriteIndex = 0;
-            this.destroy();
+            //this.destroy();
         }
     }
     

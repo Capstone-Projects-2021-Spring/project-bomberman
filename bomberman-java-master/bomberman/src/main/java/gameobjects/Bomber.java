@@ -46,12 +46,12 @@ public class Bomber extends Player {
         this.spriteTimer = 0;
         
         // Default stats
-        this.moveSpeed = 1;
-        this.firepower = 1;
+        this.moveSpeed = 2; //temp change back to 1
+        this.firepower = 2;//temp change back to 1
         this.maxBombs = 1;
         this.bombAmmo = this.maxBombs;
         this.bombTimer = 250;
-        this.pierce = false;
+        this.pierce = true; //temp change back to false
         this.kick = false;
     }
 

@@ -55,20 +55,30 @@ public class GameHUDSingle {
     public void updateScore() {
         // Count dead AI's
         int deadAi = 0;
-        for (int i = 0; i < this.enemies.length; i++) {
+        for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
+            System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
             if (this.enemies[i].isDead()) {
                 deadAi++;
+                System.out.println(deadAi+" dead, line:61"); 
+                System.out.println(playerScore+" score, line:62");
             }
         }
+        this.playerScore = deadAi;
         // Check for no enemy standing and conclude the match
-        if (deadAi == this.enemies.length) {
+        System.out.println(deadAi+" dead,line:68"); 
+        if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist
+            System.out.println(deadAi+" line:69"); 
             for (int i = 0; i < this.enemies.length; i++) {
+                System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:72"); 
                 if (!this.enemies[i].isDead()) {
                     this.playerScore++;
                     this.matchSet = true;
                 }
             }
        //
+        }else if (deadAi >= this.enemies.length) {
+            // This should only be reached two or more of the last players die at the same time
+            this.matchSet = true;
         }
         
     }

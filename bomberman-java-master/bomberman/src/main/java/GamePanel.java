@@ -561,8 +561,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     private void updateSingle() {
-        GameObjectCollection.sortBomberObjects();
-        GameObjectCollection.sortEnemyobjects();
+        //GameObjectCollection.sortBomberObjects();
+        //GameObjectCollection.sortEnemyobjects();
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
@@ -602,7 +602,7 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
-            if (GameObjectCollection.enemyObjects.size() <= 0) {
+            if (GameObjectCollection.enemyObjects.isEmpty()) {
                 this.resetMap();
                 this.gameHUDSingle.matchSet = false;
             }
