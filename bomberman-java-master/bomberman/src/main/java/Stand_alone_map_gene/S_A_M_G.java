@@ -18,6 +18,8 @@ import java.util.Random;
  */
 public class S_A_M_G {
 
+    public static int player_count = 4;
+
     public static boolean contains(final int[] arr, final int key) {
         return Arrays.stream(arr).anyMatch(i -> i == key);
     }
@@ -30,10 +32,10 @@ public class S_A_M_G {
         System.out.println();
     }
 
-    public static int findIndex(int arr[][], int t) {
-        int index=-1;
-        for(int i=0; i<player_count;i++){
-            if(arr[1][i]==t){
+    public static int findIndex(int arr[][], int t, int c) {
+        int index = -1;
+        for (int i = 0; i < player_count; i++) {
+            if (arr[c][i] == t) {
                 index = i;
             }
         }
@@ -50,13 +52,13 @@ public class S_A_M_G {
 
             StringBuilder sb = new StringBuilder();
             Random rand = new Random();
-            int player_count = 4;
+
             //player location
             int[][] location = new int[2][player_count];//0 for row 1 for col
             for (int i = 0; i < player_count; i++) {
                 while (true) {
 
-                    int rand_row = rand.nextInt(length - 3)+1;
+                    int rand_row = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[0], rand_row)) {
                         continue;
                     }
@@ -64,7 +66,7 @@ public class S_A_M_G {
                     break;
                 }
                 while (true) {
-                    int rand_col = rand.nextInt(length - 3)+1;
+                    int rand_col = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[1], rand_col)) {
                         continue;
                     }
@@ -94,20 +96,28 @@ public class S_A_M_G {
                     int rand_spawn = rand.nextInt();
                     if (contains(location[0], i) && contains(location[1], j)) {
                         //spawn point control
-                        int player=findIndex(location,j);
-                        System.out.println(player_count);
-                        sb.append(Integer.toString(player));
-                        sb.append(",");
-                        
-                        if(location[1][(player-1)]==length-2){
-                            sb.append("-1");
+
+                        int player_j = findIndex(location, j, 1);
+                        int player_i = findIndex(location, i, 0);
+                        if (player_i == player_j) {
+                            //System.out.println(player_count);
+                            System.out.println("two thing mathch " + i + " " + j + "\n");
+                            sb.append(Integer.toString(player_j + 1));
+                            sb.append(",");
                             j++;
-                        }else{
-                            if(sb.charAt(i*j+j-2)=='-'){
+
+                            if (location[1][player_j] <= length - 2) {
+                                sb.append("-1,");
+                                j++;
+                                sb.append("-1,");
+                                j++;
+                            } else {
+                                if (sb.charAt(i * length + j - 2) == '-') {
+                                    continue;
+                                }
+                                sb.replace((i * length + j - 2), (i * length + j - 1), "-1,");
                                 continue;
                             }
-                            sb.replace((i*j+j-2),(i*j+j-1),"-1");
-                            continue;
                         }
                     }
 
@@ -131,6 +141,22 @@ public class S_A_M_G {
                 }
                 sb.append('\n');
             }
+
+            /*for (int i = 0; i < player_count; i++) {
+                if (location[0][i] <= length - 2) {
+                    if (sb.charAt(((location[0][i] + 1) * length + location[1][i] - 1)) == '-') {
+                        continue;
+                    }
+                    sb.replace(((location[0][i]+1) * length + location[1][i] - 2), ((location[0][i]+1) * length + location[1][i]), "-1,");
+
+                } else {
+                    if (sb.charAt(((location[0][i] - 2) * length + location[1][i] - 1)) == '-') {
+                        continue;
+                    }
+                    sb.replace(((location[0][i] - 1) * length + location[1][i] - 2), ((location[0][i] - 1) * length + location[1][i]), "-1,");
+
+                }
+            }*/ //up and below is nearly impossible to locate
 
             writer.write(sb.toString());
 
