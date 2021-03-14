@@ -237,4 +237,8 @@ interface Collidable {
         
     }
 
+    default void handleCollision(Enemy collidingObj) {
+
+    }
+
 }

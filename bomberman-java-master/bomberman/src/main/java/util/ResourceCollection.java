@@ -23,7 +23,8 @@ public class ResourceCollection {
         POWER_SPEED,
         POWER_PIERCE,
         POWER_KICK,
-        POWER_TIMER;
+        POWER_TIMER,
+        ENEMY_BAlLOON;
 
         private BufferedImage image = null;
 
@@ -42,6 +43,8 @@ public class ResourceCollection {
         BOMB_PIERCE,
         EXPLOSION_SPRITEMAP;
 
+
+
         private BufferedImage image = null;
         private BufferedImage[][] sprites = null;
 
@@ -56,6 +59,7 @@ public class ResourceCollection {
 
     public enum Files {
         DEFAULT_MAP;
+        
 
         private InputStreamReader file = null;
 
@@ -126,6 +130,7 @@ public class ResourceCollection {
             Images.POWER_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/power_pierce.png"));
             Images.POWER_KICK.image = ImageIO.read(ResourceCollection.class.getResource("/resources/power_kick.png"));
             Images.POWER_TIMER.image = ImageIO.read(ResourceCollection.class.getResource("/resources/power_timer.png"));
+            Images.ENEMY_BAlLOON.image = ImageIO.read(ResourceCollection.class.getResource("/resources/enemy_Balloon.png"));
 
             SpriteMaps.PLAYER_1.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber1.png"));
             SpriteMaps.PLAYER_2.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomber2.png"));
@@ -135,7 +140,9 @@ public class ResourceCollection {
             SpriteMaps.BOMB.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb.png"));
             SpriteMaps.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
             SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
-            
+
+
+
             Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
         } catch (IOException e) {
             System.err.println(e + ": Cannot read image file");
@@ -187,6 +194,12 @@ public class ResourceCollection {
         SpriteMaps.BOMB.sprites = sliceSpriteMap(SpriteMaps.BOMB.image, 32, 32);
         SpriteMaps.BOMB_PIERCE.sprites = sliceSpriteMap(SpriteMaps.BOMB_PIERCE.image, 32, 32);
         SpriteMaps.EXPLOSION_SPRITEMAP.sprites = sliceSpriteMap(SpriteMaps.EXPLOSION_SPRITEMAP.image, 32, 32);
+
+        //Baloon Sprite slices need to be standard to they can be added
+
+
+
+
         loadHardWallTiles(SpriteMaps.HARD_WALLS.sprites);   // Load hard wall tiles into hashmap for bit masking
     }
     public static void initSingle(){
