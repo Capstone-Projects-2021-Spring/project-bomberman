@@ -31,6 +31,7 @@ public class GameHUD {
         this.playerInfo[2] = new BufferedImage(infoWidth, height, BufferedImage.TYPE_INT_RGB);
         this.playerInfo[3] = new BufferedImage(infoWidth, height, BufferedImage.TYPE_INT_RGB);
     }
+   
 
     /**
      * Used by game panel to draw player info to the screen

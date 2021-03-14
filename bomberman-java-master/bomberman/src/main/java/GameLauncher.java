@@ -30,6 +30,33 @@ public class GameLauncher extends JFrame{
 
     //Variables for the game and map creator
     static GameWindow window;
+
+//     static String singlePlayer = "single";
+    
+//     public static void main(String[] args) {
+//         //ResourceCollection.readFiles();
+//         //ResourceCollection.init();
+//         S_A_M_G_1 rand = new S_A_M_G_1();
+//         rand.rand_map();
+//         GamePanel game;
+//         if(singlePlayer.equalsIgnoreCase("single")){
+//             ResourceCollection.readFileSingle(); // dont need this method when loading next map
+//             ResourceCollection.initSingle(); // dont need this method when making next map
+//             game = new GamePanel(singlePlayer, 1); // mapphase 1 
+//             game.initSingle();
+//         }else{
+//             ResourceCollection.readFiles();
+//             ResourceCollection.init();
+//             try {
+//                 game = new GamePanel(args[0]);
+//             } catch (ArrayIndexOutOfBoundsException e) {
+//                 System.err.println(e + ": Program args not given");
+//                 game = new GamePanel(null);
+//             }
+//             game.init();
+//         }
+//         window = new GameWindow(game);
+//         System.gc();
     
     public static String mapBlock = "";
     public static String[][] map = new String[32][32];
@@ -639,7 +666,10 @@ public class GameLauncher extends JFrame{
     		serverMaps.add("" + o.getKey());
     	}
 		return serverMaps;
+
     }
+
+  
 
 }
 
@@ -676,6 +706,7 @@ class GameWindow extends JFrame {
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
+    
 
     /**
      * Called every second. Updates the FPS and Ticks counters and prints them to the console with the current time.
