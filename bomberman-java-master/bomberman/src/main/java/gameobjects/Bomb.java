@@ -14,7 +14,7 @@ public class Bomb extends TileObject {
 
     // Original bomber that placed this bomb
     private Bomber bomber;
-
+    private int GameType = 0; 
     // Animation
     private BufferedImage[][] sprites;
     private int spriteIndex;
