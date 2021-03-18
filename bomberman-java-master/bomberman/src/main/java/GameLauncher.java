@@ -12,6 +12,8 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
+import Stand_alone_map_gene.S_A_M_G_1;
+
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,33 +32,6 @@ public class GameLauncher extends JFrame{
 
     //Variables for the game and map creator
     static GameWindow window;
-
-//     static String singlePlayer = "single";
-    
-//     public static void main(String[] args) {
-//         //ResourceCollection.readFiles();
-//         //ResourceCollection.init();
-//         S_A_M_G_1 rand = new S_A_M_G_1();
-//         rand.rand_map();
-//         GamePanel game;
-//         if(singlePlayer.equalsIgnoreCase("single")){
-//             ResourceCollection.readFileSingle(); // dont need this method when loading next map
-//             ResourceCollection.initSingle(); // dont need this method when making next map
-//             game = new GamePanel(singlePlayer, 1); // mapphase 1 
-//             game.initSingle();
-//         }else{
-//             ResourceCollection.readFiles();
-//             ResourceCollection.init();
-//             try {
-//                 game = new GamePanel(args[0]);
-//             } catch (ArrayIndexOutOfBoundsException e) {
-//                 System.err.println(e + ": Program args not given");
-//                 game = new GamePanel(null);
-//             }
-//             game.init();
-//         }
-//         window = new GameWindow(game);
-//         System.gc();
     
     public static String mapBlock = "";
     public static String[][] map = new String[32][32];
@@ -74,7 +49,8 @@ public class GameLauncher extends JFrame{
         frame.setVisible(true);
         
         //Create buttons for main menu
-        JButton startButton = new JButton("Start");
+        JButton singleButton = new JButton("Single Player");
+        JButton localButton = new JButton("Local Multiplayer");
         JButton tutorialButton = new JButton("Tutorial");
         JButton mapManagerButton = new JButton("Map Manager");
         JButton mapCreatorButton = new JButton("Map Creator");
@@ -83,20 +59,21 @@ public class GameLauncher extends JFrame{
         JPanel mainMenuPanel = new JPanel();
         
         //Add main menu buttons to main menu panel
-        mainMenuPanel.add(startButton);
+        mainMenuPanel.add(singleButton);
+        mainMenuPanel.add(localButton);
         mainMenuPanel.add(tutorialButton);
         mainMenuPanel.add(mapManagerButton);
         mainMenuPanel.add(mapCreatorButton);
         
         //Event for start button press
-        startButton.addActionListener(new ActionListener() {
+        localButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
 
                 GamePanel game;
                 try {
-                    game = new GamePanel(args[0]);
+                    game = new GamePanel("../Maps/cool_map.csv");
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println(e + ": Program args not given");
                     game = new GamePanel(null);
@@ -108,6 +85,22 @@ public class GameLauncher extends JFrame{
                 System.gc();
             }
         });
+        
+        singleButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+              S_A_M_G_1 rand = new S_A_M_G_1();
+              rand.rand_map();
+              GamePanel game;
+              String singlePlayer = "single";
+              ResourceCollection.readFileSingle(); // dont need this method when loading next map
+              ResourceCollection.initSingle(); // dont need this method when making next map
+              game = new GamePanel(singlePlayer, 1); // mapphase 1 
+              game.initSingle();
+              window = new GameWindow(game);
+              System.gc();
+            }
+        });
+        
         
         tutorialButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {

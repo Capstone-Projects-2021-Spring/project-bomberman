@@ -33,9 +33,9 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean running;
     int resetDelay;
   
-    //private int mapPhase; // map phase for single player, decide which map to load
+    private int mapPhase; // map phase for single player, decide which map to load
    
-    //boolean tutorial = false;
+    boolean tutorial = false;
 
     private BufferedImage world;
     private Graphics2D buffer;
@@ -116,6 +116,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.gameHUD = new GameHUD();
         this.generateMap();
         this.gameHUD.init();
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        this.running = true;
     }
 
     /**
