@@ -694,7 +694,7 @@ class GameWindow extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(game, BorderLayout.CENTER);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -710,7 +710,7 @@ class GameWindow extends JFrame {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalDateTime time = LocalDateTime.now();
         System.out.println("[" + dtf.format(time) + "]" + " FPS: " + fps + ", Ticks: " + ticks);
-        GameLauncher.window.setTitle(GameWindow.TITLE + " | " + "FPS: " + fps + ", Ticks: " + ticks);
+        //GameLauncher.window.setTitle(GameWindow.TITLE + " | " + "FPS: " + fps + ", Ticks: " + ticks);
     }
 
     public void tutorial(){
