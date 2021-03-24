@@ -117,6 +117,7 @@ public class Powerup extends TileObject {
         this.type.grantBonus(bomber);
     }
 
+
     /**
      * Destroy powerup when explosion animation finishes.
      */

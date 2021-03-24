@@ -19,7 +19,7 @@ public class Bomber extends Player {
     private int direction;  // 0: up, 1: down, 2: left, 3: right
     public int spriteIndex;
     private int spriteTimer;
-    private int GameType= 0;
+
     // Stats
     private float moveSpeed;
     private int firepower;
@@ -28,6 +28,10 @@ public class Bomber extends Player {
     private int bombTimer;
     private boolean pierce;
     private boolean kick;
+
+    //multiplayer things
+    private int GameType = 0; //0: single, 1: local Multiplayer, 2: Online Multiplayer
+
 
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
