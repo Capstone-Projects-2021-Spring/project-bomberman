@@ -44,7 +44,7 @@ public class GameLauncher extends JFrame{
     	
     	//Create main menu frame
     	JFrame frame = new JFrame("Bomber Man");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         frame.setVisible(true);
         
@@ -132,7 +132,7 @@ public class GameLauncher extends JFrame{
             	
                 //Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 //Get the map names
@@ -323,7 +323,7 @@ public class GameLauncher extends JFrame{
             public void actionPerformed(ActionEvent ae) {
             	//Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                 frame.setVisible(true);
 
@@ -694,7 +694,7 @@ class GameWindow extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(game, BorderLayout.CENTER);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
