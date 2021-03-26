@@ -1,76 +1,157 @@
 //Imports
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashSet;
+import java.util.*;
 
-public class bomberManServer {
-    // Socket for the server default 80
-    private ServerSocket serverSocket;
-    //Keep track of the people connected
-    public static int peopleConnected = 0;
+public class bombermanServer{
+    //Server port
+    private static final int serverPort = 80;
+    //player aliases
+    private static ArrayList<String> players = new ArrayList<String>();
+    //player lobby status
+    private static ArrayList<Boolean> ready = new ArrayList<Boolean>();
+    //output object for each client
+    private static HashSet<PrintWriter> socketWriters = new HashSet<PrintWriter>();
 
-    //Initialize server
-    public static void main(String[] args) {
-        bomberManServer server = new bomberManServer();
-        server.start(80);
-    }
-
-    //Start server
-    public void start(int port) {
-        try{
-            serverSocket = new ServerSocket(port);
-            while (true){
-                new bomberClient(serverSocket.accept()).start();
+    //main methid
+    public static void main(String[] args) throws Exception {
+        //Tell console server started
+        System.out.println("Bomber Man Server Live...");
+        //open listener on port 80
+        ServerSocket listener = new ServerSocket(serverPort);
+        try {
+            //launch new clients as they connect
+            while (true) {
+                new bomberClient(listener.accept()).start();
             }
-        }catch(Exception e){
-            System.out.println("Error creating new socket to connect to client");
+        } finally {
+            //when its over close it
+            listener.close();
         }
     }
 
-    public void stop() {
-        try{
-            serverSocket.close();
-        } catch (Exception e){
-            System.out.println("Error closing server socket");
-        }
-    }
-
+    //bomber client
     private static class bomberClient extends Thread {
-        private Socket clientSocket;
-        private PrintWriter out;
+        //Users name
+        private String user;
+        //Lobby status
+        private Boolean readyStatus;
+        //Socket and IO objects
+        private Socket socket;
         private BufferedReader in;
+        private PrintWriter out;
 
+        //set socket for the client
         public bomberClient(Socket socket) {
-            this.clientSocket = socket;
-            //Keep track of people connected to the server
-            peopleConnected += 1;
+            this.socket = socket;
         }
 
+        //client thread
         public void run() {
-            try{
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-                in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
-
-                String inputLine;
-                //While there is an incoming stream keep it coming
-                while ((inputLine = in.readLine()) != null) {
-                    if ("detach".equals(inputLine)) {
-                        out.println("detached");
-                        break;
+            try {
+                //instantiate io objects
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                out = new PrintWriter(socket.getOutputStream(), true);
+        
+                // get the players alias
+                while (true) {
+                    //Send user command
+                    out.println("SendUser");
+                    user = in.readLine();
+                    if (user == null) {
+                        return;
                     }
-                    //Let the client know how many people are connected
-                    out.println("total connected: " + peopleConnected);
+                    //check if the players list has the name already
+                    synchronized (players) {
+                        //make sure the user isn't taken
+                        if (!players.contains(user)) {
+                            //add a new player
+                            players.add(user);
+                            //add a new false status
+                            ready.add(false);
+                            break;
+                        }
+                    }
                 }
-                //When there is no more incoming
-                in.close();
-                out.close();
-                clientSocket.close();
-                //Update to let the server know someone left
-                peopleConnected -= 1;
-            } catch (Exception e){
-                System.out.println("Error on client thread");
-            }
+                
+                //make a list of all the players
+                String playerList = "";
+                for(String player : players){
+                    playerList += player + ",";
+                }
+                
+                //add socket output
+                socketWriters.add(out);
 
+                //send everyone the updated list
+                for (PrintWriter writer : socketWriters) {
+                    writer.println("UserList: " + playerList);
+                }
+        
+                //handle incoming messages
+                int position = 0;
+                while (true) {
+                    //get incoming message
+                    String input = in.readLine();
+                    if (input == null) {
+                        return;
+                    }
+                    else if (input.startsWith("ReadyUp ")){
+                        position = players.indexOf(input.replace("ReadyUp ",""));
+                        ready.set(position,true);
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("ReadiedUp " + input.replace("ReadyUp ",""));
+                        }
+                    }
+                    else if (input.startsWith("ReadyDown ")){
+                        position = players.indexOf(input.replace("ReadyDown ",""));
+                        ready.set(position,false);
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("ReadiedDown " + input.replace("ReadyDown ",""));
+                        }
+                    }
+                    else if (input.startsWith("Start")){
+                        if(ready.contains(false)){
+                            for (PrintWriter writer : socketWriters) {
+                                writer.println("NotReady");
+                            }
+                        }
+                        else{
+                            for (PrintWriter writer : socketWriters) {
+                                writer.println("CanStart");
+                            }
+                        }
+                    }
+                    else{
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("MESSAGE " + user + ": " + input);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            } finally {
+                //If the person left remove them
+                if (user != null) {
+                    ready.remove(players.indexOf(user));
+                    players.remove(user);
+                }
+                //remove them from the list of receivers 
+                if (out != null) {
+                    socketWriters.remove(out);
+                }
+                try {
+                    //close it
+                    socket.close();
+                } catch (IOException e) {
+                    System.out.println(e);
+                }
+            }
         }
     }
 }
