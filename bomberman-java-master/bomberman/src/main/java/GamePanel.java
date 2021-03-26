@@ -548,12 +548,12 @@ public class GamePanel extends JPanel implements Runnable {
             fps++;
 
             // Update FPS and Ticks counter every second
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer = System.currentTimeMillis();
-                GameLauncher.window.update(fps, ticks);
-                fps = 0;
-                ticks = 0;
-            }
+//            if (System.currentTimeMillis() - timer > 1000) {
+//                timer = System.currentTimeMillis();
+//                //GameLauncher.window.update(fps, ticks);
+//                fps = 0;
+//                ticks = 0;
+//            }
         }
 
         System.exit(0);

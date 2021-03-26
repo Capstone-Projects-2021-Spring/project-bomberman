@@ -1,6 +1,9 @@
 //imports
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import util.ResourceCollection;
+
 import java.util.*;
 import java.util.List;
 import java.io.*;
@@ -14,7 +17,7 @@ public class bomberClient {
     BufferedReader in;
     PrintWriter out;
     String name = "";
-    JFrame frame = new JFrame("Bomberman");
+    JFrame frame2 = new JFrame("Bomberman");
     ArrayList<String> people = new ArrayList<String>();
     DefaultListModel model = new DefaultListModel();
     JList<String> list = new JList(model);
@@ -28,8 +31,8 @@ public class bomberClient {
         //declare client
         bomberClient client = new bomberClient();
         //frame settings
-        client.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        client.frame.setVisible(true);
+        client.frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        client.frame2.setVisible(true);
         //start client
         client.run();
     }
@@ -37,14 +40,14 @@ public class bomberClient {
     //client constructor
     public bomberClient() {
         // Layout GUI
-        frame.setSize(400,400);
+        frame2.setSize(400,400);
         model.addElement("Players:");
         list.setModel(model);
         list.setPreferredSize(new Dimension(200, 200));
         list.setLayoutOrientation(JList.VERTICAL);
         DefaultListCellRenderer renderer = (DefaultListCellRenderer) list.getCellRenderer();
         renderer.setHorizontalAlignment(SwingConstants.CENTER);
-        frame.getContentPane().add(list, "West");
+        frame2.getContentPane().add(list, "West");
         textField.setEditable(true);
         messageArea.setEditable(false);
         GridLayout mapGridLayout = new GridLayout(1,2);
@@ -52,10 +55,10 @@ public class bomberClient {
         p.setLayout(mapGridLayout);
         p.add(ready);
         p.add(start);
-        frame.getContentPane().add(textField, "North");
-        frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.getContentPane().add(p, "South");
-        frame.pack();
+        frame2.getContentPane().add(textField, "North");
+        frame2.getContentPane().add(new JScrollPane(messageArea), "Center");
+        frame2.getContentPane().add(p, "South");
+        frame2.pack();
 
         //action listener for messenger
         textField.addActionListener(new ActionListener() {
@@ -92,14 +95,14 @@ public class bomberClient {
     //get name frame
     private String getName() {
     return JOptionPane.showInputDialog(
-                        frame,
+                        frame2,
                         "Your alias",
                         "Alias",
                         JOptionPane.PLAIN_MESSAGE);
     }
 
     //server function
-    private void run() throws IOException {
+    void run() throws IOException {
 
         // Make connection and initialize streams
         String serverAddress = "127.0.0.1";
@@ -151,8 +154,27 @@ public class bomberClient {
             }
             else if (line.startsWith("CanStart")) {
                 messageArea.append("**SERVER**: Match Starting...\n");
+                break;
             }
             
+        }
+        ResourceCollection.readFiles();
+        ResourceCollection.init();
+
+        GamePanel game;
+        try {
+            game = new GamePanel("../Maps/cool_map.csv");
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println(e + ": Program args not given");
+            game = new GamePanel(null);
+        }
+
+        game.init();
+        GameWindow window = new GameWindow(game);
+
+        System.gc();
+        while(true) {
+        	String line = in.readLine();
         }
     }
             
