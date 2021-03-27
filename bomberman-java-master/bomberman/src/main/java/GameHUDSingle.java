@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -59,7 +61,7 @@ public class GameHUDSingle {
     }
     public void updateScore() {
         // Count dead AI's
-        int deadAi = this.playerScore;
+        int deadAi = 0; //this.playerScore;
         for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
             System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
             if (this.enemies[i].isDead()) {
@@ -68,13 +70,16 @@ public class GameHUDSingle {
         }
         this.playerScore = deadAi;
         // Check for no enemy standing and conclude the match
-        if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist    
+        if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist 
+            SoundEffect.VICTORY.play();   
             this.matchSet = true;
         }
         if(this.player.isDead()){
+            SoundEffect.DEAD.play();
             this.matchSet = true;
         }
         if(this.player.isDestroyed()){
+            SoundEffect.DEAD.play();
             this.matchSet = true;
         }
         
@@ -103,4 +108,48 @@ public class GameHUDSingle {
         playerGraphics.dispose();
         
     }
+
+    public enum SoundEffect{
+        VICTORY("victory.wav"),
+        DEAD("death.wav");
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 }

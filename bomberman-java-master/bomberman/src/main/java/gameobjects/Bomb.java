@@ -6,6 +6,10 @@ import util.ResourceCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.sound.sampled.*;
+
+import gameobjects.Bomb.SoundEffect.Volume;
 
 /**
  * Bomb objects that are created by bombers.
@@ -66,12 +70,15 @@ public class Bomb extends TileObject {
     private void explode() {
         // Snap bombs to the grid on the map before exploding
         this.snapToGrid();
+        SoundEffect.EXPLODE.play();
         GameObjectCollection.spawn(new Explosion.Horizontal(this.position, this.firepower, this.pierce));
         GameObjectCollection.spawn(new Explosion.Vertical(this.position, this.firepower, this.pierce));
         this.bomber.restoreAmmo();
     }
 
     public void setKicked(boolean kicked, KickDirection kickDirection) {
+        SoundEffect.volume = Volume.MEDIUM;
+        SoundEffect.KICK.play();
         this.kicked = kicked;
         this.kickDirection = kickDirection;
     }
@@ -168,6 +175,51 @@ public class Bomb extends TileObject {
     public boolean isBreakable() {
         return this.breakable;
     }
+
+    public enum SoundEffect{
+        EXPLODE("explosion.wav"),
+        KICK("bombkick.wav");
+        
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+                if (clip.isRunning())
+                    clip.stop();  
+                clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 
 }
 
