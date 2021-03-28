@@ -453,7 +453,7 @@ public class GamePanel extends JPanel implements Runnable {
                     case ("S"):     // Soft wall; breakable
                         if (Math.random() < SOFTWALL_RATE) {
                             BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
-                            Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                            Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true, true);
                             GameObjectCollection.spawn(softWall);
                             softwallnumber++;
                         }
@@ -461,7 +461,7 @@ public class GamePanel extends JPanel implements Runnable {
                     
                     case ("GS"):      //Generate Soft wall
                         BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
-                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true, true);
                         GameObjectCollection.spawn(softWall);
                         break;
 
@@ -903,7 +903,9 @@ public class GamePanel extends JPanel implements Runnable {
 			e.printStackTrace();
 		}
         if(line.startsWith("Left ")) {
-        	person = Integer.parseInt(line.replace("Left ", ""));
+        	String[] personParts = line.split(",");
+        	person = Integer.parseInt(personParts[0].replace("Left ", ""));
+        	action = "Disconnected";
         }
         else if(line.startsWith("Player ")) {
         	String[] parts = line.replace("Player ", "").split(": ");
@@ -915,23 +917,63 @@ public class GamePanel extends JPanel implements Runnable {
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
-                if(obj instanceof Bomber && (person == objIndex)) {
-                	if(action.equals("Left")) {
-                		((Bomber) obj).moveLeft();
+                if(obj instanceof Bomber) {
+                	if(((Player) obj).player == person){
+	                	if(action.equals("Left")) {
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if(action.equals("Right")) {
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if(action.equals("Up")) {
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if(action.equals("Down")) {
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                	}
+	                	else if(action.equals("Bomb")) {
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                	}
+	                	else if(action.equals("Disconnected")) {
+	                		obj.destroy();
+	                	}
+	                	else {
+	                		String[] actionPair = action.split(",");
+	                		if(actionPair[0].equals("addAmmo")) {
+	                			((Bomber) obj).addAmmo(Integer.parseInt(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("addFirepower")) {
+	                			((Bomber) obj).addFirepower(Integer.parseInt(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("addSpeed")) {
+	                			((Bomber) obj).addSpeed(Float.parseFloat(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("setPierce")) {
+	                			((Bomber) obj).setPierce(Boolean.parseBoolean(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("setKick")) {
+	                			((Bomber) obj).setKick(Boolean.parseBoolean(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("reduceTimer")) {
+	                			((Bomber) obj).reduceTimer(Integer.parseInt(actionPair[1]));
+	                		}
+	                	}
                 	}
-                	else if(action.equals("Right")) {
-                		((Bomber) obj).moveRight();
-                	}
-                	else if(action.equals("Up")) {
-                		((Bomber) obj).moveUp();
-                	}
-                	else if(action.equals("Down")) {
-                		((Bomber) obj).moveDown();
-                	}
-                	else if(action.equals("Bomb")) {
-                		((Bomber) obj).plantBomb();
-                	}
-                	
                 }
                 obj.update();
                 if (obj.isDestroyed()) {

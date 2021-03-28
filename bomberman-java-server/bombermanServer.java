@@ -145,10 +145,8 @@ public class bombermanServer{
             } finally {
                 //If the person left remove them
                 if (user != null) {
-                    int m = 0;
                     for (PrintWriter writer : socketWriters) {
-                        writer.println("Left " + m);
-                        m++;
+                        writer.println("Left " + players.indexOf(user) + "," + user);
                     }
                     ready.remove(players.indexOf(user));
                     players.remove(user);

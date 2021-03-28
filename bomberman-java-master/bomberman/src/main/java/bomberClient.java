@@ -159,13 +159,14 @@ public class bomberClient {
                 break;
             }
             else if (line.startsWith("Left ")) {
+            	String[] leftParts = line.split(",");
                 for(int z = 0; z < model.getSize(); z++){
                     Object value = model.elementAt(z);
-                    if(value.toString().equals(line.replace("Left ","")+" (Ready)") || value.toString().equals(line.replace("Left ",""))){
+                    if(value.toString().equals(leftParts[1] + " (Ready)") || value.toString().equals(leftParts[1])){
                         model.removeElementAt(z);
                     }
                 }
-                messageArea.append("**SERVER**: " + line.replace("Left ","") + " left the match\n");
+                messageArea.append("**SERVER**: " + leftParts[1] + " left the match\n");
             }
 
         }

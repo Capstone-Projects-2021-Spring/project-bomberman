@@ -118,38 +118,55 @@ public class Bomber extends Player {
     }
 
     public void restoreAmmo() {
-        
         this.bombAmmo = Math.min(this.maxBombs, this.bombAmmo + 1);
     }
 
     // --- POWERUPS ---
     public void addAmmo(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addAmmo," + value);
+    	}
         System.out.print("Bombs set from " + this.maxBombs);
         this.maxBombs = Math.min(6, this.maxBombs + value);
         this.restoreAmmo();
         System.out.println(" to " + this.maxBombs);
     }
     public void addFirepower(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addFirepower," + value);
+    	}
         System.out.print("Firepower set from " + this.firepower);
         this.firepower = Math.min(6, this.firepower + value);
         System.out.println(" to " + this.firepower);
     }
     public void addSpeed(float value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addSpeed," + value);
+    	}
         System.out.print("Move Speed set from " + this.moveSpeed);
         this.moveSpeed = Math.min(4, this.moveSpeed + value);
         System.out.println(" to " + this.moveSpeed);
     }
     public void setPierce(boolean value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": setPierce," + value);
+    	}
         System.out.print("Pierce set from " + this.pierce);
         this.pierce = value;
         System.out.println(" to " + this.pierce);
     }
     public void setKick(boolean value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": setKick," + value);
+    	}
         System.out.print("Kick set from " + this.kick);
         this.kick = value;
         System.out.println(" to " + this.kick);
     }
     public void reduceTimer(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": reduceTimer," + value);
+    	}
         System.out.print("Bomb Timer set from " + this.bombTimer);
         this.bombTimer = Math.max(160, this.bombTimer - value);
         System.out.println(" to " + this.bombTimer);
