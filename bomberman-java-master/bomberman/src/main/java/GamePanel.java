@@ -912,7 +912,6 @@ public class GamePanel extends JPanel implements Runnable {
         	person = Integer.parseInt(parts[0]);
         	action = parts[1];
         }
-        System.out.println("p: " + person);
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {

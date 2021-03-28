@@ -78,7 +78,7 @@ public class bombermanServer{
                         }
                     }
                 }
-                
+
                 //make a list of all the players
                 String playerList = "";
                 for(String player : players){
@@ -130,6 +130,7 @@ public class bombermanServer{
                         }
                     }
                     else if (input.startsWith("Player")){
+                        System.out.println(input);
                         for (PrintWriter writer : socketWriters) {
                             writer.println(input);
                         }

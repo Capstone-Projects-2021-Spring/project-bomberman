@@ -103,17 +103,21 @@ public class GameLauncher extends JFrame{
             }
         });
         
-//        multiButton.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent ae) {
-//            	 bomberClient client = new bomberClient();
-//            	 try {
-//					client.main(null);
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//            }
-//        });
+        multiButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+            	bomberClient client = new bomberClient();
+                //frame settings
+                client.frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                client.frame2.setVisible(true);
+                //start client
+                try {
+					client.run();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
         
         
         tutorialButton.addActionListener(new ActionListener() {
