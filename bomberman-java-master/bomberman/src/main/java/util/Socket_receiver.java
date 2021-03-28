@@ -10,6 +10,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,7 +29,7 @@ public class Socket_receiver {
     private static final int playerNumber = 4;
     private static final int playerUpdateInfoNum = 10;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //jframe consle
         JFrame frame = new JFrame();
         frame.setSize(400, 400);
@@ -60,7 +64,7 @@ public class Socket_receiver {
         container.add(label);
 
         frame.setVisible(true);
-        
+        /*
         //test receiver
         String test = "x=1,y=2-0,FP=2-Down=1,right=1-0";
 
@@ -74,12 +78,12 @@ public class Socket_receiver {
 
             }
             jTextArea.append("Player" + i+"\n");
-        }
+        }*/
         
 
         
-        /*while(true){
-        sc = new Socket("localhost",9990);
+        while(true){
+        Socket sc = new Socket("3.19.57.244",81);
         
         BufferedReader br = new BufferedReader(new InputStreamReader(sc.getInputStream()));
         String test = br.readLine();
@@ -91,14 +95,14 @@ public class Socket_receiver {
 
                 jTextArea.append(printTest[i][j] + "\t"); //print each commad
                 //jframe goes here to print command
-                command_call()
+                command_call(printTest[i][j]);
 
             }
             jTextArea.append("Player" + i+"\n");
         }
         
         sc.close();
-        }*/
+        }
     }
     
 
