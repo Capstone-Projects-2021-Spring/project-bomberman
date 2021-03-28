@@ -36,44 +36,64 @@ public abstract class Player extends GameObject {
 
     public void toggleUpPressed() {
         this.UpPressed = true;
-        out.println("Player " + player + ": Up");
+        if(out != null) {
+        	out.println("Player " + player + ": Up");
+        }
     }
     public void toggleDownPressed() {
         this.DownPressed = true;
-        out.println("Player " + player + ": Down");
+        if(out != null) {
+        	out.println("Player " + player + ": Down");
+        }
     }
     public void toggleLeftPressed() {
         this.LeftPressed = true;
-        out.println("Player " + player + ": Left");
+        if(out != null) {
+        	out.println("Player " + player + ": Left");
+        }
     }
     public void toggleRightPressed() {
         this.RightPressed = true;
-        out.println("Player " + player + ": Right");
+        if(out != null) {
+        	out.println("Player " + player + ": Right");
+        }
     }
     public void toggleActionPressed() {
         this.ActionPressed = true;
-        out.println("Player " + player + ": Bomb");
+        if(out != null) {
+        	out.println("Player " + player + ": Bomb");
+        }
     }
 
     public void unToggleUpPressed() {
         this.UpPressed = false;
-        out.println("Player " + player + ": UpR");
+        if(out != null) {
+        	out.println("Player " + player + ": UpR");
+        }
     }
     public void unToggleDownPressed() {
         this.DownPressed = false;
-        out.println("Player " + player + ": DownR");
+        if(out != null) {
+        	out.println("Player " + player + ": DownR");
+        }
     }
     public void unToggleLeftPressed() {
         this.LeftPressed = false;
-        out.println("Player " + player + ": LeftR");
+        if(out != null) {
+        	out.println("Player " + player + ": LeftR");
+        }
     }
     public void unToggleRightPressed() {
         this.RightPressed = false;
-        out.println("Player " + player + ": RightR");
+        if(out != null) {
+        	out.println("Player " + player + ": RightR");
+        }
     }
     public void unToggleActionPressed() {
         this.ActionPressed = false;
-        out.println("Player " + player + ": BombR");
+        if(out != null) {
+        	out.println("Player " + player + ": BombR");
+        }
     }
 
 }

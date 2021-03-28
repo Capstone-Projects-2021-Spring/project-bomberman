@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     private BufferedReader bufferedReader;
     private PrintWriter out;
     private BufferedReader in;
-    private int player;
+    private int player = -1;
 
     private HashMap<Integer, Key> controls1;
     private HashMap<Integer, Key> controls2;
@@ -743,7 +743,12 @@ public class GamePanel extends JPanel implements Runnable {
                 if(GameType == 1){
                     this.updateSingle(); //single player update
                 }else{
-                    this.updateMultiplayer();
+                	if(player == -1) {
+                		this.update();
+                	}
+                	else {
+                		this.updateMultiplayer();
+                	}
                 }
                 ticks++;
                 delta--;
@@ -772,6 +777,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void update() {
         GameObjectCollection.sortBomberObjects();
+        
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
