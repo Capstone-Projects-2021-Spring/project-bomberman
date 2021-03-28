@@ -66,12 +66,12 @@ public class GameLauncher extends JFrame{
         mainMenuPanel.add(mapCreatorButton);
 
         //Initalize sound files
-        String menuMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/awesomeness.wav";
-        String singleMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/solo.wav";
-        String localMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/local.wav";
-        String tutorialMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/tutorial.wav";
-        String mapManagerMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/mapmanager.wav";
-        String mapCreatorMusicPath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/mapmaker.wav";
+        String menuMusicPath = "./src/main/resources/awesomeness.wav";
+        String singleMusicPath = "./src/main/resources/solo.wav";
+        String localMusicPath = "./src/main/resources/local.wav";
+        String tutorialMusicPath = "./src/main/resources/tutorial.wav";
+        String mapManagerMusicPath = "./src/main/resources/mapmanager.wav";
+        String mapCreatorMusicPath = "./src/main/resources/mapmaker.wav";
         File menuMusic = new File(menuMusicPath);
         File singleMusic = new File(singleMusicPath);
         File localMusic = new File(localMusicPath);

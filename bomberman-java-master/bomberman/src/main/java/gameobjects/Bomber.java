@@ -314,7 +314,7 @@ public class Bomber extends Player {
          
          SoundEffect(String soundFileName) {
             try {
-               String filePath = "C:/Users/nolan/OneDrive/Documents/GitHub/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/" + soundFileName;
+               String filePath = "./src/main/resources/Sound_Effects/" + soundFileName;
                File soundEffect = new File(filePath);
                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
                clip = AudioSystem.getClip();
