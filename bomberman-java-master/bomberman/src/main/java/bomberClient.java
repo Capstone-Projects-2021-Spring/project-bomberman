@@ -156,17 +156,26 @@ public class bomberClient {
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
             }
-            
+            else if (line.startsWith("Left ")) {
+                for(int z = 0; z < model.getSize(); z++){
+                    Object value = model.elementAt(z);
+                    if(value.toString().equals(line.replace("Left ","")+" (Ready)") || value.toString().equals(line.replace("Left ",""))){
+                        model.removeElementAt(z);
+                    }
+                }
+                messageArea.append("**SERVER**: " + line.replace("Left ","") + " left the match\n");
+            }
+             
         }
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/cool_map.csv");
+            game = new GamePanel("../Maps/cool_map.csv",out);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null);
+            game = new GamePanel(null,out);
         }
 
         game.init();
