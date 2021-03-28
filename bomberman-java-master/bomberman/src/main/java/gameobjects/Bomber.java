@@ -56,26 +56,46 @@ public class Bomber extends Player {
         this.kick = false;
     }
 
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType) {
+        super(position, spriteMap[1][0]);
+        this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
+        this.GameType = GameType;
+        // Animation
+        this.sprites = spriteMap;
+        this.direction = 1;     // Facing down
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+        
+        // Default stats
+        this.moveSpeed = 2; //temp change back to 1
+        this.firepower = 2;//temp change back to 1
+        this.maxBombs = 1;
+        this.bombAmmo = this.maxBombs;
+        this.bombTimer = 250;
+        this.pierce = true; //temp change back to false
+        this.kick = false;
+    }
+
     // --- MOVEMENT ---
-    private void moveUp() {
+    public void moveUp() {
         this.direction = 0;     // Using sprites that face up
         this.position.setLocation(this.position.x, this.position.y - this.moveSpeed);
     }
-    private void moveDown() {
+    public void moveDown() {
         this.direction = 1;     // Using sprites that face down
         this.position.setLocation(this.position.x, this.position.y + this.moveSpeed);
     }
-    private void moveLeft() {
+    public void moveLeft() {
         this.direction = 2;     // Using sprites that face left
         this.position.setLocation(this.position.x - this.moveSpeed, this.position.y);
     }
-    private void moveRight() {
+    public void moveRight() {
         this.direction = 3;     // Using sprites that face right
         this.position.setLocation(this.position.x + this.moveSpeed, this.position.y);
     }
 
     // --- ACTION ---
-    private void plantBomb() {
+    public void plantBomb() {
        
         // Snap bombs to the grid on the map
         float x = Math.round(this.position.getX() / 32) * 32;

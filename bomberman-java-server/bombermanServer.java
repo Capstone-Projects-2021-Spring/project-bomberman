@@ -122,11 +122,16 @@ public class bombermanServer{
                             }
                         }
                         else{
-                            int q = 1;
+                            int q = 0;
                             for (PrintWriter writer : socketWriters) {
                                 writer.println("CanStart " + q);
                                 q++;
                             }
+                        }
+                    }
+                    else if (input.startsWith("Player")){
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println(input);
                         }
                     }
                     else{
@@ -140,8 +145,10 @@ public class bombermanServer{
             } finally {
                 //If the person left remove them
                 if (user != null) {
+                    int m = 0;
                     for (PrintWriter writer : socketWriters) {
-                        writer.println("Left " + user);
+                        writer.println("Left " + m);
+                        m++;
                     }
                     ready.remove(players.indexOf(user));
                     players.remove(user);

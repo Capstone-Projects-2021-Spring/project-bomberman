@@ -167,26 +167,23 @@ public class bomberClient {
                 }
                 messageArea.append("**SERVER**: " + line.replace("Left ","") + " left the match\n");
             }
-            
+
         }
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/cool_map.csv",out,player);
+            game = new GamePanel("../Maps/cool_map.csv",out,in,player);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null,out,player);
+            game = new GamePanel(null,out,in,player);
         }
 
         game.initMultiplayer();
         GameWindow window = new GameWindow(game);
 
         System.gc();
-        while(true) {
-        	String line = in.readLine();
-        }
     }
             
 }

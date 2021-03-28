@@ -14,8 +14,8 @@ public abstract class Player extends GameObject {
     protected boolean LeftPressed = false;
     protected boolean RightPressed = false;
     protected boolean ActionPressed = false;
-    public PrintWriter out;
-    public int player;
+    public PrintWriter out = null;
+    public int player = 0;
 
     /**
      * Passing parameters to GameObject constructor.
@@ -23,6 +23,12 @@ public abstract class Player extends GameObject {
      * @param sprite
      */
     Player(Point2D.Float position, BufferedImage sprite, PrintWriter out, int player) {
+        super(position, sprite);
+        this.out = out;
+        this.player = player;
+    }
+
+    Player(Point2D.Float position, BufferedImage sprite) {
         super(position, sprite);
         this.out = out;
         this.player = player;
@@ -51,18 +57,23 @@ public abstract class Player extends GameObject {
 
     public void unToggleUpPressed() {
         this.UpPressed = false;
+        out.println("Player " + player + ": UpR");
     }
     public void unToggleDownPressed() {
         this.DownPressed = false;
+        out.println("Player " + player + ": DownR");
     }
     public void unToggleLeftPressed() {
         this.LeftPressed = false;
+        out.println("Player " + player + ": LeftR");
     }
     public void unToggleRightPressed() {
         this.RightPressed = false;
+        out.println("Player " + player + ": RightR");
     }
     public void unToggleActionPressed() {
         this.ActionPressed = false;
+        out.println("Player " + player + ": BombR");
     }
 
 }

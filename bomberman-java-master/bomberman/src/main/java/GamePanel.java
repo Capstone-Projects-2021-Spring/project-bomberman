@@ -49,6 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
     private ArrayList<ArrayList<String>> mapLayout;
     private BufferedReader bufferedReader;
     private PrintWriter out;
+    private BufferedReader in;
     private int player;
 
     private HashMap<Integer, Key> controls1;
@@ -57,7 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls4;
     
     //private int enemyAi; //used for enemy ID for enemy generation
-    private static final double SOFTWALL_RATE = 0.825;
+    private static double SOFTWALL_RATE;
 
     /**
      * Construct game panel and load in a map file.
@@ -67,6 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     GamePanel(String filename, int type) {//single player
         this.GameType = 1;//single player
+        this.SOFTWALL_RATE = 0.825;
         this.mapPhase = type; // starting map
         this.setFocusable(true);
         this.requestFocus();
@@ -78,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
     GamePanel(String filename) {//multi player
         this.GameType = 0;//multi player
+        this.SOFTWALL_RATE = 0.825;
         this.setFocusable(true);
         this.requestFocus();
         this.setControls();
@@ -85,12 +88,14 @@ public class GamePanel extends JPanel implements Runnable {
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
     }
-    GamePanel(String filename, PrintWriter out, int player){//online multiplayer
+    GamePanel(String filename, PrintWriter out, BufferedReader in, int player){//online multiplayer
         this.GameType = 0;//multi player
+        this.SOFTWALL_RATE = 1;
         this.setFocusable(true);
         this.requestFocus();
         this.setControlsMultiplayer(player);
         this.out = out;
+        this.in = in;
         this.player = player;
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
@@ -482,7 +487,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("1"):     // Player 1; Bomber
                         BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
-                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1,GameType,out,player);
+                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1,GameType,out,0);
                         PlayerController playerController1 = new PlayerController(player1, this.controls1);
                         this.addKeyListener(playerController1);
                         this.gameHUD.assignPlayer(player1, 0);
@@ -491,7 +496,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("2"):     // Player 2; Bomber
                         BufferedImage[][] sprMapP2 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2,GameType,out,player);
+                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2,GameType,out,1);
                         PlayerController playerController2 = new PlayerController(player2, this.controls2);
                         this.addKeyListener(playerController2);
                         this.gameHUD.assignPlayer(player2, 1);
@@ -500,7 +505,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("3"):     // Player 3; Bomber
                         BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_3.getSprites();
-                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,GameType,out,player);
+                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,GameType,out,2);
                         PlayerController playerController3 = new PlayerController(player3, this.controls3);
                         this.addKeyListener(playerController3);
                         this.gameHUD.assignPlayer(player3, 2);
@@ -509,7 +514,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("4"):     // Player 4; Bomber
                         BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
-                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType,out,player);
+                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType,out,3);
                         PlayerController playerController4 = new PlayerController(player4, this.controls4);
                         this.addKeyListener(playerController4);
                         this.gameHUD.assignPlayer(player4, 3);
@@ -670,6 +675,9 @@ public class GamePanel extends JPanel implements Runnable {
     void resetGameSingle(){ //single player reset
         this.initSingle();
     }
+    void resetGameMultiplayer(){
+        this.initMultiplayer();
+    }
 
     /**
      * Reset only the map, keeping the score
@@ -682,6 +690,11 @@ public class GamePanel extends JPanel implements Runnable {
     private void resetMapSingle(){ // reset map for single player
         GameObjectCollection.init();
         this.generateMapSingle();
+        System.gc();
+    }
+    private void resetMapMultiplayer(){
+        GameObjectCollection.init();
+        this.generateMapMultiplayer(player);
         System.gc();
     }
     private void nextMap(int playerScore){ // hopefully loads next map
@@ -730,7 +743,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if(GameType == 1){
                     this.updateSingle(); //single player update
                 }else{
-                    this.update();
+                    this.updateMultiplayer();
                 }
                 ticks++;
                 delta--;
@@ -864,6 +877,100 @@ public class GamePanel extends JPanel implements Runnable {
         }
         // Used to prevent resetting the game really fast
         this.resetDelay++;
+
+        try {
+            Thread.sleep(1000 / 144);
+        } catch (InterruptedException ignored) {
+        }
+    }
+
+    private void updateMultiplayer() {
+    	//out.println("a");
+        GameObjectCollection.sortBomberObjects();
+        String line = null;
+        int person = -1;
+        String action = "";
+		try {
+			line = in.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if(line.startsWith("Left ")) {
+        	person = Integer.parseInt(line.replace("Left ", ""));
+        }
+        else if(line.startsWith("Player ")) {
+        	String[] parts = line.replace("Player ", "").split(": ");
+        	person = Integer.parseInt(parts[0]);
+        	action = parts[1];
+        }
+        System.out.println("p: " + person);
+        // Loop through every game object arraylist
+        for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
+            for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
+                GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber && (person == objIndex)) {
+                	if(action.equals("Left")) {
+                		((Bomber) obj).moveLeft();
+                	}
+                	else if(action.equals("Right")) {
+                		((Bomber) obj).moveRight();
+                	}
+                	else if(action.equals("Up")) {
+                		((Bomber) obj).moveUp();
+                	}
+                	else if(action.equals("Down")) {
+                		((Bomber) obj).moveDown();
+                	}
+                	else if(action.equals("Bomb")) {
+                		((Bomber) obj).plantBomb();
+                	}
+                	
+                }
+                obj.update();
+                if (obj.isDestroyed()) {
+                    // Destroy and remove game objects that were marked for deletion
+                    obj.onDestroy();
+                    //do something here for checking all objects are destroyed
+                    GameObjectCollection.gameObjects.get(list).remove(obj);
+                } else {
+                    for (int list2 = 0; list2 < GameObjectCollection.gameObjects.size(); list2++) {
+                        for (int objIndex2 = 0; objIndex2 < GameObjectCollection.gameObjects.get(list2).size(); objIndex2++) {
+                            GameObject collidingObj = GameObjectCollection.gameObjects.get(list2).get(objIndex2);
+                            // Skip detecting collision on the same object as itself
+                            if (obj == collidingObj) {
+                                continue;
+                            }
+
+                            // Visitor pattern collision handling
+                            if (obj.getCollider().intersects(collidingObj.getCollider())) {
+                                // Use one of these
+                                collidingObj.onCollisionEnter(obj);
+//                                obj.onCollisionEnter(collidingObj);
+                            }
+                        }
+                    }
+                    objIndex++;
+                }
+            }
+        }
+
+        // Check for the last bomber to survive longer than the others and increase score
+        // Score is added immediately so there is no harm of dying when you are the last one
+        // Reset map when there are 1 or less bombers left
+        if (!this.gameHUD.matchSet) {
+            this.gameHUD.updateScore();
+        } else {
+            // Checking size of array list because when a bomber dies, they do not immediately get deleted
+            // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
+            if (GameObjectCollection.bomberObjects.size() <= 1) {
+                this.resetMapMultiplayer();
+                this.gameHUD.matchSet = false;
+            }
+        }
+
+        // Used to prevent resetting the game really fast
+        //this.resetDelay++;
 
         try {
             Thread.sleep(1000 / 144);
