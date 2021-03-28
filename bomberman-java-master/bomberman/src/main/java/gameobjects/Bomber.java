@@ -5,6 +5,7 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.PrintWriter;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -35,8 +36,8 @@ public class Bomber extends Player {
      * @param spriteMap 2D array of sprites used for animation
      * @param GameType Game type single or multi
      */
-    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType) {
-        super(position, spriteMap[1][0]);
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType, PrintWriter out, int player) {
+        super(position, spriteMap[1][0],out,player);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
         this.GameType = GameType;
         // Animation

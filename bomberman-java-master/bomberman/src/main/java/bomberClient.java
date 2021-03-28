@@ -17,6 +17,7 @@ public class bomberClient {
     BufferedReader in;
     PrintWriter out;
     String name = "";
+    int player;
     JFrame frame2 = new JFrame("Bomberman");
     ArrayList<String> people = new ArrayList<String>();
     DefaultListModel model = new DefaultListModel();
@@ -153,6 +154,7 @@ public class bomberClient {
                 messageArea.append("**SERVER**: Game can not start till everyone is ready!\n");
             }
             else if (line.startsWith("CanStart")) {
+                player = Integer.parseInt(line.replace("CanStart ",""));
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
             }
@@ -165,20 +167,20 @@ public class bomberClient {
                 }
                 messageArea.append("**SERVER**: " + line.replace("Left ","") + " left the match\n");
             }
-             
+            
         }
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/cool_map.csv",out);
+            game = new GamePanel("../Maps/cool_map.csv",out,player);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null,out);
+            game = new GamePanel(null,out,player);
         }
 
-        game.init();
+        game.initMultiplayer();
         GameWindow window = new GameWindow(game);
 
         System.gc();

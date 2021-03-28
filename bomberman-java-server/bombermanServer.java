@@ -122,8 +122,10 @@ public class bombermanServer{
                             }
                         }
                         else{
+                            int q = 1;
                             for (PrintWriter writer : socketWriters) {
-                                writer.println("CanStart");
+                                writer.println("CanStart " + q);
+                                q++;
                             }
                         }
                     }

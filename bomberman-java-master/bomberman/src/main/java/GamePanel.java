@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +48,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int mapHeight;
     private ArrayList<ArrayList<String>> mapLayout;
     private BufferedReader bufferedReader;
+    private PrintWriter out;
+    private int player;
 
     private HashMap<Integer, Key> controls1;
     private HashMap<Integer, Key> controls2;
@@ -78,6 +81,17 @@ public class GamePanel extends JPanel implements Runnable {
         this.setFocusable(true);
         this.requestFocus();
         this.setControls();
+        this.bg = ResourceCollection.Images.BACKGROUND.getImage();
+        this.loadMapFile(filename);
+        this.addKeyListener(new GameController(this));
+    }
+    GamePanel(String filename, PrintWriter out, int player){//online multiplayer
+        this.GameType = 0;//multi player
+        this.setFocusable(true);
+        this.requestFocus();
+        this.setControlsMultiplayer(player);
+        this.out = out;
+        this.player = player;
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
@@ -115,6 +129,17 @@ public class GamePanel extends JPanel implements Runnable {
         GameObjectCollection.init();
         this.gameHUD = new GameHUD();
         this.generateMap();
+        this.gameHUD.init();
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        this.running = true;
+    }
+
+    void initMultiplayer() { // initialize for starting single player
+        this.resetDelay = 0;
+        GameObjectCollection.init();
+        this.gameHUD = new GameHUD();
+        this.generateMapMultiplayer(this.player);
         this.gameHUD.init();
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         System.gc();
@@ -305,6 +330,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
+
     public void generateMapSingle() { //single player version
         // Map dimensions
         this.mapWidth = mapLayout.get(0).size();
@@ -406,6 +432,139 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    public void generateMapMultiplayer(int player) {
+        // Map dimensions
+        this.mapWidth = mapLayout.get(0).size();
+        this.mapHeight = mapLayout.size();
+        panelWidth = this.mapWidth * 32;
+        panelHeight = this.mapHeight * 32;
+
+        this.world = new BufferedImage(this.mapWidth * 32, this.mapHeight * 32, BufferedImage.TYPE_INT_RGB);
+
+        // Generate entire map
+        for (int y = 0; y < this.mapHeight; y++) {
+            for (int x = 0; x < this.mapWidth; x++) {
+                switch (mapLayout.get(y).get(x)) {
+                    case ("S"):     // Soft wall; breakable
+                        if (Math.random() < SOFTWALL_RATE) {
+                            BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                            Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                            GameObjectCollection.spawn(softWall);
+                            softwallnumber++;
+                        }
+                        break;
+                    
+                    case ("GS"):      //Generate Soft wall
+                        BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                        GameObjectCollection.spawn(softWall);
+                        break;
+
+                    case ("H"):     // Hard wall; unbreakable
+                        // Code used to choose tile based on adjacent tiles
+                        int code = 0;
+                        if (y > 0 && mapLayout.get(y - 1).get(x).equals("H")) {
+                            code += 1;  // North
+                        }
+                        if (y < this.mapHeight - 1 && mapLayout.get(y + 1).get(x).equals("H")) {
+                            code += 4;  // South
+                        }
+                        if (x > 0 && mapLayout.get(y).get(x - 1).equals("H")) {
+                            code += 8;  // West
+                        }
+                        if (x < this.mapWidth - 1 && mapLayout.get(y).get(x + 1).equals("H")) {
+                            code += 2;  // East
+                        }
+                        BufferedImage sprHardWall = ResourceCollection.getHardWallTile(code);
+                        Wall hardWall = new Wall(new Point2D.Float(x * 32, y * 32), sprHardWall, false);
+                        GameObjectCollection.spawn(hardWall);
+                        break;
+
+                    case ("1"):     // Player 1; Bomber
+                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1,GameType,out,player);
+                        PlayerController playerController1 = new PlayerController(player1, this.controls1);
+                        this.addKeyListener(playerController1);
+                        this.gameHUD.assignPlayer(player1, 0);
+                        GameObjectCollection.spawn(player1);
+                        break;
+
+                    case ("2"):     // Player 2; Bomber
+                        BufferedImage[][] sprMapP2 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
+                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2,GameType,out,player);
+                        PlayerController playerController2 = new PlayerController(player2, this.controls2);
+                        this.addKeyListener(playerController2);
+                        this.gameHUD.assignPlayer(player2, 1);
+                        GameObjectCollection.spawn(player2);
+                        break;
+
+                    case ("3"):     // Player 3; Bomber
+                        BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_3.getSprites();
+                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,GameType,out,player);
+                        PlayerController playerController3 = new PlayerController(player3, this.controls3);
+                        this.addKeyListener(playerController3);
+                        this.gameHUD.assignPlayer(player3, 2);
+                        GameObjectCollection.spawn(player3);
+                        break;
+
+                    case ("4"):     // Player 4; Bomber
+                        BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
+                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType,out,player);
+                        PlayerController playerController4 = new PlayerController(player4, this.controls4);
+                        this.addKeyListener(playerController4);
+                        this.gameHUD.assignPlayer(player4, 3);
+                        GameObjectCollection.spawn(player4);
+                        break;
+
+                    case ("PB"):    // Powerup Bomb
+                        Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
+                        GameObjectCollection.spawn(powerBomb);
+                        break;
+
+                    case ("PU"):    // Powerup Fireup
+                        Powerup powerFireup = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Fireup);
+                        GameObjectCollection.spawn(powerFireup);
+                        break;
+
+                    case ("PM"):    // Powerup Firemax
+                        Powerup powerFiremax = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Firemax);
+                        GameObjectCollection.spawn(powerFiremax);
+                        break;
+
+                    case ("PS"):    // Powerup Speed
+                        Powerup powerSpeed = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Speed);
+                        GameObjectCollection.spawn(powerSpeed);
+                        break;
+
+                    case ("PP"):    // Powerup Pierce
+                        Powerup powerPierce = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Pierce);
+                        GameObjectCollection.spawn(powerPierce);
+                        break;
+
+                    case ("PK"):    // Powerup Kick
+                        Powerup powerKick = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Kick);
+                        GameObjectCollection.spawn(powerKick);
+                        break;
+
+                    case ("PT"):    // Powerup Timer
+                        Powerup powerTimer = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Timer);
+                        GameObjectCollection.spawn(powerTimer);
+                        break;
+
+                    case ("EB"):    //Enemy Balloon
+                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+                        GameObjectCollection.spawn(enemyBalloon);
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
     /**
      * Initialize default key bindings for all players.
      */
@@ -457,8 +616,43 @@ public class GamePanel extends JPanel implements Runnable {
          this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
          this.controls1.put(KeyEvent.VK_SPACE, Key.action);
 
-
     }
+
+    private void setControlsMultiplayer(int player){
+        this.controls1 = new HashMap<>();
+        this.controls2 = new HashMap<>();
+        this.controls3 = new HashMap<>();
+        this.controls4 = new HashMap<>();
+        if(player == 1){
+            this.controls1.put(KeyEvent.VK_W, Key.up);
+            this.controls1.put(KeyEvent.VK_S, Key.down);
+            this.controls1.put(KeyEvent.VK_A, Key.left);
+            this.controls1.put(KeyEvent.VK_D, Key.right);
+            this.controls1.put(KeyEvent.VK_E, Key.action);
+        }
+        else if(player == 2){
+            this.controls2.put(KeyEvent.VK_W, Key.up);
+            this.controls2.put(KeyEvent.VK_S, Key.down);
+            this.controls2.put(KeyEvent.VK_A, Key.left);
+            this.controls2.put(KeyEvent.VK_D, Key.right);
+            this.controls2.put(KeyEvent.VK_E, Key.action);
+        }
+        else if(player == 3){
+            this.controls3.put(KeyEvent.VK_W, Key.up);
+            this.controls3.put(KeyEvent.VK_S, Key.down);
+            this.controls3.put(KeyEvent.VK_A, Key.left);
+            this.controls3.put(KeyEvent.VK_D, Key.right);
+            this.controls3.put(KeyEvent.VK_E, Key.action);
+        }
+        else{
+            this.controls4.put(KeyEvent.VK_W, Key.up);
+            this.controls4.put(KeyEvent.VK_S, Key.down);
+            this.controls4.put(KeyEvent.VK_A, Key.left);
+            this.controls4.put(KeyEvent.VK_D, Key.right);
+            this.controls4.put(KeyEvent.VK_E, Key.action);
+        }
+    }
+
     /**
      * When ESC is pressed, close the game
      */
@@ -500,8 +694,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         GameLauncher.window.pack();
         System.gc();
-        
-
     }
 
     public void addNotify() {
