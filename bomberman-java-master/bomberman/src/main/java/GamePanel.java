@@ -393,15 +393,13 @@ public class GamePanel extends JPanel implements Runnable {
                         this.gameHUDSingle.assignPlayer(player1);
                         GameObjectCollection.spawn(player1);
                         break;
-                    case ("3"):     // AI 1; enemy
-                        BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-                        Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
-                        //PlayerController playerController1 = new PlayerController(player1, this.controls1);
-                        //this.addKeyListener(playerController1);
-                        this.gameHUDSingle.assignAi(enemy1, enemyID);
-                        enemyID++;
-                        GameObjectCollection.spawn(enemy1);
-                        break;
+                    case ("A1"):     // AI 1; enemy
+                    	BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
+	                    Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
+	                    this.gameHUDSingle.assignAi(enemy1, enemyID);
+	                    enemyID++;
+	                    GameObjectCollection.spawn(enemy1);
+	                    break;
                     case ("PB"):    // Powerup Bomb
                         Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
                         GameObjectCollection.spawn(powerBomb);
