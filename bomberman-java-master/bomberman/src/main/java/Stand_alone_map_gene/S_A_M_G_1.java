@@ -35,12 +35,12 @@ public class S_A_M_G_1 {
         return index;
     }
 
-    public static void rand_map() {
+    public static void rand_map(String s) {
 
         Random rand = new Random();
         int length = rand.nextInt(50)+21;
 
-        try ( PrintWriter writer = new PrintWriter(new File("src\\main\\resources\\default.csv"))) {
+        try ( PrintWriter writer = new PrintWriter(new File(s))) {
 
             StringBuilder sb = new StringBuilder();
             
@@ -157,5 +157,12 @@ public class S_A_M_G_1 {
             System.out.println(e.getMessage());
         }
 
+    }
+    public static void rand_map_10(){
+        //i for map name
+            for(int i=1; i<4 ;i++){
+            String s = "src\\main\\resources\\singkeMap\\default"+String.valueOf(i)+".csv";
+            rand_map(s);
+            }
     }
 }
