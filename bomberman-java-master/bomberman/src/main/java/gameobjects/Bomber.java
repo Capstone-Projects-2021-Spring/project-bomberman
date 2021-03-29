@@ -5,7 +5,8 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.PrintWriter;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -113,6 +114,7 @@ public class Bomber extends Player {
         
         // Spawn the bomb
         this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
+        SoundEffect.BOMB.play();
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
     }
@@ -256,6 +258,7 @@ public class Bomber extends Player {
     @Override
     public void handleCollision(Explosion collidingObj) {
         if (!this.dead) {
+            SoundEffect.DEAD.play();
             this.dead = true;
             this.spriteIndex = 0;
         }
@@ -332,4 +335,49 @@ public class Bomber extends Player {
         }
 
     }
+
+    public enum SoundEffect{
+        DEAD("death.wav"),
+        BOMB("bombput.wav");
+        
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "./src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 }

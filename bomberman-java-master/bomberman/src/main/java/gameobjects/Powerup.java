@@ -6,6 +6,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /**
  * Powerups with predefined types that spawn from breakable walls at random.
@@ -114,6 +116,7 @@ public class Powerup extends TileObject {
      * @param bomber Bomber object to be granted bonus
      */
     void grantBonus(Bomber bomber) {
+        SoundEffect.POWERUP.play();
         this.type.grantBonus(bomber);
     }
 
@@ -141,5 +144,48 @@ public class Powerup extends TileObject {
     public boolean isBreakable() {
         return this.breakable;
     }
+
+    public enum SoundEffect{
+        POWERUP("powerup.wav");
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "/Users/jason/Desktop/CapstoneProject/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 
 }
