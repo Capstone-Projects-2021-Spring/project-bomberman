@@ -5,6 +5,8 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -12,12 +14,12 @@ import java.awt.image.BufferedImage;
 public class Bomber extends Player {
 
     private Bomb bomb;
-    private boolean dead;
+    public boolean dead;
 
     // Animation
     private BufferedImage[][] sprites;
     private int direction;  // 0: up, 1: down, 2: left, 3: right
-    private int spriteIndex;
+    public int spriteIndex;
     private int spriteTimer;
     private int GameType= 0;
     // Stats
@@ -35,6 +37,26 @@ public class Bomber extends Player {
      * @param spriteMap 2D array of sprites used for animation
      * @param GameType Game type single or multi
      */
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType, PrintWriter out, int player) {
+        super(position, spriteMap[1][0],out,player);
+        this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
+        this.GameType = GameType;
+        // Animation
+        this.sprites = spriteMap;
+        this.direction = 1;     // Facing down
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+        
+        // Default stats
+        this.moveSpeed = 2; //temp change back to 1
+        this.firepower = 2;//temp change back to 1
+        this.maxBombs = 1;
+        this.bombAmmo = this.maxBombs;
+        this.bombTimer = 250;
+        this.pierce = true; //temp change back to false
+        this.kick = false;
+    }
+
     public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType) {
         super(position, spriteMap[1][0]);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
@@ -56,25 +78,25 @@ public class Bomber extends Player {
     }
 
     // --- MOVEMENT ---
-    private void moveUp() {
+    public void moveUp() {
         this.direction = 0;     // Using sprites that face up
         this.position.setLocation(this.position.x, this.position.y - this.moveSpeed);
     }
-    private void moveDown() {
+    public void moveDown() {
         this.direction = 1;     // Using sprites that face down
         this.position.setLocation(this.position.x, this.position.y + this.moveSpeed);
     }
-    private void moveLeft() {
+    public void moveLeft() {
         this.direction = 2;     // Using sprites that face left
         this.position.setLocation(this.position.x - this.moveSpeed, this.position.y);
     }
-    private void moveRight() {
+    public void moveRight() {
         this.direction = 3;     // Using sprites that face right
         this.position.setLocation(this.position.x + this.moveSpeed, this.position.y);
     }
 
     // --- ACTION ---
-    private void plantBomb() {
+    public void plantBomb() {
        
         // Snap bombs to the grid on the map
         float x = Math.round(this.position.getX() / 32) * 32;
@@ -92,43 +114,61 @@ public class Bomber extends Player {
         
         // Spawn the bomb
         this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this); // multi player version
+        SoundEffect.BOMB.play();
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
     }
 
     public void restoreAmmo() {
-        
         this.bombAmmo = Math.min(this.maxBombs, this.bombAmmo + 1);
     }
 
     // --- POWERUPS ---
     public void addAmmo(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addAmmo," + value);
+    	}
         System.out.print("Bombs set from " + this.maxBombs);
         this.maxBombs = Math.min(6, this.maxBombs + value);
         this.restoreAmmo();
         System.out.println(" to " + this.maxBombs);
     }
     public void addFirepower(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addFirepower," + value);
+    	}
         System.out.print("Firepower set from " + this.firepower);
         this.firepower = Math.min(6, this.firepower + value);
         System.out.println(" to " + this.firepower);
     }
     public void addSpeed(float value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": addSpeed," + value);
+    	}
         System.out.print("Move Speed set from " + this.moveSpeed);
         this.moveSpeed = Math.min(4, this.moveSpeed + value);
         System.out.println(" to " + this.moveSpeed);
     }
     public void setPierce(boolean value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": setPierce," + value);
+    	}
         System.out.print("Pierce set from " + this.pierce);
         this.pierce = value;
         System.out.println(" to " + this.pierce);
     }
     public void setKick(boolean value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": setKick," + value);
+    	}
         System.out.print("Kick set from " + this.kick);
         this.kick = value;
         System.out.println(" to " + this.kick);
     }
     public void reduceTimer(int value) {
+    	if(super.out != null) {
+    		out.println("Player " + super.player + ": reduceTimer," + value);
+    	}
         System.out.print("Bomb Timer set from " + this.bombTimer);
         this.bombTimer = Math.max(160, this.bombTimer - value);
         System.out.println(" to " + this.bombTimer);
@@ -218,6 +258,7 @@ public class Bomber extends Player {
     @Override
     public void handleCollision(Explosion collidingObj) {
         if (!this.dead) {
+            SoundEffect.DEAD.play();
             this.dead = true;
             this.spriteIndex = 0;
         }
@@ -282,4 +323,61 @@ public class Bomber extends Player {
 
     }
 
+    /**
+     *
+     * @param collidingObj
+     */
+    @Override
+    public void handleCollision(Enemy collidingObj) {
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+        }
+
+    }
+
+    public enum SoundEffect{
+        DEAD("death.wav"),
+        BOMB("bombput.wav");
+        
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "./src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 }

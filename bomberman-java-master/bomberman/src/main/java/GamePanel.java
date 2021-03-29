@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,9 +34,11 @@ public class GamePanel extends JPanel implements Runnable {
     private boolean running;
     boolean ispaused;
     int resetDelay;
-    
+  
     private int mapPhase; // map phase for single player, decide which map to load
-    
+   
+    boolean tutorial = false;
+
     private BufferedImage world;
     private Graphics2D buffer;
     private BufferedImage bg;
@@ -46,8 +49,11 @@ public class GamePanel extends JPanel implements Runnable {
     private int mapHeight;
     private ArrayList<ArrayList<String>> mapLayout;
     private BufferedReader bufferedReader;
-    
-    //boolean paused;
+
+    private PrintWriter out;
+    private BufferedReader in;
+    private int player = -1;
+
 
     private HashMap<Integer, Key> controls1;
     private HashMap<Integer, Key> controls2;
@@ -55,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls4;
     
     //private int enemyAi; //used for enemy ID for enemy generation
-    private static final double SOFTWALL_RATE = 0.825;
+    private static double SOFTWALL_RATE;
 
     /**
      * Construct game panel and load in a map file.
@@ -65,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     GamePanel(String filename, int type) {//single player
         this.GameType = 1;//single player
+        this.SOFTWALL_RATE = 0.825;
         this.mapPhase = type; // starting map
         this.setFocusable(true);
         this.requestFocus();
@@ -77,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
     GamePanel(String filename) {//multi player
         this.GameType = 0;//multi player
+        this.SOFTWALL_RATE = 0.825;
         this.setFocusable(true);
         this.requestFocus();
         this.setControls();
@@ -84,6 +92,19 @@ public class GamePanel extends JPanel implements Runnable {
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
         
+    }
+    GamePanel(String filename, PrintWriter out, BufferedReader in, int player){//online multiplayer
+        this.GameType = 0;//multi player
+        this.SOFTWALL_RATE = 1;
+        this.setFocusable(true);
+        this.requestFocus();
+        this.setControlsMultiplayer(player);
+        this.out = out;
+        this.in = in;
+        this.player = player;
+        this.bg = ResourceCollection.Images.BACKGROUND.getImage();
+        this.loadMapFile(filename);
+        this.addKeyListener(new GameController(this));
     }
 
     /**
@@ -113,16 +134,29 @@ public class GamePanel extends JPanel implements Runnable {
         this.running = true;
         this.ispaused = false;//set to false for paused
     }
-    //void initSingle(int playerScore){ // to carry over info of previous map, single player
-         //this.resetDelay = 0;
-        //GameObjectCollection.init();
-        //this.gameHUDSingle = new GameHUDSingle();
-        //this.generateMapSingle();
-        //this.gameHUDSingle.init(playerScore);
-        //this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
-        //System.gc();
-        //this.running = true;
-    //}
+
+    void tutorial_init(){
+        this.tutorial = true;
+        this.resetDelay = 0;
+        GameObjectCollection.init();
+        this.gameHUD = new GameHUD();
+        this.generateMap();
+        this.gameHUD.init();
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        this.running = true;
+    }
+
+    void initMultiplayer() { // initialize for starting single player
+        this.resetDelay = 0;
+        GameObjectCollection.init();
+        this.gameHUD = new GameHUD();
+        this.generateMapMultiplayer(this.player);
+        this.gameHUD.init();
+        this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
+        System.gc();
+        this.running = true;
+    }
 
     /**
      * Loads the map file into buffered reader or load default map when no file
@@ -133,18 +167,15 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void loadMapFile(String mapFile) {
         // Loading map file
+        S_A_M_G_1 rand = new S_A_M_G_1();
+        rand.rand_map();
         try {
             if (mapFile.equalsIgnoreCase("single")) {
                 switch (this.mapPhase) { // change maps depending on mapPhase
                     case 1:
                         this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE1.SINGLE1.getFile());
                         break;
-                    case 2:
-                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE2.SINGLE2.getFile());
-                        break;
-                    case 3:
-                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE3.SINGLE3.getFile());
-                        break;
+                  
                     default:
                         break;
                 }
@@ -199,6 +230,12 @@ public class GamePanel extends JPanel implements Runnable {
                             GameObjectCollection.spawn(softWall);
                             softwallnumber++;
                         }
+                        break;
+                    
+                    case ("GS"):      //Generate Soft wall
+                        BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
+                        GameObjectCollection.spawn(softWall);
                         break;
 
                     case ("H"):     // Hard wall; unbreakable
@@ -292,12 +329,20 @@ public class GamePanel extends JPanel implements Runnable {
                         GameObjectCollection.spawn(powerTimer);
                         break;
 
+                    case ("EB"):    //Enemy Balloon
+                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+                        GameObjectCollection.spawn(enemyBalloon);
+
+                        break;
+
                     default:
                         break;
                 }
             }
         }
     }
+
     public void generateMapSingle() { //single player version
         // Map dimensions
         this.mapWidth = mapLayout.get(0).size();
@@ -348,7 +393,7 @@ public class GamePanel extends JPanel implements Runnable {
                         this.gameHUDSingle.assignPlayer(player1);
                         GameObjectCollection.spawn(player1);
                         break;
-                    case ("A1"):     // AI 1; enemy
+                    case ("3"):     // AI 1; enemy
                         BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
                         Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
                         //PlayerController playerController1 = new PlayerController(player1, this.controls1);
@@ -390,6 +435,139 @@ public class GamePanel extends JPanel implements Runnable {
                     case ("PT"):    // Powerup Timer
                         Powerup powerTimer = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Timer);
                         GameObjectCollection.spawn(powerTimer);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+
+    public void generateMapMultiplayer(int player) {
+        // Map dimensions
+        this.mapWidth = mapLayout.get(0).size();
+        this.mapHeight = mapLayout.size();
+        panelWidth = this.mapWidth * 32;
+        panelHeight = this.mapHeight * 32;
+
+        this.world = new BufferedImage(this.mapWidth * 32, this.mapHeight * 32, BufferedImage.TYPE_INT_RGB);
+
+        // Generate entire map
+        for (int y = 0; y < this.mapHeight; y++) {
+            for (int x = 0; x < this.mapWidth; x++) {
+                switch (mapLayout.get(y).get(x)) {
+                    case ("S"):     // Soft wall; breakable
+                        if (Math.random() < SOFTWALL_RATE) {
+                            BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                            Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true, true);
+                            GameObjectCollection.spawn(softWall);
+                            softwallnumber++;
+                        }
+                        break;
+                    
+                    case ("GS"):      //Generate Soft wall
+                        BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
+                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true, true);
+                        GameObjectCollection.spawn(softWall);
+                        break;
+
+                    case ("H"):     // Hard wall; unbreakable
+                        // Code used to choose tile based on adjacent tiles
+                        int code = 0;
+                        if (y > 0 && mapLayout.get(y - 1).get(x).equals("H")) {
+                            code += 1;  // North
+                        }
+                        if (y < this.mapHeight - 1 && mapLayout.get(y + 1).get(x).equals("H")) {
+                            code += 4;  // South
+                        }
+                        if (x > 0 && mapLayout.get(y).get(x - 1).equals("H")) {
+                            code += 8;  // West
+                        }
+                        if (x < this.mapWidth - 1 && mapLayout.get(y).get(x + 1).equals("H")) {
+                            code += 2;  // East
+                        }
+                        BufferedImage sprHardWall = ResourceCollection.getHardWallTile(code);
+                        Wall hardWall = new Wall(new Point2D.Float(x * 32, y * 32), sprHardWall, false);
+                        GameObjectCollection.spawn(hardWall);
+                        break;
+
+                    case ("1"):     // Player 1; Bomber
+                        BufferedImage[][] sprMapP1 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+                        Bomber player1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP1,GameType,out,0);
+                        PlayerController playerController1 = new PlayerController(player1, this.controls1);
+                        this.addKeyListener(playerController1);
+                        this.gameHUD.assignPlayer(player1, 0);
+                        GameObjectCollection.spawn(player1);
+                        break;
+
+                    case ("2"):     // Player 2; Bomber
+                        BufferedImage[][] sprMapP2 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
+                        Bomber player2 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP2,GameType,out,1);
+                        PlayerController playerController2 = new PlayerController(player2, this.controls2);
+                        this.addKeyListener(playerController2);
+                        this.gameHUD.assignPlayer(player2, 1);
+                        GameObjectCollection.spawn(player2);
+                        break;
+
+                    case ("3"):     // Player 3; Bomber
+                        BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_3.getSprites();
+                        Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,GameType,out,2);
+                        PlayerController playerController3 = new PlayerController(player3, this.controls3);
+                        this.addKeyListener(playerController3);
+                        this.gameHUD.assignPlayer(player3, 2);
+                        GameObjectCollection.spawn(player3);
+                        break;
+
+                    case ("4"):     // Player 4; Bomber
+                        BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
+                        Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType,out,3);
+                        PlayerController playerController4 = new PlayerController(player4, this.controls4);
+                        this.addKeyListener(playerController4);
+                        this.gameHUD.assignPlayer(player4, 3);
+                        GameObjectCollection.spawn(player4);
+                        break;
+
+                    case ("PB"):    // Powerup Bomb
+                        Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
+                        GameObjectCollection.spawn(powerBomb);
+                        break;
+
+                    case ("PU"):    // Powerup Fireup
+                        Powerup powerFireup = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Fireup);
+                        GameObjectCollection.spawn(powerFireup);
+                        break;
+
+                    case ("PM"):    // Powerup Firemax
+                        Powerup powerFiremax = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Firemax);
+                        GameObjectCollection.spawn(powerFiremax);
+                        break;
+
+                    case ("PS"):    // Powerup Speed
+                        Powerup powerSpeed = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Speed);
+                        GameObjectCollection.spawn(powerSpeed);
+                        break;
+
+                    case ("PP"):    // Powerup Pierce
+                        Powerup powerPierce = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Pierce);
+                        GameObjectCollection.spawn(powerPierce);
+                        break;
+
+                    case ("PK"):    // Powerup Kick
+                        Powerup powerKick = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Kick);
+                        GameObjectCollection.spawn(powerKick);
+                        break;
+
+                    case ("PT"):    // Powerup Timer
+                        Powerup powerTimer = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Timer);
+                        GameObjectCollection.spawn(powerTimer);
+                        break;
+
+                    case ("EB"):    //Enemy Balloon
+                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+                        GameObjectCollection.spawn(enemyBalloon);
+
                         break;
 
                     default:
@@ -450,8 +628,43 @@ public class GamePanel extends JPanel implements Runnable {
          this.controls1.put(KeyEvent.VK_RIGHT, Key.right);
          this.controls1.put(KeyEvent.VK_SPACE, Key.action);
 
-
     }
+
+    private void setControlsMultiplayer(int player){
+        this.controls1 = new HashMap<>();
+        this.controls2 = new HashMap<>();
+        this.controls3 = new HashMap<>();
+        this.controls4 = new HashMap<>();
+        if(player == 1){
+            this.controls1.put(KeyEvent.VK_W, Key.up);
+            this.controls1.put(KeyEvent.VK_S, Key.down);
+            this.controls1.put(KeyEvent.VK_A, Key.left);
+            this.controls1.put(KeyEvent.VK_D, Key.right);
+            this.controls1.put(KeyEvent.VK_E, Key.action);
+        }
+        else if(player == 2){
+            this.controls2.put(KeyEvent.VK_W, Key.up);
+            this.controls2.put(KeyEvent.VK_S, Key.down);
+            this.controls2.put(KeyEvent.VK_A, Key.left);
+            this.controls2.put(KeyEvent.VK_D, Key.right);
+            this.controls2.put(KeyEvent.VK_E, Key.action);
+        }
+        else if(player == 3){
+            this.controls3.put(KeyEvent.VK_W, Key.up);
+            this.controls3.put(KeyEvent.VK_S, Key.down);
+            this.controls3.put(KeyEvent.VK_A, Key.left);
+            this.controls3.put(KeyEvent.VK_D, Key.right);
+            this.controls3.put(KeyEvent.VK_E, Key.action);
+        }
+        else{
+            this.controls4.put(KeyEvent.VK_W, Key.up);
+            this.controls4.put(KeyEvent.VK_S, Key.down);
+            this.controls4.put(KeyEvent.VK_A, Key.left);
+            this.controls4.put(KeyEvent.VK_D, Key.right);
+            this.controls4.put(KeyEvent.VK_E, Key.action);
+        }
+    }
+
     /**
      * When ESC is pressed, close the game
      */
@@ -478,6 +691,9 @@ public class GamePanel extends JPanel implements Runnable {
     void resetGameSingle(){ //single player reset
         this.initSingle();
     }
+    void resetGameMultiplayer(){
+        this.initMultiplayer();
+    }
 
     /**
      * Reset only the map, keeping the score
@@ -492,6 +708,11 @@ public class GamePanel extends JPanel implements Runnable {
         this.generateMapSingle();
         System.gc();
     }
+    private void resetMapMultiplayer(){
+        GameObjectCollection.init();
+        this.generateMapMultiplayer(player);
+        System.gc();
+    }
     private void nextMap(int playerScore){ // hopefully loads next map
         this.mapPhase++;
         this.loadMapFile("single");
@@ -502,8 +723,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         GameLauncher.window.pack();
         System.gc();
-        
-
     }
 
     public void addNotify() {
@@ -556,7 +775,12 @@ public class GamePanel extends JPanel implements Runnable {
                 if(GameType == 1){
                     this.updateSingle(); //single player update
                 }else{
-                    this.update();
+                	if(player == -1) {
+                		this.update();
+                	}
+                	else {
+                		this.updateMultiplayer();
+                	}
                 }
                 ticks++;
                 delta--;
@@ -566,12 +790,12 @@ public class GamePanel extends JPanel implements Runnable {
             fps++;
 
             // Update FPS and Ticks counter every second
-            if (System.currentTimeMillis() - timer > 1000) {
-                timer = System.currentTimeMillis();
-                GameLauncher.window.update(fps, ticks);
-                fps = 0;
-                ticks = 0;
-            }
+//            if (System.currentTimeMillis() - timer > 1000) {
+//                timer = System.currentTimeMillis();
+//                //GameLauncher.window.update(fps, ticks);
+//                fps = 0;
+//                ticks = 0;
+//            }
         }
 
         System.exit(0);
@@ -585,6 +809,7 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void update() {
         GameObjectCollection.sortBomberObjects();
+        
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
@@ -697,6 +922,141 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
+    private void updateMultiplayer() {
+    	//out.println("a");
+        GameObjectCollection.sortBomberObjects();
+        String line = null;
+        int person = -1;
+        String action = "";
+		try {
+			line = in.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        if(line.startsWith("Left ")) {
+        	String[] personParts = line.split(",");
+        	person = Integer.parseInt(personParts[0].replace("Left ", ""));
+        	action = "Disconnected";
+        }
+        else if(line.startsWith("Player ")) {
+        	String[] parts = line.replace("Player ", "").split(": ");
+        	person = Integer.parseInt(parts[0]);
+        	action = parts[1];
+        }
+        // Loop through every game object arraylist
+        for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
+            for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
+                GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber) {
+                	if(((Player) obj).player == person){
+	                	if(action.equals("Left")) {
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if(action.equals("Right")) {
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if(action.equals("Up")) {
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if(action.equals("Down")) {
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                	}
+	                	else if(action.equals("Bomb")) {
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                		((Bomber) obj).plantBomb();
+	                	}
+	                	else if(action.equals("Disconnected")) {
+	                		obj.destroy();
+	                	}
+	                	else {
+	                		String[] actionPair = action.split(",");
+	                		if(actionPair[0].equals("addAmmo")) {
+	                			((Bomber) obj).addAmmo(Integer.parseInt(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("addFirepower")) {
+	                			((Bomber) obj).addFirepower(Integer.parseInt(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("addSpeed")) {
+	                			((Bomber) obj).addSpeed(Float.parseFloat(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("setPierce")) {
+	                			((Bomber) obj).setPierce(Boolean.parseBoolean(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("setKick")) {
+	                			((Bomber) obj).setKick(Boolean.parseBoolean(actionPair[1]));
+	                		}
+	                		else if(actionPair[0].equals("reduceTimer")) {
+	                			((Bomber) obj).reduceTimer(Integer.parseInt(actionPair[1]));
+	                		}
+	                	}
+                	}
+                }
+                obj.update();
+                if (obj.isDestroyed()) {
+                    // Destroy and remove game objects that were marked for deletion
+                    obj.onDestroy();
+                    //do something here for checking all objects are destroyed
+                    GameObjectCollection.gameObjects.get(list).remove(obj);
+                } else {
+                    for (int list2 = 0; list2 < GameObjectCollection.gameObjects.size(); list2++) {
+                        for (int objIndex2 = 0; objIndex2 < GameObjectCollection.gameObjects.get(list2).size(); objIndex2++) {
+                            GameObject collidingObj = GameObjectCollection.gameObjects.get(list2).get(objIndex2);
+                            // Skip detecting collision on the same object as itself
+                            if (obj == collidingObj) {
+                                continue;
+                            }
+
+                            // Visitor pattern collision handling
+                            if (obj.getCollider().intersects(collidingObj.getCollider())) {
+                                // Use one of these
+                                collidingObj.onCollisionEnter(obj);
+//                                obj.onCollisionEnter(collidingObj);
+                            }
+                        }
+                    }
+                    objIndex++;
+                }
+            }
+        }
+
+        // Check for the last bomber to survive longer than the others and increase score
+        // Score is added immediately so there is no harm of dying when you are the last one
+        // Reset map when there are 1 or less bombers left
+        if (!this.gameHUD.matchSet) {
+            this.gameHUD.updateScore();
+        } else {
+            // Checking size of array list because when a bomber dies, they do not immediately get deleted
+            // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
+            if (GameObjectCollection.bomberObjects.size() <= 1) {
+                this.resetMapMultiplayer();
+                this.gameHUD.matchSet = false;
+            }
+        }
+
+        // Used to prevent resetting the game really fast
+        //this.resetDelay++;
+
+        try {
+            Thread.sleep(1000 / 144);
+        } catch (InterruptedException ignored) {
+        }
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -750,7 +1110,7 @@ public class GamePanel extends JPanel implements Runnable {
 /**
  * Used to control the game
  */
-class GameController implements KeyListener {
+class GameController  extends JFrame implements KeyListener {
 
     private GamePanel gamePanel;
 
@@ -773,7 +1133,7 @@ class GameController implements KeyListener {
      * @param e Keyboard key pressed
      */
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e){
         // Close game
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //instead of exit we want it pause
             System.out.println("Escape key pressed: Pausing game");
