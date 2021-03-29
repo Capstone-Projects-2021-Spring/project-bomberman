@@ -167,19 +167,23 @@ public class GamePanel extends JPanel implements Runnable {
      */
     private void loadMapFile(String mapFile) {
         // Loading map file
-        S_A_M_G_1 rand = new S_A_M_G_1();
-        rand.rand_map_10();
+        
         try {
             if (mapFile.equalsIgnoreCase("single")) {
                 switch (this.mapPhase) { // change maps depending on mapPhase
                     case 1:
                         this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE1.SINGLE1.getFile());
                         break;
-                  
+                    case 2:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE2.SINGLE2.getFile());
+                        break;
+                    case 3:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE3.SINGLE3.getFile());
+                        break;
                     default:
                         break;
                 }
-                
+
             } else {
                 this.bufferedReader = new BufferedReader(new FileReader(mapFile));
             }
@@ -393,7 +397,7 @@ public class GamePanel extends JPanel implements Runnable {
                         this.gameHUDSingle.assignPlayer(player1);
                         GameObjectCollection.spawn(player1);
                         break;
-                    case ("3"):     // AI 1; enemy
+                    case ("A1"):     // AI 1; enemy
                         BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
                         Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
                         //PlayerController playerController1 = new PlayerController(player1, this.controls1);

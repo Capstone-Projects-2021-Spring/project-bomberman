@@ -66,7 +66,7 @@ public class S_A_M_G_1 {
                 if (i == 0 || i == (length - 1)) {
                     //top and bottem row is 'h'
                     for (int j = 0; j < length; j++) {
-                        sb.append("h,");
+                        sb.append("H,");
                     }
                     sb.append('\n');
                     continue;
@@ -86,7 +86,7 @@ public class S_A_M_G_1 {
                             sb.append(",");
                             j++;
                             }else{
-                               sb.append(Integer.toString(3));
+                               sb.append("A1");
                                 sb.append(",");
                                 j++; 
                             }
@@ -107,7 +107,7 @@ public class S_A_M_G_1 {
 
                     int rand_obj = rand.nextInt(10);
                     if (j == 0 || j == length - 1) {
-                        sb.append("h,");
+                        sb.append("H,");
                         //first and last col is 'h'
                         continue;
                     }
@@ -117,10 +117,10 @@ public class S_A_M_G_1 {
                         sb.append("-1,");
                     } else if (rand_obj < 3) {
                         //soild wall 'h'
-                        sb.append("h,");
+                        sb.append("H,");
                     } else {
                         //weak wall 's'
-                        sb.append("s,");
+                        sb.append("S,");
                     }
                 }
                 sb.append('\n');
