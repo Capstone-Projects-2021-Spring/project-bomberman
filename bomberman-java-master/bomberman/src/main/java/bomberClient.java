@@ -106,7 +106,7 @@ public class bomberClient{
     void run() throws IOException {
 
         // Make connection and initialize streams
-        String serverAddress = "127.0.0.1";
+        String serverAddress = "3.14.63.65";
         // Set up socket and IO streams
         Socket socket = new Socket(serverAddress, 80);
         in = new BufferedReader(new InputStreamReader(
