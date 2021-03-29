@@ -12,7 +12,7 @@ import java.awt.*;
 import java.nio.file.*;
 import java.net.Socket;
 
-public class bomberClient {
+public class bomberClient{
 
     BufferedReader in;
     PrintWriter out;
