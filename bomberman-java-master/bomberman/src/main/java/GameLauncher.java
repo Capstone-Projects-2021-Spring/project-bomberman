@@ -50,6 +50,7 @@ public class GameLauncher extends JFrame{
         
         //Create buttons for main menu
         JButton singleButton = new JButton("Single Player");
+        //JButton multiButton = new JButton("Multiplayer");
         JButton localButton = new JButton("Local Multiplayer");
         JButton tutorialButton = new JButton("Tutorial");
         JButton mapManagerButton = new JButton("Map Manager");
@@ -60,6 +61,7 @@ public class GameLauncher extends JFrame{
         
         //Add main menu buttons to main menu panel
         mainMenuPanel.add(singleButton);
+        //mainMenuPanel.add(multiButton);
         mainMenuPanel.add(localButton);
         mainMenuPanel.add(tutorialButton);
         mainMenuPanel.add(mapManagerButton);
@@ -154,6 +156,22 @@ public class GameLauncher extends JFrame{
               System.gc();
             }
         });
+        
+//        multiButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent ae) {
+//            	bomberClient client = new bomberClient();
+//                //frame settings
+//                client.frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                client.frame2.setVisible(true);
+//                //start client
+//                try {
+//					client.run();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//            }
+//        });
         
         
         tutorialButton.addActionListener(new ActionListener() {
