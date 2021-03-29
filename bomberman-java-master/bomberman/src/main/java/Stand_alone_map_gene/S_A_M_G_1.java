@@ -161,7 +161,7 @@ public class S_A_M_G_1 {
     public static void rand_map_10(){
         //i for map name
             for(int i=1; i<4 ;i++){
-            String s = "src\\main\\resources\\singkeMap\\default"+String.valueOf(i)+".csv";
+            String s = "src\\main\\resources\\singleMap\\default"+String.valueOf(i)+".csv";
             rand_map(s);
             }
     }

@@ -145,7 +145,7 @@ public class GameLauncher extends JFrame{
               clipSingle.start();
               clipSingle.loop(Clip.LOOP_CONTINUOUSLY);
               S_A_M_G_1 rand = new S_A_M_G_1();
-              rand.rand_map();
+              rand.rand_map_10();
               GamePanel game;
               String singlePlayer = "single";
               ResourceCollection.readFileSingle(); // dont need this method when loading next map

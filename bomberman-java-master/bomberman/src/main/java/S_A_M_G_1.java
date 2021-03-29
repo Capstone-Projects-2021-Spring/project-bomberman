@@ -1,10 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -35,12 +28,12 @@ public class S_A_M_G_1 {
         return index;
     }
 
-    public static void rand_map() {
+    public static void rand_map(String s) {
 
         Random rand = new Random();
-        int length = 21;
+        int length = rand.nextInt(50)+21;
 
-        try ( PrintWriter writer = new PrintWriter(new File("src\\main\\resources\\default.csv"))) {
+        try ( PrintWriter writer = new PrintWriter(new File(s))) {
 
             StringBuilder sb = new StringBuilder();
             
@@ -50,7 +43,7 @@ public class S_A_M_G_1 {
             for (int i = 0; i < player_count; i++) {
                 while (true) {
 
-                    int rand_row = rand.nextInt(length)-1;
+                    int rand_row = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[0], rand_row)) {
                         continue;
                     }
@@ -58,7 +51,7 @@ public class S_A_M_G_1 {
                     break;
                 }
                 while (true) {
-                    int rand_col = rand.nextInt(length) - 1;
+                    int rand_col = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[1], rand_col)) {
                         continue;
                     }
@@ -73,7 +66,7 @@ public class S_A_M_G_1 {
                 if (i == 0 || i == (length - 1)) {
                     //top and bottem row is 'h'
                     for (int j = 0; j < length; j++) {
-                        sb.append("H,");
+                        sb.append("h,");
                     }
                     sb.append('\n');
                     continue;
@@ -89,7 +82,7 @@ public class S_A_M_G_1 {
                         if (player_i == player_j) {
                             //System.out.println(player_count);
                             if(player_j==1){
-                            sb.append(Integer.toString(1));
+                            sb.append(Integer.toString(player_j + 1));
                             sb.append(",");
                             j++;
                             }else{
@@ -97,7 +90,6 @@ public class S_A_M_G_1 {
                                 sb.append(",");
                                 j++; 
                             }
-
                             if (location[1][player_j] <= length - 2) {
                                 sb.append("-1,");
                                 j++;
@@ -115,7 +107,7 @@ public class S_A_M_G_1 {
 
                     int rand_obj = rand.nextInt(10);
                     if (j == 0 || j == length - 1) {
-                        sb.append("H,");
+                        sb.append("h,");
                         //first and last col is 'h'
                         continue;
                     }
@@ -125,10 +117,10 @@ public class S_A_M_G_1 {
                         sb.append("-1,");
                     } else if (rand_obj < 3) {
                         //soild wall 'h'
-                        sb.append("H,");
+                        sb.append("h,");
                     } else {
                         //weak wall 's'
-                        sb.append("S,");
+                        sb.append("s,");
                     }
                 }
                 sb.append('\n');
@@ -158,5 +150,12 @@ public class S_A_M_G_1 {
             System.out.println(e.getMessage());
         }
 
+    }
+    public void rand_map_10(){
+        //i for map name
+            for(int i=1; i<4 ;i++){
+            String s = "src\\main\\resources\\singleMap\\default"+String.valueOf(i)+".csv";
+            rand_map(s);
+            }
     }
 }

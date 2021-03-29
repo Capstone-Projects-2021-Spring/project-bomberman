@@ -168,7 +168,7 @@ public class GamePanel extends JPanel implements Runnable {
     private void loadMapFile(String mapFile) {
         // Loading map file
         S_A_M_G_1 rand = new S_A_M_G_1();
-        rand.rand_map();
+        rand.rand_map_10();
         try {
             if (mapFile.equalsIgnoreCase("single")) {
                 switch (this.mapPhase) { // change maps depending on mapPhase

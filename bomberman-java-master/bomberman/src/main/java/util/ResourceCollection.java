@@ -172,9 +172,9 @@ public class ResourceCollection {
             
             //FileBIG.BIGMAP.fileb = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map.csv"));
 
-            FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/big_map_single_player.csv"));
-            FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/cool_map_single_player.csv"));
-            FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/arena_single_player.csv"));
+            FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/default1.csv"));
+            FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/default2.csv"));
+            FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/default3.csv"));
 
 
             
