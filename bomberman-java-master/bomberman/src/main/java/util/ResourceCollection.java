@@ -151,7 +151,7 @@ public class ResourceCollection {
     }
     public static void readFileSingle() {
         try {
-             System.out.println(System.getProperty("user.dir"));
+            System.out.println(System.getProperty("user.dir"));
             Images.ICON.image = ImageIO.read(ResourceCollection.class.getResource("/resources/icon.png"));
             Images.BACKGROUND.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bg.png"));
             Images.SOFT_WALL.image = ImageIO.read(ResourceCollection.class.getResource("/resources/softWall.png"));
@@ -171,9 +171,12 @@ public class ResourceCollection {
             SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
             
             //FileBIG.BIGMAP.fileb = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/singleMap/big_map.csv"));
-            FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
-            //FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/cool_map_single_player.csv"));
-            //FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/arena_single_player.csv"));
+
+            FileSINGLE1.SINGLE1.file1 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/big_map_single_player.csv"));
+            FileSINGLE2.SINGLE2.file2 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/cool_map_single_player.csv"));
+            FileSINGLE3.SINGLE3.file3 = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/singleMap/arena_single_player.csv"));
+
+
             
             //Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
         } catch (IOException e) {

@@ -7,6 +7,7 @@ import util.ResourceCollection;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
@@ -31,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int softwallnumber = 0;
     private Thread thread;
     private boolean running;
+    boolean ispaused;
     int resetDelay;
   
     private int mapPhase; // map phase for single player, decide which map to load
@@ -47,9 +49,11 @@ public class GamePanel extends JPanel implements Runnable {
     private int mapHeight;
     private ArrayList<ArrayList<String>> mapLayout;
     private BufferedReader bufferedReader;
+
     private PrintWriter out;
     private BufferedReader in;
     private int player = -1;
+
 
     private HashMap<Integer, Key> controls1;
     private HashMap<Integer, Key> controls2;
@@ -76,6 +80,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
         
+        
     }
     GamePanel(String filename) {//multi player
         this.GameType = 0;//multi player
@@ -86,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
+        
     }
     GamePanel(String filename, PrintWriter out, BufferedReader in, int player){//online multiplayer
         this.GameType = 0;//multi player
@@ -114,6 +120,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         System.gc();
         this.running = true;
+        this.ispaused = false; //set to false for paused
     }
 
     void initSingle() { // initialize for starting single player
@@ -125,6 +132,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(this.mapWidth * 32, (this.mapHeight * 32) + GameWindow.HUD_HEIGHT));
         System.gc();
         this.running = true;
+        this.ispaused = false;//set to false for paused
     }
 
     void tutorial_init(){
@@ -663,6 +671,15 @@ public class GamePanel extends JPanel implements Runnable {
     void exit() {
         this.running = false;
     }
+    
+    public void pauseGame(){
+        this.ispaused = true;
+    }
+    public void unPause(){
+        this.ispaused = false;
+    }
+    
+  
 
     /**
      * When F5 is pressed, reset game object collection, collect garbage,
@@ -716,12 +733,27 @@ public class GamePanel extends JPanel implements Runnable {
             this.thread.start();
         }
     }
+    
 
     /**
      * The game loop. The loop repeatedly calls update and repaints the panel.
      * Also reports the frames drawn per second and updates called per second
      * (ticks).
      */
+    public synchronized void MenuPaused(){
+        while(this.ispaused){
+            try{
+               wait(); 
+            }catch(Exception e){
+                System.out.print(e);
+            }
+        }
+    }
+    public synchronized void MenuUnPaused(){
+        this.ispaused = true;
+        notifyAll();
+    }
+    
     @Override
     public void run() {
         long timer = System.currentTimeMillis();
@@ -734,6 +766,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         // Count FPS, Ticks, and execute updates
         while (this.running) {
+            MenuPaused();
             long currentTime = System.nanoTime();
             delta += (currentTime - lastTime) / NS;
             lastTime = currentTime;
@@ -832,8 +865,8 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
     private void updateSingle() {
-        //GameObjectCollection.sortBomberObjects();
-        //GameObjectCollection.sortEnemyobjects();
+        GameObjectCollection.sortBomberObjects();
+        GameObjectCollection.sortEnemyobjects();
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
@@ -1102,9 +1135,18 @@ class GameController  extends JFrame implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e){
         // Close game
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            System.out.println("Escape key pressed: Closing game");
-            this.gamePanel.exit();
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { //instead of exit we want it pause
+            System.out.println("Escape key pressed: Pausing game");
+            System.out.println("Pause State: "+gamePanel.ispaused);
+            if(gamePanel.ispaused == false){ // if it is running currently, then pause 
+                gamePanel.unPause();
+                MenuPanel.ShowPausePanel(e);
+            }else{
+                gamePanel.MenuUnPaused();
+                
+            }
+             //set pause to true
+            //this.gamePanel.exit();
         }
 
         // Display controls
@@ -1153,5 +1195,91 @@ class GameController  extends JFrame implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
     }
+}
+ class MenuPanel { 
+     
+    private static final int ALPHA = 175; // how much see-thru. 0 to 255
+    private static final Color GP_BG = new Color(0, 0, 0, ALPHA);
+    private static DeDialogPanel Panel = new DeDialogPanel();  // jpanel shown in JDialog
+    
+    public MenuPanel(){
+        
+    }
+    
+    public static void ShowPausePanel(KeyEvent e){
+        
+        Component comp = (Component) e.getSource();
+        if (comp == null) {
+            return;
+        }
+        
+        JPanel glassPane = new JPanel(){
+            @Override
+            protected void paintComponent(Graphics g) {
+                // magic to make it dark without side-effects
+                g.setColor(getBackground());
+                g.fillRect(0, 0, getWidth(), getHeight());
+                super.paintComponent(g);
+            }
+        };
+        
+        // more magic below
+        glassPane.setOpaque(false); 
+        glassPane.setBackground(GP_BG);     
 
+        // get the rootpane container, here the JFrame, that holds the JButton
+        RootPaneContainer win = (RootPaneContainer) SwingUtilities.getWindowAncestor(comp);
+        win.setGlassPane(glassPane);  // set the glass pane
+        glassPane.setVisible(true);  // and show the glass pane
+
+        // create a *modal* JDialog
+        JDialog dialog = new JDialog((Window)win, "", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.getContentPane().add(Panel);  // add its JPanel to it
+        dialog.setUndecorated(true); // give it no borders (if desired)
+        dialog.pack(); // size it
+        dialog.setLocationRelativeTo((Window) win); // ** Center it over the JFrame **
+        dialog.setVisible(true);  // display it, pausing the GUI below it
+
+        // at this point the dialog is no longer visible, so get rid of glass pane
+        glassPane.setVisible(false);
+        
+        
+    }
+
+}
+@SuppressWarnings("serial")
+class DeDialogPanel extends JPanel {
+    private static final Color BackGroundColor = new Color(123, 63, 0);
+
+    public DeDialogPanel() {
+        JLabel pausedLabel = new JLabel("PAUSED");
+        pausedLabel.setForeground(Color.ORANGE);
+        JPanel pausedPanel = new JPanel();
+        pausedPanel.setOpaque(false);
+        pausedPanel.add(pausedLabel);
+
+        setBackground(BackGroundColor);
+        int eb = 15;
+        setBorder(BorderFactory.createEmptyBorder(eb, eb, eb, eb));
+        setLayout(new GridLayout(0, 1, 10, 10));
+        add(pausedPanel);
+        add(new JButton(new FooAction("RESUME")));
+        add(new JButton(new FooAction("RESTART")));
+        add(new JButton(new FooAction("EXIT TO MAP")));
+    }
+
+    // simple action -- all it does is to make the dialog no longer visible
+    private class FooAction extends AbstractAction {
+        public FooAction(String name) {
+            super(name);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Component comp = (Component) e.getSource();
+            Window win = SwingUtilities.getWindowAncestor(comp);
+            win.dispose();  // here -- dispose of the JDialog
+        }
+
+    }
 }
