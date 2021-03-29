@@ -17,14 +17,14 @@ import Stand_alone_map_gene.S_A_M_G_1;
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.awt.event.*;
-import java.awt.*;
 import java.nio.file.*;
-
+import javax.sound.sampled.*;
 /**
  * Contains the main method to launch the game.
  */
@@ -40,16 +40,17 @@ public class GameLauncher extends JFrame{
     public static Boolean spawn3Set = false;
     public static Boolean spawn4Set = false;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
     	
     	//Create main menu frame
     	JFrame frame = new JFrame("Bomber Man");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
         frame.setVisible(true);
         
         //Create buttons for main menu
         JButton singleButton = new JButton("Single Player");
+        //JButton multiButton = new JButton("Multiplayer");
         JButton localButton = new JButton("Local Multiplayer");
         JButton tutorialButton = new JButton("Tutorial");
         JButton mapManagerButton = new JButton("Map Manager");
@@ -60,14 +61,66 @@ public class GameLauncher extends JFrame{
         
         //Add main menu buttons to main menu panel
         mainMenuPanel.add(singleButton);
+        //mainMenuPanel.add(multiButton);
         mainMenuPanel.add(localButton);
         mainMenuPanel.add(tutorialButton);
         mainMenuPanel.add(mapManagerButton);
         mainMenuPanel.add(mapCreatorButton);
+
+        //Initalize sound files
+        String menuMusicPath = "./src/main/resources/awesomeness.wav";
+        String singleMusicPath = "./src/main/resources/solo.wav";
+        String localMusicPath = "./src/main/resources/local.wav";
+        String tutorialMusicPath = "./src/main/resources/tutorial.wav";
+        String mapManagerMusicPath = "./src/main/resources/mapmanager.wav";
+        String mapCreatorMusicPath = "./src/main/resources/mapmaker.wav";
+        File menuMusic = new File(menuMusicPath);
+        File singleMusic = new File(singleMusicPath);
+        File localMusic = new File(localMusicPath);
+        File tutorialMusic = new File(tutorialMusicPath);
+        File mapManagerMusic = new File(mapManagerMusicPath);
+        File mapCreatorMusic = new File(mapCreatorMusicPath);
+        AudioInputStream audioIn = AudioSystem.getAudioInputStream(menuMusic);
+        AudioInputStream audioIn_s = AudioSystem.getAudioInputStream(singleMusic);
+        AudioInputStream audioIn_l = AudioSystem.getAudioInputStream(localMusic);
+        AudioInputStream audioIn_t = AudioSystem.getAudioInputStream(tutorialMusic);
+        AudioInputStream audioIn_mm = AudioSystem.getAudioInputStream(mapManagerMusic);
+        AudioInputStream audioIn_mc = AudioSystem.getAudioInputStream(mapCreatorMusic);
+        AudioFormat format = audioIn.getFormat();
+        AudioFormat format_s = audioIn_s.getFormat();
+        AudioFormat format_l = audioIn_l.getFormat();
+        AudioFormat format_t = audioIn_t.getFormat();
+        AudioFormat format_mm = audioIn_mm.getFormat();
+        AudioFormat format_mc = audioIn_mc.getFormat();
+        DataLine.Info info = new DataLine.Info(Clip.class, format);
+        DataLine.Info info_s = new DataLine.Info(Clip.class, format_s);
+        DataLine.Info info_l = new DataLine.Info(Clip.class, format_l);
+        DataLine.Info info_t = new DataLine.Info(Clip.class, format_t);
+        DataLine.Info info_mm = new DataLine.Info(Clip.class, format_mm);
+        DataLine.Info info_mc = new DataLine.Info(Clip.class, format_mc);
+        Clip clip = (Clip) AudioSystem.getLine(info);
+        Clip clipSingle = (Clip) AudioSystem.getLine(info_s);
+        Clip clipLocal = (Clip) AudioSystem.getLine(info_l);
+        Clip clipTutorial = (Clip) AudioSystem.getLine(info_t);
+        Clip clipMapManager = (Clip) AudioSystem.getLine(info_mm);
+        Clip clipMapCreator = (Clip) AudioSystem.getLine(info_mc);
+        clip.open(audioIn);
+        clipSingle.open(audioIn_s);
+        clipLocal.open(audioIn_l);
+        clipTutorial.open(audioIn_t);
+        clipMapManager.open(audioIn_mm);
+        clipMapCreator.open(audioIn_mc);
         
+        //Turns on menu music
+        clip.start();
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+
         //Event for start button press
         localButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae) {
+            public void actionPerformed(ActionEvent ae)  {
+                clip.stop();
+                clipLocal.start();
+                clipLocal.loop(Clip.LOOP_CONTINUOUSLY);
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
 
@@ -88,6 +141,9 @@ public class GameLauncher extends JFrame{
         
         singleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+              clip.stop();
+              clipSingle.start();
+              clipSingle.loop(Clip.LOOP_CONTINUOUSLY);
               S_A_M_G_1 rand = new S_A_M_G_1();
               rand.rand_map();
               GamePanel game;
@@ -101,9 +157,28 @@ public class GameLauncher extends JFrame{
             }
         });
         
+//        multiButton.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent ae) {
+//            	bomberClient client = new bomberClient();
+//                //frame settings
+//                client.frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//                client.frame2.setVisible(true);
+//                //start client
+//                try {
+//					client.run();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//            }
+//        });
+        
         
         tutorialButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                clip.stop();
+                clipTutorial.start();
+                clipTutorial.loop(Clip.LOOP_CONTINUOUSLY);
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
 
@@ -126,13 +201,16 @@ public class GameLauncher extends JFrame{
         //Event for map manager button press
         mapManagerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                clip.stop();
+                clipMapManager.start();
+                clipMapManager.loop(Clip.LOOP_CONTINUOUSLY);
             	//Create AWS Objects
                 BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
                 final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-2").build();
             	
                 //Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 //Get the map names
@@ -321,9 +399,12 @@ public class GameLauncher extends JFrame{
         //Event for map creator button press
         mapCreatorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+                clip.stop();
+                clipMapCreator.start();
+                clipMapCreator.loop(Clip.LOOP_CONTINUOUSLY);
             	//Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                 frame.setVisible(true);
 
@@ -662,8 +743,6 @@ public class GameLauncher extends JFrame{
 
     }
 
-  
-
 }
 
 /**
@@ -694,7 +773,7 @@ class GameWindow extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(game, BorderLayout.CENTER);
         this.setResizable(false);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);

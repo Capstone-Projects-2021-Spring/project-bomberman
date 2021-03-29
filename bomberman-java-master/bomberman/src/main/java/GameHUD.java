@@ -2,6 +2,8 @@ import gameobjects.Bomber;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /**
  * Displays various game information on the screen such as each player's score.
@@ -78,6 +80,7 @@ public class GameHUD {
         if (deadPlayers == this.players.length - 1) {
             for (int i = 0; i < this.players.length; i++) {
                 if (!this.players[i].isDead()) {
+                    SoundEffect.VICTORY.play();
                     this.playerScore[i]++;
                     this.matchSet = true;
                 }
@@ -126,5 +129,48 @@ public class GameHUD {
             playerGraphics[i].dispose();
         }
     }
+
+    public enum SoundEffect{
+        VICTORY("victory.wav");
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "./src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }
 
 }

@@ -57,7 +57,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
     /**
      * Mark this game object for deletion.
      */
-    void destroy() {
+    public void destroy() {
         this.destroyed = true;
     }
 

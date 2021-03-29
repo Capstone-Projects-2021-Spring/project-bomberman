@@ -16,9 +16,17 @@ public class Wall extends TileObject {
      * @param sprite Sprite of this object
      * @param isBreakable true = soft wall, false = hard wall
      */
+	public double poweruprate = 0.5;
+	
     public Wall(Point2D.Float position, BufferedImage sprite, boolean isBreakable) {
         super(position, sprite);
         this.breakable = isBreakable;
+    }
+    
+    public Wall(Point2D.Float position, BufferedImage sprite, boolean isBreakable, boolean multiplayer) {
+        super(position, sprite);
+        this.breakable = isBreakable;
+        this.poweruprate = 0.0;
     }
 
     /**
@@ -37,7 +45,7 @@ public class Wall extends TileObject {
     @Override
     public void onDestroy() {
         double random = Math.random();
-        if (random < 0.5) {
+        if (random < this.poweruprate) {
             Powerup powerup = new Powerup(this.position, Powerup.randomPower());
             GameObjectCollection.spawn(powerup);
         }
