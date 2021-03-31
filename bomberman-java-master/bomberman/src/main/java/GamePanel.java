@@ -173,7 +173,12 @@ public class GamePanel extends JPanel implements Runnable {
                     case 1:
                         this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE1.SINGLE1.getFile());
                         break;
-                  
+                    case 2:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE2.SINGLE2.getFile());
+                        break;
+                    case 3:
+                        this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE3.SINGLE3.getFile());
+                        break;
                     default:
                         break;
                 }
