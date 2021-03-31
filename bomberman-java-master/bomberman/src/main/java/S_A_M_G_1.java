@@ -89,7 +89,7 @@ public class S_A_M_G_1 {
                         if (player_i == player_j) {
                             //System.out.println(player_count);
                             if(player_j==1){
-                            sb.append(Integer.toString(player_j + 1));
+                            sb.append(Integer.toString(player_j));
                             sb.append(",");
                             j++;
                             }else{
