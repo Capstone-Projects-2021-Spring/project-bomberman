@@ -210,7 +210,7 @@ public class GameLauncher extends JFrame{
             	
                 //Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 //Get the map names
