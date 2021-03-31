@@ -180,6 +180,7 @@ public class GamePanel extends JPanel implements Runnable {
                         this.bufferedReader = new BufferedReader(ResourceCollection.FileSINGLE3.SINGLE3.getFile());
                         break;
                     default:
+                        exit();
                         break;
                 }
                 
