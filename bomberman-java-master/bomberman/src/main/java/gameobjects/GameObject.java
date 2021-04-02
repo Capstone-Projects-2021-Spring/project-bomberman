@@ -19,6 +19,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
     float rotation;
     float width;
     float height;
+    boolean player;
 
     // Marked for deletion
     private boolean destroyed;
