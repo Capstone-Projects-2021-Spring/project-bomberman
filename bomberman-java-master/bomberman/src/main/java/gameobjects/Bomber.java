@@ -29,13 +29,35 @@ public class Bomber extends Player {
     private boolean pierce;
     private boolean kick;
 
-
+    private boolean player;
 
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
      * @param position Coordinates of this object in the game world
      * @param spriteMap 2D array of sprites used for animation
      */
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap) {
+        super(position, spriteMap[1][0]);
+        this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
+
+        // Animation
+        this.sprites = spriteMap;
+        this.direction = 1;     // Facing down
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+
+        // Default stats
+        this.moveSpeed = 1;
+        this.firepower = 1;
+        this.maxBombs = 1;
+        this.bombAmmo = this.maxBombs;
+        this.bombTimer = 250;
+        this.pierce = false;
+        this.kick = false;
+        this.player = true;
+
+    }
+
     public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, boolean player) {
         super(position, spriteMap[1][0]);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
@@ -185,6 +207,7 @@ public class Bomber extends Player {
         }
 
         if(this.player == false){
+            this.moveUp();
 
 
 
