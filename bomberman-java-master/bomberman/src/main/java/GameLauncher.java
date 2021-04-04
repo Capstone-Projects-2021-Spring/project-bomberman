@@ -123,10 +123,13 @@ public class GameLauncher extends JFrame{
                 clipLocal.loop(Clip.LOOP_CONTINUOUSLY);
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
+                
+                JFrame frame2 = new JFrame();
+                String mapname = JOptionPane.showInputDialog(frame2,"Map Name","Map Name",JOptionPane.PLAIN_MESSAGE);
 
                 GamePanel game;
                 try {
-                    game = new GamePanel("../Maps/cool_map.csv");
+                    game = new GamePanel("../Maps/" + mapname);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println(e + ": Program args not given");
                     game = new GamePanel(null);
