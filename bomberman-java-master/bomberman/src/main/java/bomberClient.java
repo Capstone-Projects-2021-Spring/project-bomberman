@@ -26,6 +26,7 @@ public class bomberClient{
     JTextArea messageArea = new JTextArea(8, 40);
     JButton start = new JButton("Start");
     JButton ready = new JButton("Ready");
+    String map = "cool_map.csv";
 
     //main method
     public static void main(String[] args) throws Exception {
@@ -158,6 +159,10 @@ public class bomberClient{
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
             }
+            else if (line.startsWith("MAPSET ")) {
+                map = line.replace("MAPSET ","");
+                messageArea.append("**SERVER**: Game map set to " + map + "\n");
+            }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");
                 for(int z = 0; z < model.getSize(); z++){
@@ -175,7 +180,7 @@ public class bomberClient{
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/cool_map.csv",out,in,player);
+            game = new GamePanel("../Maps/" + map,out,in,player);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
             game = new GamePanel(null,out,in,player);
