@@ -5,6 +5,7 @@ import util.GameObjectCollection;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -190,7 +191,7 @@ public class Bomber extends Player {
             }
             this.sprite = this.sprites[this.direction][this.spriteIndex];
 
-        if (this.player == true) {
+
             // Movement
             if (this.UpPressed) {
                 this.moveUp();
@@ -204,23 +205,13 @@ public class Bomber extends Player {
             if (this.RightPressed) {
                 this.moveRight();
             }
-        }
-
-        if(this.player == false){
-            this.moveUp();
-
-
-
-        }
-
-
-
 
 
             // Action
             if (this.ActionPressed && this.bombAmmo > 0) {
                 this.plantBomb();
             }
+
         } else {
             // Animate dying animation
             if (this.spriteTimer++ >= 30) {
@@ -233,6 +224,17 @@ public class Bomber extends Player {
                 }
             }
         }
+
+        if(!this.player){
+           this.moveUp();
+            System.out.print("x:" + this.position.x + " y: " + this.position.y + "\n ");
+
+
+
+
+        }
+
+
     }
 
     @Override
@@ -243,6 +245,13 @@ public class Bomber extends Player {
     @Override
     public void handleCollision(Wall collidingObj) {
         this.solidCollision(collidingObj);
+      if(!this.player)
+        if (collidingObj.isBreakable()){
+           this.plantBomb();
+
+
+        }
+
     }
 
     /**
@@ -318,5 +327,10 @@ public class Bomber extends Player {
             this.spriteIndex = 0;
         }
 
+    }
+
+
+    private void movementRoutine(){
+        
     }
 }

@@ -240,7 +240,7 @@ interface Collidable {
     }
 
     default void checkCollision(Wall collidingObj ){
-        
+
     }
 
 }
