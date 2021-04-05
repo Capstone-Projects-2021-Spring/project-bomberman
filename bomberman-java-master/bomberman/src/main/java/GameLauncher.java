@@ -34,7 +34,7 @@ public class GameLauncher extends JFrame{
     static GameWindow window;
     
     public static String mapBlock = "";
-    public static String[][] map = new String[32][32];
+    public static String[][] map;
     public static Boolean spawn1Set = false;
     public static Boolean spawn2Set = false;
     public static Boolean spawn3Set = false;
@@ -405,14 +405,19 @@ public class GameLauncher extends JFrame{
                 clip.stop();
                 clipMapCreator.start();
                 clipMapCreator.loop(Clip.LOOP_CONTINUOUSLY);
+                
+                JFrame frame2 = new JFrame();
+                int mapsize = Integer.parseInt(JOptionPane.showInputDialog(frame2,"Map Size","Map Size",JOptionPane.PLAIN_MESSAGE));
+                map = new String[mapsize][mapsize];
             	//Create Frame
                 JFrame frame = new JFrame("Bomber Man");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                 frame.setVisible(true);
+                
 
                 //Configure Gridlayout
-                GridLayout mapGridLayout = new GridLayout(32,32);
+                GridLayout mapGridLayout = new GridLayout(mapsize,mapsize);
 
                 //Create Map Panel
                 JPanel mapPanel = new JPanel();
@@ -421,10 +426,10 @@ public class GameLauncher extends JFrame{
                 mapPanel.setLayout(mapGridLayout);
 
                 //Create buttons for the map panel
-                for(int i = 0; i < 32; i++){
-                    for(int j = 0; j < 32; j++){
+                for(int i = 0; i < mapsize; i++){
+                    for(int j = 0; j < mapsize; j++){
 
-                        if(i == 0 || j == 0 || i == 31 || j == 31){
+                        if(i == 0 || j == 0 || i == mapsize-1 || j == mapsize-1){
                             JButton temp = new JButton("H");
                             //Add the button with listener to grid panel
                             mapPanel.add(temp);
@@ -645,8 +650,8 @@ public class GameLauncher extends JFrame{
                           String name = mapName.getText();
                           try {
                             FileWriter writer = new FileWriter("../maps/" + name + ".csv");
-                            for(int i = 0; i < 32; i++){
-                                for(int j = 0; j < 32; j++){
+                            for(int i = 0; i < mapsize; i++){
+                                for(int j = 0; j < mapsize; j++){
                                     String currentTile = map[i][j];
                                     if(currentTile == "H"){
                                         writer.write("H,");
@@ -677,7 +682,7 @@ public class GameLauncher extends JFrame{
                             }
                             writer.close();
                             //Clear Variables in case they want to make another
-                            map = new String[32][32];
+                            map = new String[mapsize][mapsize];
                             spawn1Set = false;
                             spawn2Set = false;
                             spawn3Set = false;
