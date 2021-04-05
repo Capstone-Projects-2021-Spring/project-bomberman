@@ -27,6 +27,7 @@ public class bomberClient{
     JButton start = new JButton("Start");
     JButton ready = new JButton("Ready");
     String map = "cool_map.csv";
+    boolean crazybombs = false;
 
     //main method
     public static void main(String[] args) throws Exception {
@@ -107,7 +108,7 @@ public class bomberClient{
     void run() throws IOException {
 
         // Make connection and initialize streams
-        String serverAddress = "3.14.63.65";
+        String serverAddress = "127.0.0.1";
         // Set up socket and IO streams
         Socket socket = new Socket(serverAddress, 80);
         in = new BufferedReader(new InputStreamReader(
@@ -162,6 +163,10 @@ public class bomberClient{
             else if (line.startsWith("MAPSET ")) {
                 map = line.replace("MAPSET ","");
                 messageArea.append("**SERVER**: Game map set to " + map + "\n");
+            }
+            else if (line.startsWith("CRAZYBOMBS ")) {
+                crazybombs = Boolean.parseBoolean(line.replace("CRAZYBOMBS ",""));
+                messageArea.append("**SERVER**: Crazy bombs set to " + crazybombs + "\n");
             }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");
