@@ -86,7 +86,7 @@ public class Bomber extends Player {
         this.kick = false;
 
         this.player = player;
-        this.resting = false;
+        this.resting = true;
     }
 
     // --- MOVEMENT ---
@@ -213,9 +213,11 @@ public class Bomber extends Player {
             // Movement
             if (this.UpPressed) {
                 this.moveUp();
+                //System.out.println("Bot's current y position is " + this.position.y);
             }
             if (this.DownPressed) {
                 this.moveDown();
+                //System.out.println("Bot's current y position is " + this.position.y);
             }
             if (this.LeftPressed) {
                 this.moveLeft();
@@ -245,11 +247,17 @@ public class Bomber extends Player {
 
 
         if (!this.player){
-            //this.resting=false;
-            //Generate_movement();
-            if(!this.isDead() && resting)
-             this.moveUp();
-            System.out.println(this.position.y);
+            System.out.println("Bot's current y position is " + this.position.y);
+            System.out.println("Current status of Resting is  " + this.resting);
+
+
+            // IF were resting we need a new movement
+            if(!this.isDead() && resting){
+                Generate_movement();
+
+            }
+
+
         }
 
 
@@ -351,109 +359,63 @@ public class Bomber extends Player {
         }
 
     }
-    /*
-    private void movementRoutine() {
 
-        this.resting = false;
-        //get spawn location
-        float spawn_x = this.position.y;
-        float spawn_y = this.position.x;
-        ArrayList<Float> Walls = new ArrayList<Float>();
-        ArrayList<Float> Walls_x = new ArrayList<Float>();
-        boolean start = true;
-        //find the closest wall based on y position
-        if (start) {
-           // System.out.println(GameObjectCollection.tileObjects.get(0).position.getY());
-            for (int i = 0; i <= GameObjectCollection.tileObjects.size()-1; i++) {
-                if (GameObjectCollection.tileObjects.get(i).isBreakable()) {
-                   Walls.add(this.position.y - GameObjectCollection.tileObjects.get(i).position.y);
-
-                }
-            }
-        }
-
-        //Sort the list
-       Collections.sort(Walls);
-        //Collections.reverse(Walls);
-        float current_p_y = this.position.y;
-       // System.out.println(Walls.get(1));
-    if(!this.resting) {
-        //System.out.println(-Walls.get(1) + this.position.y);
-        //System.out.println(this.position.y);
-        if (this.position.y >= 300.0) {
-            moveUp();
-            this.resting = true;
-        }
-        //moveUp();
-        //while(this.position.y != -Walls.get(1) + current_p_y ){
-        //this.direction = 0;     // Using sprites that face up
-
-        //System.out.println(this.position.y);
-
-        //}
-
-     }
-    }
-    */
 
     private int RandomDir(){
         int dir =0;
         Random r = new Random();
         dir = r.nextInt(4); // 0 = up 1 = down 2 = left 3 = right
-
-
         return dir;
     }
 
 
-    // One map tile is 36 units long
-    private void Generate_movement(){
-       //if resting is false were ready to recieve a new movement
-        float currentPosX;
-        float currentPosY;
 
+    private void Generate_movement(){
         ArrayList<Float> Walls = new ArrayList<Float>();
 
-        boolean move_found = false;
 
-
-        if (!this.resting) {
-            currentPosX = this.position.x;
-            currentPosY = this.position.y;
-
+        // One map tile is 36 pixels long
+        //if resting is true, the bot is ready to find a new movement
+        if (this.resting) {
             //Find a place to move -- Loop thorough every breakable wall's y position and find the closest one, ie current character position - walls y position
 
-
-            while (!move_found) {
                 for (int i = 0; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
 
                     if (GameObjectCollection.tileObjects.get(i).isBreakable()) {
-
-                        Walls.add(GameObjectCollection.tileObjects.get(i).position.y);
-                        Collections.sort(Walls);
-                        //System.out.println(Walls.get(i));
+                        Walls.add(this.position.y - GameObjectCollection.tileObjects.get(i).position.y);
 
 
-
-
-                      while(currentPosY != GameObjectCollection.tileObjects.get(i).position.getY()-1.0){
-                          moveUp();
-                          move_found = true;
-                          this.resting = true;
-                          Walls.clear();
-                      }
-
+                        //this.resting = false;
                     }
                 }
 
-                }
-            }
+        System.out.println("Breakable walls on the map  = " + Walls.size());
+         Collections.sort(Walls); //Sorts in descending order
+
+         System.out.println("Distance from closest breakable wall = " + Walls.get(0));
+         System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
+         float currentY = this.position.y;
+
+
+                      //Execute the movement
+                      while(this.position.y != (-Walls.get(0) + currentY)){
+                          moveUp();
+
+                      }
+
+        this.resting = false;
+        Walls.clear();
+
+        }//end of if(resting)
+
+
+    } //end of movement function
 
 
 
 
 
-    }
+
 
 
 
