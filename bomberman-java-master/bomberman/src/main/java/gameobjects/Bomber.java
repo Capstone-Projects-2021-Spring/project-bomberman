@@ -6,6 +6,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -30,7 +33,11 @@ public class Bomber extends Player {
     private boolean pierce;
     private boolean kick;
 
+    //Bot movement variables
     private boolean player;
+    private boolean resting; //wating for a new movement command or not
+    private float move_x; //the x position of the current movement command
+    private float move_y;//the y position of the current movement command
 
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
@@ -79,6 +86,7 @@ public class Bomber extends Player {
         this.kick = false;
 
         this.player = player;
+        this.resting = false;
     }
 
     // --- MOVEMENT ---
@@ -99,6 +107,8 @@ public class Bomber extends Player {
         this.position.setLocation(this.position.x + this.moveSpeed, this.position.y);
     }
 
+
+
     // --- ACTION ---
     private void plantBomb() {
         // Snap bombs to the grid on the map
@@ -118,6 +128,14 @@ public class Bomber extends Player {
         this.bomb = new Bomb(spawnLocation, this.firepower, this.pierce, this.bombTimer, this);
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
+
+        //Ai movement logic if the plant a bomb
+        if (!this.player){
+            if (this.direction == 0 && this.resting){
+                this.moveDown();
+            }
+
+        }
     }
 
     public void restoreAmmo() {
@@ -191,7 +209,7 @@ public class Bomber extends Player {
             }
             this.sprite = this.sprites[this.direction][this.spriteIndex];
 
-
+        if(this.player) {
             // Movement
             if (this.UpPressed) {
                 this.moveUp();
@@ -211,7 +229,7 @@ public class Bomber extends Player {
             if (this.ActionPressed && this.bombAmmo > 0) {
                 this.plantBomb();
             }
-
+        }
         } else {
             // Animate dying animation
             if (this.spriteTimer++ >= 30) {
@@ -225,14 +243,19 @@ public class Bomber extends Player {
             }
         }
 
-        if(!this.player){
-           this.moveUp();
-            System.out.print("x:" + this.position.x + " y: " + this.position.y + "\n ");
 
-
-
-
+        if (!this.player){
+            //this.resting=false;
+            //Generate_movement();
+            if(!this.isDead() && resting)
+             this.moveUp();
+            System.out.println(this.position.y);
         }
+
+
+
+
+
 
 
     }
@@ -328,9 +351,115 @@ public class Bomber extends Player {
         }
 
     }
+    /*
+    private void movementRoutine() {
 
+        this.resting = false;
+        //get spawn location
+        float spawn_x = this.position.y;
+        float spawn_y = this.position.x;
+        ArrayList<Float> Walls = new ArrayList<Float>();
+        ArrayList<Float> Walls_x = new ArrayList<Float>();
+        boolean start = true;
+        //find the closest wall based on y position
+        if (start) {
+           // System.out.println(GameObjectCollection.tileObjects.get(0).position.getY());
+            for (int i = 0; i <= GameObjectCollection.tileObjects.size()-1; i++) {
+                if (GameObjectCollection.tileObjects.get(i).isBreakable()) {
+                   Walls.add(this.position.y - GameObjectCollection.tileObjects.get(i).position.y);
 
-    private void movementRoutine(){
-        
+                }
+            }
+        }
+
+        //Sort the list
+       Collections.sort(Walls);
+        //Collections.reverse(Walls);
+        float current_p_y = this.position.y;
+       // System.out.println(Walls.get(1));
+    if(!this.resting) {
+        //System.out.println(-Walls.get(1) + this.position.y);
+        //System.out.println(this.position.y);
+        if (this.position.y >= 300.0) {
+            moveUp();
+            this.resting = true;
+        }
+        //moveUp();
+        //while(this.position.y != -Walls.get(1) + current_p_y ){
+        //this.direction = 0;     // Using sprites that face up
+
+        //System.out.println(this.position.y);
+
+        //}
+
+     }
     }
+    */
+
+    private int RandomDir(){
+        int dir =0;
+        Random r = new Random();
+        dir = r.nextInt(4); // 0 = up 1 = down 2 = left 3 = right
+
+
+        return dir;
+    }
+
+
+    // One map tile is 36 units long
+    private void Generate_movement(){
+       //if resting is false were ready to recieve a new movement
+        float currentPosX;
+        float currentPosY;
+
+        ArrayList<Float> Walls = new ArrayList<Float>();
+
+        boolean move_found = false;
+
+
+        if (!this.resting) {
+            currentPosX = this.position.x;
+            currentPosY = this.position.y;
+
+            //Find a place to move -- Loop thorough every breakable wall's y position and find the closest one, ie current character position - walls y position
+
+
+            while (!move_found) {
+                for (int i = 0; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
+
+                    if (GameObjectCollection.tileObjects.get(i).isBreakable()) {
+
+                        Walls.add(GameObjectCollection.tileObjects.get(i).position.y);
+                        Collections.sort(Walls);
+                        //System.out.println(Walls.get(i));
+
+
+
+
+                      while(currentPosY != GameObjectCollection.tileObjects.get(i).position.getY()-1.0){
+                          moveUp();
+                          move_found = true;
+                          this.resting = true;
+                          Walls.clear();
+                      }
+
+                    }
+                }
+
+                }
+            }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
 }
