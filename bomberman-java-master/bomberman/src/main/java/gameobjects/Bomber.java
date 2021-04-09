@@ -9,6 +9,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Date;
+
 
 /**
  * Bomberman player object to be controlled by a user.
@@ -40,6 +42,10 @@ public class Bomber extends Player {
     private float move_y;//the y position of the current movement command
     private boolean bomb_planted;
     private int moveScore;
+
+    private static int counter = 0;
+
+
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
      * @param position Coordinates of this object in the game world
@@ -97,6 +103,7 @@ public class Bomber extends Player {
     private void moveUp() {
         this.direction = 0;     // Using sprites that face up
         this.position.setLocation(this.position.x, this.position.y - this.moveSpeed);
+
     }
     private void moveDown() {
         this.direction = 1;     // Using sprites that face down
@@ -136,15 +143,9 @@ public class Bomber extends Player {
         //Ai movement logic if the plant a bomb
         if (!this.player && this.resting){
             System.out.println("BOT HAS PLANTED A BOMB");
+            this.resting=true;
             this.bomb_planted = true;
-            if (this.direction == 0){
-                //while (this.position.y)
-                //System.out.println("Bot is moving down");
-                this.moveDown();
-            }
-            else if (this.direction == 1 ){
-                this.moveUp();
-            }
+            this.runAway();
 
         }
       this.bomb_planted = false;
@@ -258,20 +259,21 @@ public class Bomber extends Player {
         }
 
 
-        if (!this.player){
+        if (!this.player) {
             System.out.println("Bot's current y position is " + this.position.y);
             System.out.println("Current status of Resting is  " + this.resting);
             System.out.println("Current status of bomb_planted is " + this.bomb_planted);
+            counter++;
+            if (counter == 5  ) {
+                // IF were resting we need a new movement
+                if (!this.isDead() && resting && !bomb_planted) {
+                    Generate_movement();
 
-            // IF were resting we need a new movement
-            if(!this.isDead() && resting && !bomb_planted){
-                Generate_movement();
+                }
 
+                counter =0;
             }
-
-
         }
-
 
 
 
@@ -405,7 +407,7 @@ public class Bomber extends Player {
     
     private void Generate_movement(){
         ArrayList<Float> Walls = new ArrayList<Float>();
-
+        System.out.println("Bot current x position " + this.position.x);
 
         // One map tile is 32 pixels long
         //if resting is true, the bot is ready to find a new movement
@@ -414,8 +416,9 @@ public class Bomber extends Player {
 
                 for (int i = 0; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
 
-                    if (GameObjectCollection.tileObjects.get(i).isBreakable() && this.position.y - GameObjectCollection.tileObjects.get(i).position.y > 0.0
-                            && this.position.x == GameObjectCollection.tileObjects.get(i).position.x ) {
+                    if (GameObjectCollection.tileObjects.get(i).isBreakable() && this.position.y - GameObjectCollection.tileObjects.get(i).position.y > 0.0) {
+
+                        //System.out.println("Walls x position " + GameObjectCollection.tileObjects.get(i).position.x);
                         Walls.add(this.position.y - GameObjectCollection.tileObjects.get(i).position.y);
 
 
@@ -426,25 +429,38 @@ public class Bomber extends Player {
          System.out.println("Breakable walls on the map  = " + Walls.size());
          Collections.sort(Walls); //Sorts in descending order
 
+
          System.out.println("Distance from closest breakable wall = " + Walls.get(0));
          System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
          float currentY = this.position.y;
 
 
-                      //Execute the movement
-                      while(this.position.y > (-Walls.get(0) + currentY)+12.0 && this.resting){
-                          this.resting = false;
-                          moveUp();
-
-                      }
+         for (float j =0; j<= Walls.get(0); j+=1.0 ) {
+             ExecuteMovement(this.position.y, Walls.get(0), currentY);
+         }
 
 
-        Walls.clear();
+
+
+
+
+
         this.resting = true;
+        Walls.clear();
         }//end of if(resting)
 
 
     } //end of movement function
+
+    private void ExecuteMovement(float playerY, float wallY, float baseY) {
+        while ((playerY / 32) > (int) (((-wallY + baseY) + 12.0) / 32) && this.resting) {
+            this.resting = false;
+            System.out.println("MOVING UP");
+            moveUp();
+
+
+        }
+    }
 
 
 
