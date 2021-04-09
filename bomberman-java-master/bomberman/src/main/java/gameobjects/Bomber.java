@@ -279,7 +279,7 @@ public class Bomber extends Player {
       if(!this.player)
         if (collidingObj.isBreakable()){
            this.plantBomb();
-
+           
 
         }
 
@@ -367,9 +367,30 @@ public class Bomber extends Player {
         dir = r.nextInt(4); // 0 = up 1 = down 2 = left 3 = right
         return dir;
     }
+    
+    private void runAway(){
+        float currentx = this.position.x;
+        moveDown();
+        moveRight();
+        if(currentx != this.position.x){
+            return;
+        }
+        moveLeft();
+        if(currentx != this.position.x){
+            return;
+        }
+        moveDown();
+        moveRight();
+        if(currentx != this.position.x){
+            return;
+        }
+        moveLeft();
+        if(currentx != this.position.x){
+            return;
+        }
+    }
 
-
-
+    
     private void Generate_movement(){
         ArrayList<Float> Walls = new ArrayList<Float>();
 
@@ -410,17 +431,6 @@ public class Bomber extends Player {
 
 
     } //end of movement function
-
-
-
-
-
-
-
-
-
-
-
 
 
 
