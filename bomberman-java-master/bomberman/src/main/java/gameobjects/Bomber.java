@@ -38,7 +38,8 @@ public class Bomber extends Player {
     private boolean resting; //wating for a new movement command or not
     private float move_x; //the x position of the current movement command
     private float move_y;//the y position of the current movement command
-
+    private boolean bomb_planted;
+    private int moveScore;
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
      * @param position Coordinates of this object in the game world
@@ -63,6 +64,7 @@ public class Bomber extends Player {
         this.pierce = false;
         this.kick = false;
         this.player = true;
+        this.moveScore = 100;
 
     }
 
@@ -87,6 +89,8 @@ public class Bomber extends Player {
 
         this.player = player;
         this.resting = true;
+        this.bomb_planted = false;
+        this.moveScore = 100;
     }
 
     // --- MOVEMENT ---
@@ -130,12 +134,20 @@ public class Bomber extends Player {
         this.bombAmmo--;
 
         //Ai movement logic if the plant a bomb
-        if (!this.player){
-            if (this.direction == 0 && this.resting){
+        if (!this.player && this.resting){
+            System.out.println("BOT HAS PLANTED A BOMB");
+            this.bomb_planted = true;
+            if (this.direction == 0){
+                //while (this.position.y)
+                //System.out.println("Bot is moving down");
                 this.moveDown();
+            }
+            else if (this.direction == 1 ){
+                this.moveUp();
             }
 
         }
+      this.bomb_planted = false;
     }
 
     public void restoreAmmo() {
@@ -249,10 +261,10 @@ public class Bomber extends Player {
         if (!this.player){
             System.out.println("Bot's current y position is " + this.position.y);
             System.out.println("Current status of Resting is  " + this.resting);
-
+            System.out.println("Current status of bomb_planted is " + this.bomb_planted);
 
             // IF were resting we need a new movement
-            if(!this.isDead() && resting){
+            if(!this.isDead() && resting && !bomb_planted){
                 Generate_movement();
 
             }
@@ -374,14 +386,15 @@ public class Bomber extends Player {
         ArrayList<Float> Walls = new ArrayList<Float>();
 
 
-        // One map tile is 36 pixels long
+        // One map tile is 32 pixels long
         //if resting is true, the bot is ready to find a new movement
-        if (this.resting) {
+        if (this.resting && !this.bomb_planted) {
             //Find a place to move -- Loop thorough every breakable wall's y position and find the closest one, ie current character position - walls y position
 
                 for (int i = 0; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
 
-                    if (GameObjectCollection.tileObjects.get(i).isBreakable()) {
+                    if (GameObjectCollection.tileObjects.get(i).isBreakable() && this.position.y - GameObjectCollection.tileObjects.get(i).position.y > 0.0
+                            && this.position.x == GameObjectCollection.tileObjects.get(i).position.x ) {
                         Walls.add(this.position.y - GameObjectCollection.tileObjects.get(i).position.y);
 
 
@@ -389,7 +402,7 @@ public class Bomber extends Player {
                     }
                 }
 
-        System.out.println("Breakable walls on the map  = " + Walls.size());
+         System.out.println("Breakable walls on the map  = " + Walls.size());
          Collections.sort(Walls); //Sorts in descending order
 
          System.out.println("Distance from closest breakable wall = " + Walls.get(0));
@@ -398,14 +411,15 @@ public class Bomber extends Player {
 
 
                       //Execute the movement
-                      while(this.position.y != (-Walls.get(0) + currentY)){
+                      while(this.position.y > (-Walls.get(0) + currentY)+12.0 && this.resting){
+                          this.resting = false;
                           moveUp();
 
                       }
 
-        this.resting = false;
-        Walls.clear();
 
+        Walls.clear();
+        this.resting = true;
         }//end of if(resting)
 
 

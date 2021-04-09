@@ -45,7 +45,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls3;
     private HashMap<Integer, Key> controls4;
 
-    private static final double SOFTWALL_RATE = 0.825;
+    private static final double SOFTWALL_RATE = .825;
 
     /**
      * Construct game panel and load in a map file.
@@ -123,14 +123,13 @@ public class GamePanel extends JPanel implements Runnable {
         for (int y = 0; y < this.mapHeight; y++) {
             for (int x = 0; x < this.mapWidth; x++) {
                 switch (mapLayout.get(y).get(x)) {
-                    case ("S"):     // Soft wall; breakable
-                        if (Math.random() < SOFTWALL_RATE) {
+                    case ("GS"):
+
                             BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
                             Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
                             GameObjectCollection.spawn(softWall);
-                        }
-                        break;
 
+                        break;
                     case ("H"):     // Hard wall; unbreakable
                         // Code used to choose tile based on adjacent tiles
                         int code = 0;
