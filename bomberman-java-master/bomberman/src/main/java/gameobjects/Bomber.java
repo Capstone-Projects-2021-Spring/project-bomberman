@@ -42,6 +42,7 @@ public class Bomber extends Player {
     private float move_y;//the y position of the current movement command
     private boolean bomb_planted;
     private int moveScore;
+    private boolean test;
 
     private static int counter = 0;
 
@@ -97,25 +98,29 @@ public class Bomber extends Player {
         this.resting = true;
         this.bomb_planted = false;
         this.moveScore = 100;
+        this.test = true;
     }
 
     // --- MOVEMENT ---
     private void moveUp() {
         this.direction = 0;     // Using sprites that face up
-        this.position.setLocation(this.position.x, this.position.y - this.moveSpeed);
+        this.position.setLocation( this.position.x, this.position.y - this.moveSpeed);
 
     }
     private void moveDown() {
         this.direction = 1;     // Using sprites that face down
         this.position.setLocation(this.position.x, this.position.y + this.moveSpeed);
+        System.out.println("WALKING DOWN");
     }
     private void moveLeft() {
         this.direction = 2;     // Using sprites that face left
         this.position.setLocation(this.position.x - this.moveSpeed, this.position.y);
+        System.out.println("WALKING LEFT");
     }
     private void moveRight() {
         this.direction = 3;     // Using sprites that face right
         this.position.setLocation(this.position.x + this.moveSpeed, this.position.y);
+        System.out.println("WALKING RIGHT");
     }
 
 
@@ -140,15 +145,11 @@ public class Bomber extends Player {
         GameObjectCollection.spawn(bomb);
         this.bombAmmo--;
 
-        //Ai movement logic if the plant a bomb
-        if (!this.player && this.resting){
-            System.out.println("BOT HAS PLANTED A BOMB");
-            this.resting=true;
-            this.bomb_planted = true;
-            this.runAway();
 
+        if (!this.player){
+            System.out.println("BOT HAS PLANTED A BOMB");
+            this.bomb_planted = true;
         }
-      this.bomb_planted = false;
     }
 
     public void restoreAmmo() {
@@ -211,6 +212,16 @@ public class Bomber extends Player {
     public void update() {
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
 
+
+        while (this.test){
+           // this.print_tiles();
+            this.drawMap(this.findMaxX(), this.findMaxY());
+            this.test = false;
+        }
+
+
+
+
         if (!this.dead) {
             // Animate sprite
             if ((this.spriteTimer += this.moveSpeed) >= 12) {
@@ -264,15 +275,25 @@ public class Bomber extends Player {
             System.out.println("Current status of Resting is  " + this.resting);
             System.out.println("Current status of bomb_planted is " + this.bomb_planted);
             counter++;
-            if (counter == 5  ) {
+           // if (counter == 10  ) {
                 // IF were resting we need a new movement
-                if (!this.isDead() && resting && !bomb_planted) {
+                if (!this.isDead() && resting) {
                     Generate_movement();
 
                 }
+                else if (this.bomb_planted){
+                    System.out.println("RUNNING AWAY");
+                    runAway();
+                    this.bomb_planted = false;
 
-                counter =0;
-            }
+                }
+
+            // counter =0;
+
+
+            //}
+
+
         }
 
 
@@ -293,7 +314,7 @@ public class Bomber extends Player {
       if(!this.player)
         if (collidingObj.isBreakable()){
            this.plantBomb();
-           
+
 
         }
 
@@ -374,6 +395,7 @@ public class Bomber extends Player {
 
     }
 
+    //AI movement things
 
     private int RandomDir(){
         int dir =0;
@@ -385,6 +407,7 @@ public class Bomber extends Player {
     private void runAway(){
         float currentx = this.position.x;
         moveDown();
+
         moveRight();
         if(currentx != this.position.x){
             return;
@@ -426,18 +449,18 @@ public class Bomber extends Player {
                     }
                 }
 
-         System.out.println("Breakable walls on the map  = " + Walls.size());
-         Collections.sort(Walls); //Sorts in descending order
+             System.out.println("Breakable walls on the map  = " + Walls.size());
+             Collections.sort(Walls); //Sorts in descending order
 
 
-         System.out.println("Distance from closest breakable wall = " + Walls.get(0));
-         System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
-         float currentY = this.position.y;
+             System.out.println("Distance from closest breakable wall = " + Walls.get(0));
+             System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
+             float currentY = this.position.y;
 
 
-         for (float j =0; j<= Walls.get(0); j+=1.0 ) {
-             ExecuteMovement(this.position.y, Walls.get(0), currentY);
-         }
+                for (float j =0; j<= Walls.get(0); j+=1.0 ) {
+                    ExecuteMovement(this.position.y, Walls.get(0), currentY);
+                }
 
 
 
@@ -448,6 +471,9 @@ public class Bomber extends Player {
         this.resting = true;
         Walls.clear();
         }//end of if(resting)
+
+
+
 
 
     } //end of movement function
@@ -461,6 +487,95 @@ public class Bomber extends Player {
 
         }
     }
+
+    //Tile objects array list goes from 0 - a max x and y
+    //each tile is 32x32
+
+    /**1. Find max X and Y
+     * 2. Find all Tile Objects between 1 and MaxX-1 && 1 and MaxY-1 (X between 1 and 13 and Y between 1 and 11)
+     * 3. Create an number list to represent the different tiles (0 = empty space, 1 = Soft Walls, 2 = Hard Walls)
+     * 4. Find all the empty space
+     */
+
+
+
+    public void print_tiles(){
+        for (int i = 0; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
+            System.out.println("Object : " + (GameObjectCollection.tileObjects.get(i))+ "        X position: "+ GameObjectCollection.tileObjects.get(i).position.x/32.0 + "       Y position: " +GameObjectCollection.tileObjects.get(i).position.y/32.0 );
+
+
+
+            System.out.println(GameObjectCollection.tileObjects.size());
+
+        }
+    }
+
+
+    public float findMaxX (){
+        float maxX = 0.0f;
+        float temp = GameObjectCollection.tileObjects.get(0).position.x/32;
+
+        for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
+            if (GameObjectCollection.tileObjects.get(i).position.x / 32 > temp)
+                temp = GameObjectCollection.tileObjects.get(i).position.x / 32;
+        }
+        maxX = temp;
+        System.out.println("MAX X value is " + maxX);
+            return maxX;
+    }
+    public float findMaxY (){
+        float maxY = 0.0f;
+        float temp = GameObjectCollection.tileObjects.get(0).position.y/32;
+
+        for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
+            if (GameObjectCollection.tileObjects.get(i).position.y / 32 > temp)
+                temp = GameObjectCollection.tileObjects.get(i).position.y / 32;
+        }
+        maxY = temp;
+        System.out.println("MAX Y value is " + maxY);
+        return maxY;
+    }
+
+    public void drawMap(float xMax, float yMax ){
+        ArrayList<TileObject> tileObj = new ArrayList<>();
+        ArrayList<Integer> tileObjInt = new ArrayList<>();
+        int j = 0;
+
+        for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
+            if (GameObjectCollection.tileObjects.get(i).position.y / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.y / 32 <= yMax -1
+                && GameObjectCollection.tileObjects.get(i).position.x / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.x / 32 <= xMax -1 ){
+
+                tileObj.add(GameObjectCollection.tileObjects.get(i));
+                if(GameObjectCollection.tileObjects.get(i).isBreakable()) {
+                    tileObjInt.add(1);
+
+                }
+
+                else if(!GameObjectCollection.tileObjects.get(i).isBreakable()){
+                    tileObjInt.add(2);
+                }
+
+                System.out.println("Object : " + (tileObj.get(j))+ "        X position: "+ tileObj.get(j).position.x/32.0 + "       Y position: " +tileObj.get(j).position.y/32.0 );
+                System.out.println("Int Tile List at " + j + " = " + tileObjInt.get(j));
+                j++;
+            }
+
+            else {
+                tileObjInt.add(0);
+            }
+
+
+
+        }
+
+
+        System.out.println(tileObj.size());
+        System.out.println(tileObjInt.size());
+        System.out.println(GameObjectCollection.tileObjects.size());
+
+    }
+
+
 
 
 
