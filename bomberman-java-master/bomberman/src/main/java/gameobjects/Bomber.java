@@ -539,13 +539,14 @@ public class Bomber extends Player {
     public void drawMap(float xMax, float yMax ){
         ArrayList<TileObject> tileObj = new ArrayList<>();
         ArrayList<Integer> tileObjInt = new ArrayList<>();
-        int j = 0;
+
 
         for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
             if (GameObjectCollection.tileObjects.get(i).position.y / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.y / 32 <= yMax -1
                 && GameObjectCollection.tileObjects.get(i).position.x / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.x / 32 <= xMax -1 ){
 
                 tileObj.add(GameObjectCollection.tileObjects.get(i));
+
                 if(GameObjectCollection.tileObjects.get(i).isBreakable()) {
                     tileObjInt.add(1);
 
@@ -555,19 +556,20 @@ public class Bomber extends Player {
                     tileObjInt.add(2);
                 }
 
-                System.out.println("Object : " + (tileObj.get(j))+ "        X position: "+ tileObj.get(j).position.x/32.0 + "       Y position: " +tileObj.get(j).position.y/32.0 );
-                System.out.println("Int Tile List at " + j + " = " + tileObjInt.get(j));
-                j++;
+
             }
 
-            else {
+            else { //we know this doeent work 
                 tileObjInt.add(0);
             }
 
-
-
         }
-
+        /*
+        for(int j = 1; j <= tileObjInt.size() - 1; j++){
+            System.out.println("Object : " + (tileObj.get(j))+ "        X position: "+ tileObj.get(j).position.x/32.0 + "       Y position: " +tileObj.get(j).position.y/32.0 );
+            System.out.println("Int Tile List at " +  j + " = " + tileObjInt.get(j));
+        }
+        */
 
         System.out.println(tileObj.size());
         System.out.println(tileObjInt.size());
