@@ -535,42 +535,49 @@ public class Bomber extends Player {
         System.out.println("MAX Y value is " + maxY);
         return maxY;
     }
-
+    
     public void drawMap(float xMax, float yMax ){
         ArrayList<TileObject> tileObj = new ArrayList<>();
         ArrayList<Integer> tileObjInt = new ArrayList<>();
-
+        ArrayList <int[]> emptyA=new ArrayList<>();
+                
+        for(int i=0; i<((xMax-1)*(yMax-1));i++){
+            tileObjInt.add(0);
+        }
 
         for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
             if (GameObjectCollection.tileObjects.get(i).position.y / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.y / 32 <= yMax -1
                 && GameObjectCollection.tileObjects.get(i).position.x / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.x / 32 <= xMax -1 ){
-
+                
                 tileObj.add(GameObjectCollection.tileObjects.get(i));
 
                 if(GameObjectCollection.tileObjects.get(i).isBreakable()) {
-                    tileObjInt.add(1);
+                    tileObjInt.set((i-1),1);
 
                 }
 
                 else if(!GameObjectCollection.tileObjects.get(i).isBreakable()){
-                    tileObjInt.add(2);
+                    tileObjInt.set((i-1),2);
                 }
 
-
             }
-
-            else { //we know this doeent work 
-                tileObjInt.add(0);
-            }
-
         }
-        /*
-        for(int j = 1; j <= tileObjInt.size() - 1; j++){
+        
+        for(int i=0; i<(xMax-1);i++){
+            for(int j=0; j<(yMax-1);j++){
+                if(tileObjInt.get(i*((int)yMax-1)+j)==0){
+                    int[] empty = {i,j};
+                    emptyA.add(empty);
+                }
+            }
+        }
+        
+        for(int j = 0; j <= tileObj.size() - 1; j++){
             System.out.println("Object : " + (tileObj.get(j))+ "        X position: "+ tileObj.get(j).position.x/32.0 + "       Y position: " +tileObj.get(j).position.y/32.0 );
             System.out.println("Int Tile List at " +  j + " = " + tileObjInt.get(j));
         }
-        */
-
+        
+        System.out.println(tileObjInt.toString());
         System.out.println(tileObj.size());
         System.out.println(tileObjInt.size());
         System.out.println(GameObjectCollection.tileObjects.size());

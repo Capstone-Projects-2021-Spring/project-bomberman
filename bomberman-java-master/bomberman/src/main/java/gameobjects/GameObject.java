@@ -20,6 +20,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
     float width;
     float height;
     boolean player;
+    int empty;
 
     // Marked for deletion
     private boolean destroyed;
