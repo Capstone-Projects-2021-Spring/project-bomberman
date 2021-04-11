@@ -66,7 +66,12 @@ public class bomberClient{
         //action listener for messenger
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                out.println(textField.getText());
+            	if(textField.getText().equalsIgnoreCase("!help")) {
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!CRAZYBOMBS\n");
+            	}
+            	else{
+            		out.println(textField.getText());
+            	}
                 textField.setText("");
             }
         });
@@ -114,6 +119,9 @@ public class bomberClient{
         in = new BufferedReader(new InputStreamReader(
                                     socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        messageArea.append("**SERVER**: Welcome to bomberman! Use the !help command.\n");
+        
+        String[] mapData;
     
         // handle messages from the server
         while (true) {
@@ -156,7 +164,10 @@ public class bomberClient{
                 messageArea.append("**SERVER**: Game can not start till everyone is ready!\n");
             }
             else if (line.startsWith("CanStart")) {
-                player = Integer.parseInt(line.replace("CanStart ",""));
+            	String [] parts = line.replace("CanStart ","").split(" ");
+                player = Integer.parseInt(parts[0]);
+                mapData = parts[1].split("N");
+                System.out.println(mapData.toString());
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
             }
@@ -187,12 +198,28 @@ public class bomberClient{
             }
 
         }
+        
+        //Create map file
+        File file = new File("./currentMap.csv");      
+		FileWriter filewriter = null;
+		try {
+			filewriter = new FileWriter(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < mapData.length; i++) {
+			filewriter.write(mapData[i]+"\n");
+		}
+		filewriter.close();
+        
+        
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/" + map,out,in,player);
+            game = new GamePanel("./currentMap.csv",out,in,player);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
             game = new GamePanel(null,out,in,player);

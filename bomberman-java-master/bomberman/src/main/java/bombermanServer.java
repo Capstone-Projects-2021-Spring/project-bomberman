@@ -1,7 +1,14 @@
 //Imports
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -151,9 +158,70 @@ public class bombermanServer{
                         }
                         else{
                             //Need to process the map to be played 
+                        	S3Object retMap = s3.getObject("bombermanmaps", map);
+                        	InputStream reader = new BufferedInputStream(
+                     			   retMap.getObjectContent());
+                 			File file = new File("./" + map);      
+                 			OutputStream filewriter = null;
+         					try {
+         						filewriter = new BufferedOutputStream(new FileOutputStream(file));
+         					} catch (FileNotFoundException e) {
+         						e.printStackTrace();
+         					}
+
+                 			int read = -1;
+
+                 			try {
+         						while ( ( read = reader.read() ) != -1 ) {
+         						    filewriter.write(read);
+         						}
+         					} catch (IOException e) {
+         						e.printStackTrace();
+         					}
+
+                 			try {
+         						filewriter.flush();
+         						filewriter.close();
+         	        			reader.close();
+         					} catch (IOException e) {
+         						e.printStackTrace();
+         					}
+                 			String mapString = "";
+                 			File myObj = new File("./" + map);
+             		        Scanner myReader = new Scanner(myObj);
+             		        while (myReader.hasNextLine()) {
+             		        	String data = myReader.nextLine();
+             		        	mapString += data + "N";
+             		        }
+             		        myReader.close();
+             		        String [] entries = mapString.split(",");
+             		        for(int i = 0; i < entries.length; i ++) {
+             		        	if(!entries[i].contains("-")) {
+             		        		try {
+             		        			int entry = Integer.parseInt(entries[i]);
+             		        			entries[i] = "-1";
+             		        		}
+             		        		catch (Exception e) {}
+             		        	}
+             		        }
+             		        int toSet = 1;
+             		        Random rand = new Random();
+             		        while (toSet <= players.size()) {
+             		        	for(int i = 0; i < entries.length; i ++) {
+             		        		int random = rand.nextInt(100);
+             		        		if(random < 10 && !entries[i].equals("H") && !entries[i].contains("N")) {
+             		        			entries[i] = "" + toSet;
+             		        			toSet++;
+             		        		}
+             		        		if(toSet > players.size()) {
+             		        			break;
+             		        		}	
+             		        	}
+             		        }
+             		        
                             int q = 0;
                             for (PrintWriter writer : socketWriters) {
-                                writer.println("CanStart " + q);
+                                writer.println("CanStart " + q + " " + String.join(",",entries));
                                 q++;
                             }
                         }
@@ -164,13 +232,13 @@ public class bombermanServer{
                             writer.println(input);
                         }
                     }
-                    else if (input.startsWith("!MAPOPTIONS ")){
+                    else if (input.startsWith("!MAPOPTIONS")){
                         String maps = "";
                         for(String m : serverMaps){
                             maps += m + ",";
                         }
                         for (PrintWriter writer : socketWriters) {
-                            writer.println("MAPOPTIONS" + maps);
+                            writer.println("MAPOPTIONS " + maps);
                         }
                     }
                     else if (input.startsWith("!SETMAP ")){
