@@ -1032,7 +1032,12 @@ public class GamePanel extends JPanel implements Runnable {
         		
         		for(int i = 0; i < currentMapData.length; i++) {
         			try {
-						filewriter.write(currentMapData[i]+"\n");
+        				if(currentMapData[i].startsWith(",")) {
+        					filewriter.write(currentMapData[i].substring(1)+"\n");
+        				}
+        				else {
+        					filewriter.write(currentMapData[i]+"\n");
+        				}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

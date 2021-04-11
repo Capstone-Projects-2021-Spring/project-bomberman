@@ -199,65 +199,154 @@ public class bombermanServer{
              		        }
              		        myReader.close();
              		        
+             		       String allmaps = "";
              		        //Create 100 maps
-             		        String allmaps = "";
-             		        for(int v = 0; v < 100; v++) {
-             		        	String [] entries = mapString.split(",");
-                  		        for(int i = 0; i < entries.length; i ++) {
-                  		        	if(!entries[i].contains("-")) {
-                  		        		try {
-                  		        			int entry = Integer.parseInt(entries[i]);
-                  		        			entries[i] = "-1";
-                  		        		}
-                  		        		catch (Exception e) {}
-                  		        	}
-                  		        }
-	             		        int toSet = 1;
-	             		        Random rand = new Random();
-	             		        while (toSet <= players.size()) {
-	             		        	for(int i = 0; i < entries.length; i ++) {
-	             		        		int random = rand.nextInt(100);
-	             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
-	             		        			entries[i] = "" + toSet;
-	             		        			toSet++;
-	             		        		}
-	             		        		if(toSet > players.size()) {
-	             		        			break;
-	             		        		}	
-	             		        	}
+             		        if(!randomGen) {
+	             		        for(int v = 0; v < 100; v++) {
+	             		        	String [] entries = mapString.split(",");
+	                  		        for(int i = 0; i < entries.length; i ++) {
+	                  		        	if(!entries[i].contains("-")) {
+	                  		        		try {
+	                  		        			int entry = Integer.parseInt(entries[i]);
+	                  		        			entries[i] = "-1";
+	                  		        		}
+	                  		        		catch (Exception e) {}
+	                  		        	}
+	                  		        }
+		             		        int toSet = 1;
+		             		        Random rand = new Random();
+		             		        while (toSet <= players.size()) {
+		             		        	for(int i = 0; i < entries.length; i ++) {
+		             		        		int random = rand.nextInt(100);
+		             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
+		             		        			entries[i] = "" + toSet;
+		             		        			toSet++;
+		             		        		}
+		             		        		if(toSet > players.size()) {
+		             		        			break;
+		             		        		}	
+		             		        	}
+		             		        }
+		             		        
+		             		       if(powerup) { 
+			             		       for(int i = 0; i < entries.length; i ++) {
+			             		    	    if(!entries[i].contentEquals("S")) {
+			             		    	    	continue;
+			             		    	    }
+			        		        		int random = rand.nextInt(100);
+			        		        		if(random < 100 && random >= 97) {
+			        		        			entries[i] = "PB";
+			        		        		}
+			        		        		if(random < 97 && random >= 94) {
+			        		        			entries[i] = "PU";
+			        		        		}
+			        		        		if(random < 94 && random >= 91) {
+			        		        			entries[i] = "PM";
+			        		        		}
+			        		        		if(random < 91 && random >= 88) {
+			        		        			entries[i] = "PS";
+			        		        		}
+			        		        		if(random < 88 && random >= 85) {
+			        		        			entries[i] = "PP";
+			        		        		}
+			        		        		if(random < 85 && random >= 82) {
+			        		        			entries[i] = "PK";
+			        		        		}
+			        		        		if(random < 82 && random >= 79) {
+			        		        			entries[i] = "PT";
+			        		        		}
+			        		        		
+			        		        	}
+		             		        }
+		             		        allmaps += String.join(",",entries) + "X";
 	             		        }
-	             		        
-	             		       if(powerup) { 
-		             		       for(int i = 0; i < entries.length; i ++) {
-		             		    	    if(!entries[i].contentEquals("S")) {
-		             		    	    	continue;
-		             		    	    }
-		        		        		int random = rand.nextInt(100);
-		        		        		if(random < 100 && random >= 97) {
-		        		        			entries[i] = "PB";
-		        		        		}
-		        		        		if(random < 97 && random >= 94) {
-		        		        			entries[i] = "PU";
-		        		        		}
-		        		        		if(random < 94 && random >= 91) {
-		        		        			entries[i] = "PM";
-		        		        		}
-		        		        		if(random < 91 && random >= 88) {
-		        		        			entries[i] = "PS";
-		        		        		}
-		        		        		if(random < 88 && random >= 85) {
-		        		        			entries[i] = "PP";
-		        		        		}
-		        		        		if(random < 85 && random >= 82) {
-		        		        			entries[i] = "PK";
-		        		        		}
-		        		        		if(random < 82 && random >= 79) {
-		        		        			entries[i] = "PT";
-		        		        		}
-		        		        		
-		        		        	}
+             		        }
+             		        else {
+             		        	//Randomly generate the maps
+             		        	Random rand = new Random();
+             		        	for(int v = 0; v < 100; v++) {
+             		        		int position1 = 0;
+             		        		String[] entries = new String[1500];
+	                  		        for(int i = 0; i < 50; i ++) {
+	                  		        	entries[position1] = "H";
+	                  		        	position1++;
+	                  		        }
+	                  		        entries[49] += "N";
+	                  		        for(int j = 0; j < 28; j++) {
+	                  		        	for(int i = 0; i < 50; i++) {
+	                  		        		if(i == 0) {
+	                  		        			entries[position1] = "H";
+	                  		        		}
+	                  		        		else if (i == 49) {
+	                  		        			entries[position1] = "HN";
+	                  		        		}
+	                  		        		else {
+	                  		        			int random = rand.nextInt(100);
+	                  		        			if(random <= 40 && random > 10) {
+	                  		        				entries[position1] = "S";
+	                  		        			}
+	                  		        			else if(random <= 10) {
+	                  		        				entries[position1] = "H";
+	                  		        			}
+	                  		        			else {
+	                  		        				entries[position1] = "-1";
+	                  		        			}
+	                  		        			
+	                  		        		}
+	                  		        		position1++;
+	                  		        	}
+	                  		        }
+	                  		        for(int i = 0; i < 50; i ++) {
+	                  		        	entries[position1] = "H";
+	                  		        	position1++;
+	                  		        }
+	                  		        entries[1499] += "N";
+		             		        int toSet = 1;
+		             		        while (toSet <= players.size()) {
+		             		        	for(int i = 0; i < entries.length; i ++) {
+		             		        		int random = rand.nextInt(100);
+		             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
+		             		        			entries[i] = "" + toSet;
+		             		        			toSet++;
+		             		        		}
+		             		        		if(toSet > players.size()) {
+		             		        			break;
+		             		        		}	
+		             		        	}
+		             		        }
+		             		        
+		             		       if(powerup) { 
+			             		       for(int i = 0; i < entries.length; i ++) {
+			             		    	    if(!entries[i].contentEquals("S")) {
+			             		    	    	continue;
+			             		    	    }
+			        		        		int random = rand.nextInt(100);
+			        		        		if(random < 100 && random >= 97) {
+			        		        			entries[i] = "PB";
+			        		        		}
+			        		        		if(random < 97 && random >= 94) {
+			        		        			entries[i] = "PU";
+			        		        		}
+			        		        		if(random < 94 && random >= 91) {
+			        		        			entries[i] = "PM";
+			        		        		}
+			        		        		if(random < 91 && random >= 88) {
+			        		        			entries[i] = "PS";
+			        		        		}
+			        		        		if(random < 88 && random >= 85) {
+			        		        			entries[i] = "PP";
+			        		        		}
+			        		        		if(random < 85 && random >= 82) {
+			        		        			entries[i] = "PK";
+			        		        		}
+			        		        		if(random < 82 && random >= 79) {
+			        		        			entries[i] = "PT";
+			        		        		}
+			        		        		
+			        		        	}
+		             		        }
+		             		        allmaps += String.join(",",entries) + "X";
 	             		        }
-	             		        allmaps += String.join(",",entries) + "X";
              		        }
              		        
                             int q = 0;
@@ -313,6 +402,17 @@ public class bombermanServer{
                         }
                         for (PrintWriter writer : socketWriters) {
                             writer.println("POWERUP " + powerup);
+                        }
+                    }
+                    else if (input.startsWith("!RANDOM")){
+                    	if(randomGen == true){
+                            randomGen = false;
+                        }
+                        else{
+                            randomGen = true;
+                        }
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("RANDOM " + randomGen);
                         }
                     }
                     else{

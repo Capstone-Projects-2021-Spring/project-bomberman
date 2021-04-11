@@ -189,6 +189,10 @@ public class bomberClient{
                 Boolean powerup = Boolean.parseBoolean(line.replace("POWERUP ",""));
                 messageArea.append("**SERVER**: Powerup set to " + powerup + "\n");
             }
+            else if (line.startsWith("RANDOM ")) {
+            	Boolean randomGen = Boolean.parseBoolean(line.replace("RANDOM ",""));
+                messageArea.append("**SERVER**: Random map generation set to " + randomGen + "\n");
+            }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");
                 for(int z = 0; z < model.getSize(); z++){
@@ -213,7 +217,12 @@ public class bomberClient{
 		}
 		
 		for(int i = 0; i < currentMapData.length; i++) {
-			filewriter.write(currentMapData[i]+"\n");
+			if(currentMapData[i].startsWith(",")) {
+				filewriter.write(currentMapData[i].substring(1)+"\n");
+			}
+			else {
+				filewriter.write(currentMapData[i]+"\n");
+			}
 		}
 		filewriter.close();
         
