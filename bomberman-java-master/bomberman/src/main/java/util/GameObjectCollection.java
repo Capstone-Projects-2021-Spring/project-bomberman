@@ -47,6 +47,7 @@ public class GameObjectCollection {
         bomberObjects.add(spawnObj);
     }
 
+
     /**
      * Sort object lists by y position. Used to draw objects in order according to y position.
      */
