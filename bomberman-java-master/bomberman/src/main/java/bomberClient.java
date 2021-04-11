@@ -223,10 +223,10 @@ public class bomberClient{
 
         GamePanel game;
         try {
-            game = new GamePanel("./currentMap.csv",out,in,player,mapData);
+            game = new GamePanel("./currentMap.csv",out,in,player,mapData,messageArea);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null,out,in,player,mapData);
+            game = new GamePanel(null,out,in,player,mapData,messageArea);
         }
 
         game.initMultiplayer();

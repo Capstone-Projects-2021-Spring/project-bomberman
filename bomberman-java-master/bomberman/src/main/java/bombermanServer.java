@@ -40,6 +40,8 @@ public class bombermanServer{
     private static Boolean crazybombs = false;
     //power up status
     private static Boolean powerup = false;
+    //activate random map generation
+    private static Boolean randomGen = false;
     
     //AWS Credentials
     private static BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");

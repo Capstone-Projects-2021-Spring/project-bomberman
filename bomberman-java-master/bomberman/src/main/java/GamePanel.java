@@ -71,6 +71,7 @@ public class GamePanel extends JPanel implements Runnable {
     
     private static String[] maps = null;
     private static int currentMap = 1;
+    private JTextArea messageArea;
 
     /**
      * Construct game panel and load in a map file.
@@ -102,7 +103,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(new GameController(this));
         
     }
-    GamePanel(String filename, PrintWriter out, BufferedReader in, int player, String[] maps){//online multiplayer
+    GamePanel(String filename, PrintWriter out, BufferedReader in, int player, String[] maps, JTextArea messageArea){//online multiplayer
         this.GameType = 0;//multi player
         this.SOFTWALL_RATE = 1;
         this.setFocusable(true);
@@ -112,6 +113,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.in = in;
         this.player = player;
         this.maps = maps;
+        this.messageArea = messageArea;
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
@@ -918,37 +920,38 @@ public class GamePanel extends JPanel implements Runnable {
         	person = Integer.parseInt(parts[0]);
         	action = parts[1];
         }
+        messageArea.append("**SERVER**: " + line + "\n");
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
                 if(obj instanceof Bomber) {
                 	if(((Player) obj).player == person){
-	                	if(action.equals("Left")) {
+	                	if(action.equals("Left Pressed")) {
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
 	                	}
-	                	else if(action.equals("Right")) {
+	                	else if(action.equals("Right Pressed")) {
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                	}
-	                	else if(action.equals("Up")) {
+	                	else if(action.equals("Up Pressed")) {
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
 	                	}
-	                	else if(action.equals("Down")) {
+	                	else if(action.equals("Down Pressed")) {
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                	}
-	                	else if(action.equals("Bomb")) {
+	                	else if(action.equals("Bomb Placed")) {
 	                		((Bomber) obj).plantBomb();
 	                		((Bomber) obj).plantBomb();
 	                		((Bomber) obj).plantBomb();
