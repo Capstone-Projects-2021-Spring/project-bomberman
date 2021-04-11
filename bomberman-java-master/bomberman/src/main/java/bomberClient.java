@@ -166,8 +166,7 @@ public class bomberClient{
             else if (line.startsWith("CanStart")) {
             	String [] parts = line.replace("CanStart ","").split(" ");
                 player = Integer.parseInt(parts[0]);
-                mapData = parts[1].split("N");
-                System.out.println(mapData.toString());
+                mapData = parts[1].split("X");
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
             }
@@ -204,6 +203,7 @@ public class bomberClient{
         }
         
         //Create map file
+        String[] currentMapData = mapData[0].split("N");
         File file = new File("./currentMap.csv");      
 		FileWriter filewriter = null;
 		try {
@@ -212,8 +212,8 @@ public class bomberClient{
 			e.printStackTrace();
 		}
 		
-		for(int i = 0; i < mapData.length; i++) {
-			filewriter.write(mapData[i]+"\n");
+		for(int i = 0; i < currentMapData.length; i++) {
+			filewriter.write(currentMapData[i]+"\n");
 		}
 		filewriter.close();
         
@@ -223,10 +223,10 @@ public class bomberClient{
 
         GamePanel game;
         try {
-            game = new GamePanel("./currentMap.csv",out,in,player);
+            game = new GamePanel("./currentMap.csv",out,in,player,mapData);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null,out,in,player);
+            game = new GamePanel(null,out,in,player,mapData);
         }
 
         game.initMultiplayer();

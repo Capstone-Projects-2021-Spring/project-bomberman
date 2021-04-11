@@ -16,7 +16,10 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -65,6 +68,9 @@ public class GamePanel extends JPanel implements Runnable {
     
     //private int enemyAi; //used for enemy ID for enemy generation
     private static double SOFTWALL_RATE;
+    
+    private static String[] maps = null;
+    private static int currentMap = 1;
 
     /**
      * Construct game panel and load in a map file.
@@ -96,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(new GameController(this));
         
     }
-    GamePanel(String filename, PrintWriter out, BufferedReader in, int player){//online multiplayer
+    GamePanel(String filename, PrintWriter out, BufferedReader in, int player, String[] maps){//online multiplayer
         this.GameType = 0;//multi player
         this.SOFTWALL_RATE = 1;
         this.setFocusable(true);
@@ -105,6 +111,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.out = out;
         this.in = in;
         this.player = player;
+        this.maps = maps;
         this.bg = ResourceCollection.Images.BACKGROUND.getImage();
         this.loadMapFile(filename);
         this.addKeyListener(new GameController(this));
@@ -674,6 +681,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
     private void resetMapMultiplayer(){
         GameObjectCollection.init();
+        this.loadMapFile("./currentMap.csv");
         this.generateMapMultiplayer(player);
         System.gc();
     }
@@ -815,6 +823,8 @@ public class GamePanel extends JPanel implements Runnable {
             // Checking size of array list because when a bomber dies, they do not immediately get deleted
             // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
             if (GameObjectCollection.bomberObjects.size() <= 1) {
+            	
+            	
                 this.resetMap();
                 this.gameHUD.matchSet = false;
             }
@@ -1007,6 +1017,36 @@ public class GamePanel extends JPanel implements Runnable {
             // Checking size of array list because when a bomber dies, they do not immediately get deleted
             // This makes it so that the next round doesn't start until the winner is the only bomber object on the map
             if (GameObjectCollection.bomberObjects.size() <= 1) {
+            	String[] currentMapData = maps[currentMap].split("N");
+                File file = new File("./currentMap.csv");      
+        		FileWriter filewriter = null;
+    			try {
+					filewriter = new FileWriter(file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		
+        		for(int i = 0; i < currentMapData.length; i++) {
+        			try {
+						filewriter.write(currentMapData[i]+"\n");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        		}
+        		try {
+					filewriter.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        		if(currentMap == 99) {
+        			currentMap = 0;
+        		}
+        		else {
+        			currentMap++;
+        		}
                 this.resetMapMultiplayer();
                 this.gameHUD.matchSet = false;
             }
