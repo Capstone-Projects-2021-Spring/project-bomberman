@@ -19,6 +19,7 @@ public class GameObjectCollection {
     public static ArrayList<TileObject> tileObjects;
     public static ArrayList<Explosion> explosionObjects;
     public static ArrayList<Bomber> bomberObjects;
+
     public static ArrayList<Ai> enemyObjects;
 
     /**
@@ -55,6 +56,7 @@ public class GameObjectCollection {
     public static void spawn(Ai spawnObj){
         enemyObjects.add(spawnObj);
     }
+
 
     /**
      * Sort object lists by y position. Used to draw objects in order according to y position.

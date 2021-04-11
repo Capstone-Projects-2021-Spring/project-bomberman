@@ -12,7 +12,6 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-import Stand_alone_map_gene.S_A_M_G_1;
 
 import java.awt.*;
 import java.time.LocalDateTime;
@@ -147,8 +146,7 @@ public class GameLauncher extends JFrame{
               clip.stop();
               clipSingle.start();
               clipSingle.loop(Clip.LOOP_CONTINUOUSLY);
-              S_A_M_G_1 rand = new S_A_M_G_1();
-              rand.rand_map();
+              S_A_M_G_1.rand_map_10();
               GamePanel game;
               String singlePlayer = "single";
               ResourceCollection.readFileSingle(); // dont need this method when loading next map
@@ -213,7 +211,7 @@ public class GameLauncher extends JFrame{
             	
                 //Create Frame
                 JFrame frame = new JFrame("Bomber Man");
-                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 //Get the map names

@@ -35,12 +35,12 @@ public class S_A_M_G_1 {
         return index;
     }
 
-    public static void rand_map() {
+    public static void rand_map(String s) {
 
         Random rand = new Random();
         int length = 21;
 
-        try ( PrintWriter writer = new PrintWriter(new File("src\\main\\resources\\default.csv"))) {
+        try ( PrintWriter writer = new PrintWriter(new File(s))) {
 
             StringBuilder sb = new StringBuilder();
             
@@ -50,7 +50,7 @@ public class S_A_M_G_1 {
             for (int i = 0; i < player_count; i++) {
                 while (true) {
 
-                    int rand_row = rand.nextInt(length)-1;
+                    int rand_row = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[0], rand_row)) {
                         continue;
                     }
@@ -58,7 +58,7 @@ public class S_A_M_G_1 {
                     break;
                 }
                 while (true) {
-                    int rand_col = rand.nextInt(length) - 1;
+                    int rand_col = (rand.nextInt(length) / 4) * (i+1) + 1;
                     if (contains(location[1], rand_col)) {
                         continue;
                     }
@@ -89,15 +89,14 @@ public class S_A_M_G_1 {
                         if (player_i == player_j) {
                             //System.out.println(player_count);
                             if(player_j==1){
-                            sb.append(Integer.toString(1));
+                            sb.append(Integer.toString(player_j));
                             sb.append(",");
                             j++;
                             }else{
-                               sb.append(Integer.toString(3));
+                               sb.append("A1");
                                 sb.append(",");
                                 j++; 
                             }
-
                             if (location[1][player_j] <= length - 2) {
                                 sb.append("-1,");
                                 j++;
@@ -158,5 +157,12 @@ public class S_A_M_G_1 {
             System.out.println(e.getMessage());
         }
 
+    }
+    public static void rand_map_10(){
+        //i for map name
+            for(int i=1; i<4 ;i++){
+            String s = "src\\main\\resources\\singlemap"+String.valueOf(i)+".csv";
+            rand_map(s);
+            }
     }
 }
