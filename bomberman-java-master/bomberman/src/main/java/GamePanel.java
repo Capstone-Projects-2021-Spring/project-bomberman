@@ -59,6 +59,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls2;
     private HashMap<Integer, Key> controls3;
     private HashMap<Integer, Key> controls4;
+
     
     //private int enemyAi; //used for enemy ID for enemy generation
     private static double SOFTWALL_RATE;
@@ -221,21 +222,17 @@ public class GamePanel extends JPanel implements Runnable {
         for (int y = 0; y < this.mapHeight; y++) {
             for (int x = 0; x < this.mapWidth; x++) {
                 switch (mapLayout.get(y).get(x)) {
-                    case ("S"):     // Soft wall; breakable
-                        if (Math.random() < SOFTWALL_RATE) {
+                    case ("S"):
+
                             BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
                             Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
                             GameObjectCollection.spawn(softWall);
+
                             softwallnumber++;
                         }
                         break;
-                    
-                    case ("GS"):      //Generate Soft wall
-                        BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
-                        Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
-                        GameObjectCollection.spawn(softWall);
-                        break;
 
+                   
                     case ("H"):     // Hard wall; unbreakable
                         // Code used to choose tile based on adjacent tiles
                         int code = 0;
@@ -285,6 +282,7 @@ public class GamePanel extends JPanel implements Runnable {
 
                     case ("4"):     // Player 4; Bomber
                         BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
+
                         Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType);
                         PlayerController playerController4 = new PlayerController(player4, this.controls4);
                         this.addKeyListener(playerController4);
@@ -518,6 +516,7 @@ public class GamePanel extends JPanel implements Runnable {
                     case ("4"):     // Player 4; Bomber
                         BufferedImage[][] sprMapP4 = ResourceCollection.SpriteMaps.PLAYER_4.getSprites();
                         Bomber player4 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP4, GameType,out,3);
+
                         PlayerController playerController4 = new PlayerController(player4, this.controls4);
                         this.addKeyListener(playerController4);
                         this.gameHUD.assignPlayer(player4, 3);
