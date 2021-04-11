@@ -570,16 +570,37 @@ public class Bomber extends Player {
             System.out.println();
         }
         
-        for(int j = 0; j <= tileObj.size() - 1; j++){
+        /*for(int j = 0; j <= tileObj.size() - 1; j++){
             System.out.println("Object : " + (tileObj.get(j))+ "        X position: "+ tileObj.get(j).position.x/32.0 + "       Y position: " +tileObj.get(j).position.y/32.0 );
-            System.out.println("Int Tile List at " +  j + " = " + tileObjInt.get(j));
-        }
-        
-        System.out.println(tileObjInt.toString());
+            //System.out.println("Int Tile List at " +  j + " = " + tileObjInt.get(j));
+        }*/
+        int[] closest=findClosest(this.position,tileObj);
+        System.out.println("Closest x:"+closest[0]+"Closest y:"+closest[1]);
         System.out.println(tileObj.size());
         System.out.println(tileObjInt.size());
         System.out.println(GameObjectCollection.tileObjects.size());
 
+    }
+    //take bot postion as input
+    private int[] findClosest(Point2D.Float position,ArrayList<TileObject> tileObj){
+        int x=-1,y=-1;//-1 if not find anything
+        double sd=100000000;
+        for(int j = 0; j <= tileObj.size() - 1; j++){
+            if(tileObj.get(j).isBreakable()){
+                float xdiffrence=Math.abs(position.x-tileObj.get(j).position.x);
+                float xdffpow2=xdiffrence*xdiffrence;
+                float ydiffrence=Math.abs(position.y-tileObj.get(j).position.y);
+                float ydffpow2=ydiffrence*ydiffrence;
+                double d = Math.sqrt(xdffpow2+ydffpow2);
+                if(d<sd){
+                    sd=d;
+                    x=(int)tileObj.get(j).position.x/32;
+                    y=(int)tileObj.get(j).position.y/32;
+                }
+            }
+        }
+        int[] arrayIndex={x,y}; 
+        return arrayIndex;    
     }
 
 
