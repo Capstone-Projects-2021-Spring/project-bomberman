@@ -108,7 +108,7 @@ public class bomberClient{
     void run() throws IOException {
 
         // Make connection and initialize streams
-        String serverAddress = "3.14.63.65";
+        String serverAddress = "127.0.0.1";
         // Set up socket and IO streams
         Socket socket = new Socket(serverAddress, 80);
         in = new BufferedReader(new InputStreamReader(
@@ -159,6 +159,13 @@ public class bomberClient{
                 player = Integer.parseInt(line.replace("CanStart ",""));
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
+            }
+            else if (line.startsWith("MAPOPTIONS ")) {
+                String[] maps = line.replace("MAPOPTIONS ","").split(",");
+                messageArea.append("**SERVER**: Map Options:\n");
+                for(int i = 0; i < maps.length; i++){
+                    messageArea.append(maps[i] + "\n");
+                }
             }
             else if (line.startsWith("MAPSET ")) {
                 map = line.replace("MAPSET ","");
