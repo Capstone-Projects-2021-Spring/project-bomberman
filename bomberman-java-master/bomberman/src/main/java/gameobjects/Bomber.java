@@ -461,13 +461,6 @@ public class Bomber extends Player {
                 for (float j =0; j<= Walls.get(0); j+=1.0 ) {
                     ExecuteMovement(this.position.y, Walls.get(0), currentY);
                 }
-
-
-
-
-
-
-
         this.resting = true;
         Walls.clear();
         }//end of if(resting)
@@ -548,28 +541,33 @@ public class Bomber extends Player {
         for (int i = 1; i <= GameObjectCollection.tileObjects.size() - 1; i++) {
             if (GameObjectCollection.tileObjects.get(i).position.y / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.y / 32 <= yMax -1
                 && GameObjectCollection.tileObjects.get(i).position.x / 32 >= 1 && GameObjectCollection.tileObjects.get(i).position.x / 32 <= xMax -1 ){
-                
+                int x = (int)(GameObjectCollection.tileObjects.get(i).position.x/32);
+                int y = (int)(GameObjectCollection.tileObjects.get(i).position.y/32)-1;
+                System.out.println("x:"+x);
+                System.out.println("Y:"+y);
                 tileObj.add(GameObjectCollection.tileObjects.get(i));
 
                 if(GameObjectCollection.tileObjects.get(i).isBreakable()) {
-                    tileObjInt.set((i-1),1);
+                    tileObjInt.set(y*((int)xMax-1)+x-1,1);
 
                 }
 
                 else if(!GameObjectCollection.tileObjects.get(i).isBreakable()){
-                    tileObjInt.set((i-1),2);
+                    tileObjInt.set(y*((int)xMax-1)+x-1,2);
                 }
 
             }
         }
         
-        for(int i=0; i<(xMax-1);i++){
-            for(int j=0; j<(yMax-1);j++){
-                if(tileObjInt.get(i*((int)yMax-1)+j)==0){
+        for(int i=0; i<(yMax-1);i++){
+            for(int j=0; j<(xMax-1);j++){
+                if(tileObjInt.get(i*((int)xMax-1)+j)==0){
                     int[] empty = {i,j};
                     emptyA.add(empty);
-                }
+                } 
+                System.out.print(tileObjInt.get(i*((int)xMax-1)+j)+" .");
             }
+            System.out.println();
         }
         
         for(int j = 0; j <= tileObj.size() - 1; j++){
