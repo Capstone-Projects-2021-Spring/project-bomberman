@@ -274,33 +274,20 @@ public class Bomber extends Player {
             System.out.println("Bot's current y position is " + this.position.y);
             System.out.println("Current status of Resting is  " + this.resting);
             System.out.println("Current status of bomb_planted is " + this.bomb_planted);
-            counter++;
-           // if (counter == 10  ) {
-                // IF were resting we need a new movement
-                if (!this.isDead() && resting) {
-                    Generate_movement();
+            System.out.println("Current number of bombs available is " + this.bombAmmo);
 
-                }
-                else if (this.bomb_planted){
-                    System.out.println("RUNNING AWAY");
-                    runAway();
+            if (this.bomb_planted){
+                System.out.println("RUNNING AWAY");
+                moveDown();
+                //runAway();
+                if(this.maxBombs == this.bombAmmo){
                     this.bomb_planted = false;
-
                 }
-
-            // counter =0;
-
-
-            //}
-
-
+            }
+            else if(!this.isDead() && resting){
+                Generate_movement();
+            }
         }
-
-
-
-
-
-
     }
 
     @Override
@@ -449,18 +436,18 @@ public class Bomber extends Player {
                     }
                 }
 
-             System.out.println("Breakable walls on the map  = " + Walls.size());
-             Collections.sort(Walls); //Sorts in descending order
+            System.out.println("Breakable walls above  = " + Walls.size());
+            Collections.sort(Walls); //Sorts in descending order
 
-
-             System.out.println("Distance from closest breakable wall = " + Walls.get(0));
-             System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
-             float currentY = this.position.y;
-
+            if(Walls.size() > 0){
+                System.out.println("Distance from closest breakable wall = " + Walls.get(0));
+                System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
+                float currentY = this.position.y;
 
                 for (float j =0; j<= Walls.get(0); j+=1.0 ) {
                     ExecuteMovement(this.position.y, Walls.get(0), currentY);
                 }
+            }
         this.resting = true;
         Walls.clear();
         }//end of if(resting)
