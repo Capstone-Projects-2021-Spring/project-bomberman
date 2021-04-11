@@ -33,7 +33,7 @@ public class GameLauncher extends JFrame{
     static GameWindow window;
     
     public static String mapBlock = "";
-    public static String[][] map = new String[32][32];
+    public static String[][] map;
     public static Boolean spawn1Set = false;
     public static Boolean spawn2Set = false;
     public static Boolean spawn3Set = false;
@@ -122,10 +122,13 @@ public class GameLauncher extends JFrame{
                 clipLocal.loop(Clip.LOOP_CONTINUOUSLY);
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
+                
+                JFrame frame2 = new JFrame();
+                String mapname = JOptionPane.showInputDialog(frame2,"Map Name","Map Name",JOptionPane.PLAIN_MESSAGE);
 
                 GamePanel game;
                 try {
-                    game = new GamePanel("../Maps/cool_map.csv");
+                    game = new GamePanel("../Maps/" + mapname);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.err.println(e + ": Program args not given");
                     game = new GamePanel(null);
@@ -400,14 +403,22 @@ public class GameLauncher extends JFrame{
                 clip.stop();
                 clipMapCreator.start();
                 clipMapCreator.loop(Clip.LOOP_CONTINUOUSLY);
+                
+                JFrame frame2 = new JFrame();
+                String mapsizes = JOptionPane.showInputDialog(frame2,"Map Size","Please enter the map size as rows,columns",JOptionPane.PLAIN_MESSAGE);
+                String[] mapsizes2 = mapsizes.split(",");
+                int xsize = Integer.parseInt(mapsizes2[0]);
+                int ysize = Integer.parseInt(mapsizes2[1]);
+                map = new String[xsize][ysize];
             	//Create Frame
                 JFrame frame = new JFrame("Bomber Man");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
                 frame.setVisible(true);
+                
 
                 //Configure Gridlayout
-                GridLayout mapGridLayout = new GridLayout(32,32);
+                GridLayout mapGridLayout = new GridLayout(xsize,ysize);
 
                 //Create Map Panel
                 JPanel mapPanel = new JPanel();
@@ -416,10 +427,10 @@ public class GameLauncher extends JFrame{
                 mapPanel.setLayout(mapGridLayout);
 
                 //Create buttons for the map panel
-                for(int i = 0; i < 32; i++){
-                    for(int j = 0; j < 32; j++){
+                for(int i = 0; i < xsize; i++){
+                    for(int j = 0; j < ysize; j++){
 
-                        if(i == 0 || j == 0 || i == 31 || j == 31){
+                        if(i == 0 || j == 0 || i == xsize-1 || j == ysize-1){
                             JButton temp = new JButton("H");
                             //Add the button with listener to grid panel
                             mapPanel.add(temp);
@@ -559,7 +570,7 @@ public class GameLauncher extends JFrame{
                 JPanel blockTypePanel = new JPanel();
 
                 //Configure GridLayour
-                GridLayout blockTypeLayout = new GridLayout(0,7);
+                GridLayout blockTypeLayout = new GridLayout(2,14);
 
                 //Set the layout for the panel
                 blockTypePanel.setLayout(blockTypeLayout);
@@ -619,6 +630,55 @@ public class GameLauncher extends JFrame{
                           mapBlock = "EB";
                     }
                 });
+                
+                JButton PB = new JButton("PB");
+                PB.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PB";
+                    }
+                });
+                
+                JButton PU = new JButton("PU");
+                PU.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PU";
+                    }
+                });
+                
+                JButton PM = new JButton("PM");
+                PM.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PM";
+                    }
+                });
+                
+                JButton PS = new JButton("PS");
+                PS.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PS";
+                    }
+                });
+                
+                JButton PP = new JButton("PP");
+                PP.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PP";
+                    }
+                });
+                
+                JButton PK = new JButton("PK");
+                PK.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PK";
+                    }
+                });
+                
+                JButton PT = new JButton("PT");
+                PT.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent ae) {
+                          mapBlock = "PT";
+                    }
+                });
 
                 //Add the buttons to the panel
                 blockTypePanel.add(firmWall);
@@ -628,6 +688,13 @@ public class GameLauncher extends JFrame{
                 blockTypePanel.add(spawnThree);
                 blockTypePanel.add(spawnFour);
                 blockTypePanel.add(enemyBallon);
+                blockTypePanel.add(PB);
+                blockTypePanel.add(PU);
+                blockTypePanel.add(PM);
+                blockTypePanel.add(PS);
+                blockTypePanel.add(PP);
+                blockTypePanel.add(PK);
+                blockTypePanel.add(PT);
 
                 //Panel for map name and submission
                 JPanel submitPanel = new JPanel();
@@ -640,8 +707,8 @@ public class GameLauncher extends JFrame{
                           String name = mapName.getText();
                           try {
                             FileWriter writer = new FileWriter("../maps/" + name + ".csv");
-                            for(int i = 0; i < 32; i++){
-                                for(int j = 0; j < 32; j++){
+                            for(int i = 0; i < xsize; i++){
+                                for(int j = 0; j < ysize; j++){
                                     String currentTile = map[i][j];
                                     if(currentTile == "H"){
                                         writer.write("H,");
@@ -672,7 +739,7 @@ public class GameLauncher extends JFrame{
                             }
                             writer.close();
                             //Clear Variables in case they want to make another
-                            map = new String[32][32];
+                            map = new String[xsize][ysize];
                             spawn1Set = false;
                             spawn2Set = false;
                             spawn3Set = false;

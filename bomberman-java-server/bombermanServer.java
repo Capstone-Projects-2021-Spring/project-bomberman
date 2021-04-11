@@ -17,6 +17,10 @@ public class bombermanServer{
     private static ArrayList<Boolean> ready = new ArrayList<Boolean>();
     //output object for each client
     private static HashSet<PrintWriter> socketWriters = new HashSet<PrintWriter>();
+    //map to be played
+    private static String map = "cool_map.csv";
+    //crazy bomb status
+    private static Boolean crazybombs = false;
 
     //main methid
     public static void main(String[] args) throws Exception {
@@ -133,6 +137,28 @@ public class bombermanServer{
                         System.out.println(input);
                         for (PrintWriter writer : socketWriters) {
                             writer.println(input);
+                        }
+                    }
+                    else if (input.startsWith("SETMAP ")){
+                        map = input.replace("SETMAP ","");
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("MAPSET " + map);
+                        }
+                    }
+                    else if (input.startsWith("GETMAP ")){
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("MAPSET " + map);
+                        }
+                    }
+                    else if (input.startsWith("CRAZYBOMBS")){
+                        if(crazybombs == true){
+                            crazybombs = false;
+                        }
+                        else{
+                            crazybombs = true;
+                        }
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("CRAZYBOMBS " + crazybombs);
                         }
                     }
                     else{
