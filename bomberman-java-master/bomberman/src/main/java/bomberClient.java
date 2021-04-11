@@ -67,7 +67,7 @@ public class bomberClient{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(textField.getText().equalsIgnoreCase("!help")) {
-            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!CRAZYBOMBS\n");
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!CRAZYBOMBS\n!POWERUP\n");
             	}
             	else{
             		out.println(textField.getText());
@@ -185,6 +185,10 @@ public class bomberClient{
             else if (line.startsWith("CRAZYBOMBS ")) {
                 crazybombs = Boolean.parseBoolean(line.replace("CRAZYBOMBS ",""));
                 messageArea.append("**SERVER**: Crazy bombs set to " + crazybombs + "\n");
+            }
+            else if (line.startsWith("POWERUP ")) {
+                Boolean powerup = Boolean.parseBoolean(line.replace("POWERUP ",""));
+                messageArea.append("**SERVER**: Powerup set to " + powerup + "\n");
             }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");

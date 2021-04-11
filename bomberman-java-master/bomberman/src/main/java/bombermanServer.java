@@ -38,6 +38,8 @@ public class bombermanServer{
     private static String map = "cool_map.csv";
     //crazy bomb status
     private static Boolean crazybombs = false;
+    //power up status
+    private static Boolean powerup = false;
     
     //AWS Credentials
     private static BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
@@ -209,7 +211,7 @@ public class bombermanServer{
              		        while (toSet <= players.size()) {
              		        	for(int i = 0; i < entries.length; i ++) {
              		        		int random = rand.nextInt(100);
-             		        		if(random < 10 && !entries[i].equals("H") && !entries[i].contains("N")) {
+             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
              		        			entries[i] = "" + toSet;
              		        			toSet++;
              		        		}
@@ -217,6 +219,37 @@ public class bombermanServer{
              		        			break;
              		        		}	
              		        	}
+             		        }
+             		        
+             		       if(powerup) { 
+	             		       for(int i = 0; i < entries.length; i ++) {
+	             		    	    if(!entries[i].contentEquals("S")) {
+	             		    	    	continue;
+	             		    	    }
+	        		        		int random = rand.nextInt(100);
+	        		        		if(random < 100 && random >= 97) {
+	        		        			entries[i] = "PB";
+	        		        		}
+	        		        		if(random < 97 && random >= 94) {
+	        		        			entries[i] = "PU";
+	        		        		}
+	        		        		if(random < 94 && random >= 91) {
+	        		        			entries[i] = "PM";
+	        		        		}
+	        		        		if(random < 91 && random >= 88) {
+	        		        			entries[i] = "PS";
+	        		        		}
+	        		        		if(random < 88 && random >= 85) {
+	        		        			entries[i] = "PP";
+	        		        		}
+	        		        		if(random < 85 && random >= 82) {
+	        		        			entries[i] = "PK";
+	        		        		}
+	        		        		if(random < 82 && random >= 79) {
+	        		        			entries[i] = "PT";
+	        		        		}
+	        		        		
+	        		        	}
              		        }
              		        
                             int q = 0;
@@ -242,7 +275,7 @@ public class bombermanServer{
                         }
                     }
                     else if (input.startsWith("!SETMAP ")){
-                        map = input.replace("SETMAP ","");
+                        map = input.replace("!SETMAP ","");
                         for (PrintWriter writer : socketWriters) {
                             writer.println("MAPSET " + map);
                         }
@@ -261,6 +294,17 @@ public class bombermanServer{
                         }
                         for (PrintWriter writer : socketWriters) {
                             writer.println("CRAZYBOMBS " + crazybombs);
+                        }
+                    }
+                    else if (input.startsWith("!POWERUP")){
+                    	if(powerup == true){
+                            powerup = false;
+                        }
+                        else{
+                            powerup = true;
+                        }
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("POWERUP " + powerup);
                         }
                     }
                     else{
