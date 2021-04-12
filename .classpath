@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="bomberman-java-master/bomberman/src/main/java"/>
+	<classpathentry kind="src" path="bomberman-java-master/maps"/>
+	<classpathentry kind="src" path="bomberman-java-server"/>
+	<classpathentry kind="lib" path="bomberman-java-master/bomberman/target/csc413-secondgame-blai30-1.0.jar"/>
+	<classpathentry kind="lib" path="bomberman-java-master/jar/bomberman.jar"/>
+	<classpathentry kind="lib" path="bomberman-java-master/jar/test.jar"/>
+	<classpathentry kind="output" path="bomberman-java-master/bomberman/target/classes"/>
+</classpath>

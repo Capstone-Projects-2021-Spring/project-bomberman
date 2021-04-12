@@ -66,7 +66,7 @@ public class GameLauncher extends JFrame{
         mainMenuPanel.add(mapManagerButton);
         mainMenuPanel.add(mapCreatorButton);
 
-        //Initalize sound files
+        /*Initalize sound files
         String menuMusicPath = "./src/main/resources/awesomeness.wav";
         String singleMusicPath = "./src/main/resources/solo.wav";
         String localMusicPath = "./src/main/resources/local.wav";
@@ -113,13 +113,14 @@ public class GameLauncher extends JFrame{
         //Turns on menu music
         clip.start();
         clip.loop(Clip.LOOP_CONTINUOUSLY);
-
+        */
         //Event for start button press
         localButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae)  {
+                /*
                 clip.stop();
                 clipLocal.start();
-                clipLocal.loop(Clip.LOOP_CONTINUOUSLY);
+                clipLocal.loop(Clip.LOOP_CONTINUOUSLY);*/
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
                 
@@ -143,9 +144,9 @@ public class GameLauncher extends JFrame{
         
         singleButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-              clip.stop();
-              clipSingle.start();
-              clipSingle.loop(Clip.LOOP_CONTINUOUSLY);
+              //clip.stop();
+              //clipSingle.start();
+              //clipSingle.loop(Clip.LOOP_CONTINUOUSLY);
               S_A_M_G_1.rand_map_10();
               GamePanel game;
               String singlePlayer = "single";
@@ -177,9 +178,9 @@ public class GameLauncher extends JFrame{
         
         tutorialButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                clip.stop();
-                clipTutorial.start();
-                clipTutorial.loop(Clip.LOOP_CONTINUOUSLY);
+                //clip.stop();
+                //clipTutorial.start();
+                //clipTutorial.loop(Clip.LOOP_CONTINUOUSLY);
             	ResourceCollection.readFiles();
                 ResourceCollection.init();
 
@@ -202,9 +203,9 @@ public class GameLauncher extends JFrame{
         //Event for map manager button press
         mapManagerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
-                clip.stop();
-                clipMapManager.start();
-                clipMapManager.loop(Clip.LOOP_CONTINUOUSLY);
+                //clip.stop();
+                //clipMapManager.start();
+                //clipMapManager.loop(Clip.LOOP_CONTINUOUSLY);
             	//Create AWS Objects
                 BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
                 final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-2").build();
@@ -400,6 +401,7 @@ public class GameLauncher extends JFrame{
         //Event for map creator button press
         mapCreatorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
+
                 clip.stop();
                 clipMapCreator.start();
                 clipMapCreator.loop(Clip.LOOP_CONTINUOUSLY);

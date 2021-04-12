@@ -71,15 +71,15 @@ public class GameHUDSingle {
         this.playerScore = deadAi;
         // Check for no enemy standing and conclude the match
         if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist 
-            SoundEffect.VICTORY.play();   
+//            SoundEffect.VICTORY.play();   
             this.matchSet = true;
         }
         if(this.player.isDead()){
-            SoundEffect.DEAD.play();
+          //  SoundEffect.DEAD.play();
             this.matchSet = true;
         }
         if(this.player.isDestroyed()){
-            SoundEffect.DEAD.play();
+           // SoundEffect.DEAD.play();
             this.matchSet = true;
         }
         
@@ -109,7 +109,7 @@ public class GameHUDSingle {
         
     }
 
-    public enum SoundEffect{
+    /*public enum SoundEffect{
         VICTORY("victory.wav"),
         DEAD("death.wav");
         
@@ -151,5 +151,5 @@ public class GameHUDSingle {
          static void init() {
             values(); // calls the constructor for all the elements
          }
-      }
+      }*/
 }
