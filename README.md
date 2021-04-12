@@ -1,5 +1,8 @@
 # CIS 4398 Section 3 
 
+## Orignal Creator: Brain Li
+https://github.com/blai30/bomberman-java
+
 ## Developers: Chris DeStefano, Steve McFarland, Xiao Ning Zhao, Jason Xhoxhi, Nolan C Iskra, Thuc Ngoc Luong
 
 ## Java Verion Download Link:
@@ -8,6 +11,10 @@ Downloading requires you to make an account.
 
 ## Running the game
 After installing the latest java version in your machine and unzipping the downloaded folder, simply right click on the jar file to star the game. 
+
+## Overview
+Bomberman is a multiplayer desktop application that can be played with friends utilizing a game server (code included). Maps can be custom made and loaded into the game and then be chosen to allow players a unique experience with each play. It has many additional features which are outlined below
+
 
 ## Features: Local Multiplayer:
 ## Controls
