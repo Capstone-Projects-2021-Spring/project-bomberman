@@ -235,7 +235,7 @@ public class GamePanel extends JPanel implements Runnable {
             for (int x = 0; x < this.mapWidth; x++) {
                 switch (mapLayout.get(y).get(x)) {
                     case ("S"):
-
+                    	if (Math.random() < SOFTWALL_RATE) {
                             BufferedImage sprSoftWall = ResourceCollection.Images.SOFT_WALL.getImage();
                             Wall softWall = new Wall(new Point2D.Float(x * 32, y * 32), sprSoftWall, true);
                             GameObjectCollection.spawn(softWall);
@@ -537,9 +537,14 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
                 else if(mapLayout.get(y).get(x).equals("EB")) {  //Enemy Balloon
-                    BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
-                    Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
-                    GameObjectCollection.spawn(enemyBalloon);
+//                    BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+//                    Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+//                    GameObjectCollection.spawn(enemyBalloon);
+                	BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
+                    Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3, out,10,false);
+                    PlayerController playerController3 = new PlayerController(player3, this.controls2);
+                    this.addKeyListener(playerController3);
+                    GameObjectCollection.spawn(player3);
                 }
                 
                 else {
@@ -907,6 +912,7 @@ public class GamePanel extends JPanel implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println(line);
         if(line.startsWith("Left ")) {
         	String[] personParts = line.split(",");
         	person = Integer.parseInt(personParts[0].replace("Left ", ""));

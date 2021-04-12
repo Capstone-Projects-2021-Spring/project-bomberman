@@ -48,6 +48,8 @@ public class Bomber extends Player {
     private boolean test;
     private boolean gameStart;
     private static int counter = 0;
+    private static PrintWriter out = null;
+    private static int p;
 
 
     /**
@@ -65,7 +67,8 @@ public class Bomber extends Player {
         this.direction = 1;     // Facing down
         this.spriteIndex = 0;
         this.spriteTimer = 0;
-        
+        this.out = out;
+        this.p = player;
         // Default stats
         this.moveSpeed = 2; //temp change back to 1
         this.firepower = 2;//temp change back to 1
@@ -99,7 +102,7 @@ public class Bomber extends Player {
 
     }
 
-    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, boolean player) {
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, PrintWriter out, int p, boolean player) {
         super(position, spriteMap[1][0]);
         this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
 
@@ -117,6 +120,8 @@ public class Bomber extends Player {
         this.bombTimer = 250;
         this.pierce = false;
         this.kick = false;
+        this.out = out;
+        this.p = p;
 
         this.player = player;
         this.resting = true;
@@ -135,6 +140,9 @@ public class Bomber extends Player {
     public void moveDown() {
         this.direction = 1;     // Using sprites that face down
         this.position.setLocation(this.position.x, this.position.y + this.moveSpeed);
+        if(out != null) {
+        	out.println("Player " + p + ": Down Pressed");
+        }
         System.out.println("WALKING DOWN");
     }
     public void moveLeft() {
@@ -422,6 +430,9 @@ public class Bomber extends Player {
         if ((playerY / 32) > (int) (((-wallY + baseY) + 12.0) / 32) && this.resting) {
             this.resting = false;
             System.out.println("MOVING UP");
+            if(out != null) {
+            	 out.println("Player " + this.p + ": Up Pressed");
+            }
             moveUp();
 
 

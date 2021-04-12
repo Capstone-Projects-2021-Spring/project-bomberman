@@ -357,7 +357,11 @@ public class bombermanServer{
                         }
                     }
                     else if (input.startsWith("Player")){
-                        System.out.println(input);
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println(input);
+                        }
+                    }
+                    else if (input.startsWith("!ADDBOT")){
                         for (PrintWriter writer : socketWriters) {
                             writer.println(input);
                         }
