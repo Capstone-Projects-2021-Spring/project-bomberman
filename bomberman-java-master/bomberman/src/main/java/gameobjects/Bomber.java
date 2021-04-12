@@ -68,6 +68,7 @@ public class Bomber extends Player {
         this.spriteIndex = 0;
         this.spriteTimer = 0;
         this.player = true;
+        this.p = player;
         // Default stats
         this.moveSpeed = 2; //temp change back to 1
         this.firepower = 2;//temp change back to 1
@@ -196,50 +197,50 @@ public class Bomber extends Player {
 
     // --- POWERUPS ---
     public void addAmmo(int value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": addAmmo," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": addAmmo," + value);
+//    	}
         System.out.print("Bombs set from " + this.maxBombs);
         this.maxBombs = Math.min(6, this.maxBombs + value);
         this.restoreAmmo();
         System.out.println(" to " + this.maxBombs);
     }
     public void addFirepower(int value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": addFirepower," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": addFirepower," + value);
+//    	}
         System.out.print("Firepower set from " + this.firepower);
         this.firepower = Math.min(6, this.firepower + value);
         System.out.println(" to " + this.firepower);
     }
     public void addSpeed(float value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": addSpeed," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": addSpeed," + value);
+//    	}
         System.out.print("Move Speed set from " + this.moveSpeed);
         this.moveSpeed = Math.min(4, this.moveSpeed + value);
         System.out.println(" to " + this.moveSpeed);
     }
     public void setPierce(boolean value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": setPierce," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": setPierce," + value);
+//    	}
         System.out.print("Pierce set from " + this.pierce);
         this.pierce = value;
         System.out.println(" to " + this.pierce);
     }
     public void setKick(boolean value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": setKick," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": setKick," + value);
+//    	}
         System.out.print("Kick set from " + this.kick);
         this.kick = value;
         System.out.println(" to " + this.kick);
     }
     public void reduceTimer(int value) {
-    	if(super.out != null) {
-    		out.println("Player " + super.player + ": reduceTimer," + value);
-    	}
+//    	if(super.out != null) {
+//    		out.println("Player " + this.p + ": reduceTimer," + value);
+//    	}
         System.out.print("Bomb Timer set from " + this.bombTimer);
         this.bombTimer = Math.max(160, this.bombTimer - value);
         System.out.println(" to " + this.bombTimer);

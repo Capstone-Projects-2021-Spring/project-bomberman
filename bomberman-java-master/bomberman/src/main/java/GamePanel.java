@@ -916,7 +916,6 @@ public class GamePanel extends JPanel implements Runnable {
         int person = -1;
         String action = "";
         Long time = (long) 0;
-        String[] parts = null;
 		try {
 			line = in.readLine();
 		} catch (IOException e) {
@@ -930,12 +929,12 @@ public class GamePanel extends JPanel implements Runnable {
         	action = "Disconnected";
         }
         else if(line.startsWith("Player ")) {
-        	parts = line.replace("Player ", "").split(": ");
+        	String[] parts = line.replace("Player ", "").split(": ");
         	person = Integer.parseInt(parts[0]);
         	action = parts[1];
         	time = Long.parseLong(parts[2]);
+        	messageArea.append("**SERVER**: Player " + parts[0] + ": " + parts[1] + " (Delay " + (System.currentTimeMillis() - time) +" ms)\n");
         }
-        messageArea.append("**SERVER**: Player " + parts[0] + ": " + parts[1] + " (Delay " + (System.currentTimeMillis() - time) +" ms)\n");
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
