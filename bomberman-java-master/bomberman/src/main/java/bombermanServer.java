@@ -400,7 +400,10 @@ public class bombermanServer{
                         }
                     }
                     else if (input.startsWith("!SETMAP ")){
-                        map = input.replace("!SETMAP ","");
+                        String temp = input.replace("!SETMAP ","");
+                        if(serverMaps.contains(temp)) {
+                        	map = temp;
+                        }
                         for (PrintWriter writer : socketWriters) {
                             writer.println("MAPSET " + map);
                         }
