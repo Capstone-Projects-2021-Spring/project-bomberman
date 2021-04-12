@@ -13,14 +13,6 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
-    <dependencies>
-        <dependency>
-			<groupId>com.amazonaws</groupId>
-		    <artifactId>aws-java-sdk</artifactId>
-		    <version>1.11.327</version>
-        </dependency>
-    </dependencies>
-
     <build>
 
         <plugins>
