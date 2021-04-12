@@ -66,54 +66,54 @@ public class GameLauncher extends JFrame{
         mainMenuPanel.add(mapManagerButton);
         mainMenuPanel.add(mapCreatorButton);
 
-        /*Initalize sound files
-        String menuMusicPath = "./src/main/resources/awesomeness.wav";
-        String singleMusicPath = "./src/main/resources/solo.wav";
-        String localMusicPath = "./src/main/resources/local.wav";
-        String tutorialMusicPath = "./src/main/resources/tutorial.wav";
-        String mapManagerMusicPath = "./src/main/resources/mapmanager.wav";
-        String mapCreatorMusicPath = "./src/main/resources/mapmaker.wav";
-        File menuMusic = new File(menuMusicPath);
-        File singleMusic = new File(singleMusicPath);
-        File localMusic = new File(localMusicPath);
-        File tutorialMusic = new File(tutorialMusicPath);
-        File mapManagerMusic = new File(mapManagerMusicPath);
-        File mapCreatorMusic = new File(mapCreatorMusicPath);
-        AudioInputStream audioIn = AudioSystem.getAudioInputStream(menuMusic);
-        AudioInputStream audioIn_s = AudioSystem.getAudioInputStream(singleMusic);
-        AudioInputStream audioIn_l = AudioSystem.getAudioInputStream(localMusic);
-        AudioInputStream audioIn_t = AudioSystem.getAudioInputStream(tutorialMusic);
-        AudioInputStream audioIn_mm = AudioSystem.getAudioInputStream(mapManagerMusic);
-        AudioInputStream audioIn_mc = AudioSystem.getAudioInputStream(mapCreatorMusic);
-        AudioFormat format = audioIn.getFormat();
-        AudioFormat format_s = audioIn_s.getFormat();
-        AudioFormat format_l = audioIn_l.getFormat();
-        AudioFormat format_t = audioIn_t.getFormat();
-        AudioFormat format_mm = audioIn_mm.getFormat();
-        AudioFormat format_mc = audioIn_mc.getFormat();
-        DataLine.Info info = new DataLine.Info(Clip.class, format);
-        DataLine.Info info_s = new DataLine.Info(Clip.class, format_s);
-        DataLine.Info info_l = new DataLine.Info(Clip.class, format_l);
-        DataLine.Info info_t = new DataLine.Info(Clip.class, format_t);
-        DataLine.Info info_mm = new DataLine.Info(Clip.class, format_mm);
-        DataLine.Info info_mc = new DataLine.Info(Clip.class, format_mc);
-        Clip clip = (Clip) AudioSystem.getLine(info);
-        Clip clipSingle = (Clip) AudioSystem.getLine(info_s);
-        Clip clipLocal = (Clip) AudioSystem.getLine(info_l);
-        Clip clipTutorial = (Clip) AudioSystem.getLine(info_t);
-        Clip clipMapManager = (Clip) AudioSystem.getLine(info_mm);
-        Clip clipMapCreator = (Clip) AudioSystem.getLine(info_mc);
-        clip.open(audioIn);
-        clipSingle.open(audioIn_s);
-        clipLocal.open(audioIn_l);
-        clipTutorial.open(audioIn_t);
-        clipMapManager.open(audioIn_mm);
-        clipMapCreator.open(audioIn_mc);
+        //Initalize sound files
+       String menuMusicPath = "./src/main/resources/awesomeness.wav";
+       String singleMusicPath = "./src/main/resources/solo.wav";
+       String localMusicPath = "./src/main/resources/local.wav";
+       String tutorialMusicPath = "./src/main/resources/tutorial.wav";
+       String mapManagerMusicPath = "./src/main/resources/mapmanager.wav";
+       String mapCreatorMusicPath = "./src/main/resources/mapmaker.wav";
+       File menuMusic = new File(menuMusicPath);
+       File singleMusic = new File(singleMusicPath);
+       File localMusic = new File(localMusicPath);
+       File tutorialMusic = new File(tutorialMusicPath);
+       File mapManagerMusic = new File(mapManagerMusicPath);
+       File mapCreatorMusic = new File(mapCreatorMusicPath);
+       AudioInputStream audioIn = AudioSystem.getAudioInputStream(menuMusic);
+       AudioInputStream audioIn_s = AudioSystem.getAudioInputStream(singleMusic);
+       AudioInputStream audioIn_l = AudioSystem.getAudioInputStream(localMusic);
+       AudioInputStream audioIn_t = AudioSystem.getAudioInputStream(tutorialMusic);
+       AudioInputStream audioIn_mm = AudioSystem.getAudioInputStream(mapManagerMusic);
+       AudioInputStream audioIn_mc = AudioSystem.getAudioInputStream(mapCreatorMusic);
+       AudioFormat format = audioIn.getFormat();
+       AudioFormat format_s = audioIn_s.getFormat();
+       AudioFormat format_l = audioIn_l.getFormat();
+       AudioFormat format_t = audioIn_t.getFormat();
+       AudioFormat format_mm = audioIn_mm.getFormat();
+       AudioFormat format_mc = audioIn_mc.getFormat();
+       DataLine.Info info = new DataLine.Info(Clip.class, format);
+       DataLine.Info info_s = new DataLine.Info(Clip.class, format_s);
+       DataLine.Info info_l = new DataLine.Info(Clip.class, format_l);
+       DataLine.Info info_t = new DataLine.Info(Clip.class, format_t);
+       DataLine.Info info_mm = new DataLine.Info(Clip.class, format_mm);
+       DataLine.Info info_mc = new DataLine.Info(Clip.class, format_mc);
+       Clip clip = (Clip) AudioSystem.getLine(info);
+       Clip clipSingle = (Clip) AudioSystem.getLine(info_s);
+       Clip clipLocal = (Clip) AudioSystem.getLine(info_l);
+       Clip clipTutorial = (Clip) AudioSystem.getLine(info_t);
+       Clip clipMapManager = (Clip) AudioSystem.getLine(info_mm);
+       Clip clipMapCreator = (Clip) AudioSystem.getLine(info_mc);
+       clip.open(audioIn);
+       clipSingle.open(audioIn_s);
+       clipLocal.open(audioIn_l);
+       clipTutorial.open(audioIn_t);
+       clipMapManager.open(audioIn_mm);
+       clipMapCreator.open(audioIn_mc);
+       
+       //Turns on menu music
+       clip.start();
+       clip.loop(Clip.LOOP_CONTINUOUSLY);
         
-        //Turns on menu music
-        clip.start();
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-        */
         //Event for start button press
         localButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae)  {

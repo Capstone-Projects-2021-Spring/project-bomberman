@@ -543,9 +543,12 @@ public class GamePanel extends JPanel implements Runnable {
                 }
 
                 else if(mapLayout.get(y).get(x).equals("EB")) {  //Enemy Balloon
-//                    BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
-//                    Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
-//                    GameObjectCollection.spawn(enemyBalloon);
+                    BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+                    Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+                    GameObjectCollection.spawn(enemyBalloon);	
+                }
+                
+                else if(mapLayout.get(y).get(x).equals("AB")) { 
                 	BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
                     Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3, out,10,false);
                     PlayerController playerController3 = new PlayerController(player3, this.controls2);

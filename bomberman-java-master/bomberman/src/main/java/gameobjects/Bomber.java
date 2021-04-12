@@ -67,8 +67,7 @@ public class Bomber extends Player {
         this.direction = 1;     // Facing down
         this.spriteIndex = 0;
         this.spriteTimer = 0;
-        this.out = out;
-        this.p = player;
+        this.player = true;
         // Default stats
         this.moveSpeed = 2; //temp change back to 1
         this.firepower = 2;//temp change back to 1
@@ -88,6 +87,7 @@ public class Bomber extends Player {
         this.direction = 1;     // Facing down
         this.spriteIndex = 0;
         this.spriteTimer = 0;
+        this.player = true;
         
         // Default stats
         this.moveSpeed = 2; //temp change back to 1
@@ -143,7 +143,7 @@ public class Bomber extends Player {
         if(out != null) {
         	out.println("Player " + p + ": Down Pressed");
         }
-        System.out.println("WALKING DOWN");
+//        System.out.println("WALKING DOWN");
     }
     public void moveLeft() {
         this.direction = 2;     // Using sprites that face left
@@ -329,14 +329,14 @@ public class Bomber extends Player {
 
 
         if (!this.player) {
-            System.out.println("Bot's current y position is " + this.position.y);
-            System.out.println("Bot's current x position is " + this.position.x);
+            //System.out.println("Bot's current y position is " + this.position.y);
+            //System.out.println("Bot's current x position is " + this.position.x);
             //System.out.println("Current status of Resting is  " + this.resting);
             //System.out.println("Current status of bomb_planted is " + this.bomb_planted);
             //System.out.println("Current number of bombs available is " + this.bombAmmo);
 
             if (this.bomb_planted){
-                System.out.println("RUNNING AWAY");
+                //System.out.println("RUNNING AWAY");
                 moveDown();
                 //runAway();
                 if(this.maxBombs == this.bombAmmo){
@@ -376,7 +376,7 @@ public class Bomber extends Player {
 
     private void Generate_movement(){
         ArrayList<Float> Walls = new ArrayList<Float>();
-        System.out.println("Bot current x position " + this.position.x);
+        //System.out.println("Bot current x position " + this.position.x);
 
         // One map tile is 32 pixels long
         //if resting is true, the bot is ready to find a new movement
@@ -395,12 +395,12 @@ public class Bomber extends Player {
                 }
             }
 
-            System.out.println("Breakable walls above  = " + Walls.size());
+            //System.out.println("Breakable walls above  = " + Walls.size());
             Collections.sort(Walls); //Sorts in descending order
 
             if(Walls.size() > 0){
-                System.out.println("Distance from closest breakable wall = " + Walls.get(0));
-                System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
+                //System.out.println("Distance from closest breakable wall = " + Walls.get(0));
+                //System.out.println("Closest breakable walls y position = " + (-Walls.get(0) + this.position.y));
                 float currentY = this.position.y;
 
                 //This is where movement happens 2
@@ -441,7 +441,7 @@ public class Bomber extends Player {
     private void ExecuteMovementDown(float playerY, float wallY, float baseY) {
         if ((playerY / 32) > (int) (((-wallY + baseY) + 12.0) / 32) && this.resting) {
             this.resting = false;
-            System.out.println("MOVING DOWN");
+            //System.out.println("MOVING DOWN");
             moveDown();
 
 

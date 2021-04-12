@@ -42,6 +42,8 @@ public class bombermanServer{
     private static Boolean powerup = false;
     //activate random map generation
     private static Boolean randomGen = false;
+    //number of ai
+    private static int bots = 0;
     
     //AWS Credentials
     private static BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
@@ -214,17 +216,23 @@ public class bombermanServer{
 	                  		        	}
 	                  		        }
 		             		        int toSet = 1;
+		             		        int botsSet = 0;
 		             		        Random rand = new Random();
 		             		        while (toSet <= players.size()) {
 		             		        	for(int i = 0; i < entries.length; i ++) {
 		             		        		int random = rand.nextInt(100);
-		             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
+		             		        		if(toSet <= players.size() && random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
 		             		        			entries[i] = "" + toSet;
 		             		        			toSet++;
 		             		        		}
-		             		        		if(toSet > players.size()) {
+		             		        		if(random >= 3 && random <= 5 && !entries[i].equals("H") && !entries[i].contains("N") && botsSet < bots) {
+		             		        			entries[i] = "AB";
+		             		        			botsSet++;
+		             		        		}
+		             		        		
+		             		        		if(toSet > players.size() && botsSet == bots) {
 		             		        			break;
-		             		        		}	
+		             		        		}		
 		             		        	}
 		             		        }
 		             		        
@@ -302,14 +310,21 @@ public class bombermanServer{
 	                  		        }
 	                  		        entries[1499] += "N";
 		             		        int toSet = 1;
+		             		        int botsSet = 0;
 		             		        while (toSet <= players.size()) {
 		             		        	for(int i = 0; i < entries.length; i ++) {
 		             		        		int random = rand.nextInt(100);
-		             		        		if(random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
+		             		        		if(toSet <= players.size() && random < 3 && !entries[i].equals("H") && !entries[i].contains("N")) {
 		             		        			entries[i] = "" + toSet;
 		             		        			toSet++;
 		             		        		}
-		             		        		if(toSet > players.size()) {
+		             		        		
+		             		        		if(random >= 3 && random <= 5 && !entries[i].equals("H") && !entries[i].contains("N") && botsSet < bots) {
+		             		        			entries[i] = "AB";
+		             		        			botsSet++;
+		             		        		}
+		             		        		
+		             		        		if(toSet > players.size() && botsSet == bots) {
 		             		        			break;
 		             		        		}	
 		             		        	}
@@ -362,8 +377,17 @@ public class bombermanServer{
                         }
                     }
                     else if (input.startsWith("!ADDBOT")){
+                    	bots++;
                         for (PrintWriter writer : socketWriters) {
-                            writer.println(input);
+                            writer.println("ADDBOT " + bots);
+                        }
+                    }
+                    else if (input.startsWith("!REMOVEBOT")){
+                        if(bots != 0){
+                            bots--;
+                        }
+                        for (PrintWriter writer : socketWriters) {
+                            writer.println("REMOVEBOT " + bots);
                         }
                     }
                     else if (input.startsWith("!MAPOPTIONS")){

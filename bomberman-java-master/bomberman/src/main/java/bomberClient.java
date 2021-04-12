@@ -67,7 +67,7 @@ public class bomberClient{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(textField.getText().equalsIgnoreCase("!help")) {
-            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!CRAZYBOMBS\n!POWERUP\n");
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n");
             	}
             	else{
             		out.println(textField.getText());
@@ -180,6 +180,14 @@ public class bomberClient{
             else if (line.startsWith("MAPSET ")) {
                 map = line.replace("MAPSET ","");
                 messageArea.append("**SERVER**: Game map set to " + map + "\n");
+            }
+            else if (line.startsWith("ADDBOT ")) {
+                int bots = Integer.parseInt(line.replace("ADDBOT ",""));
+                messageArea.append("**SERVER**: Number of bots set to " + bots + "\n");
+            }
+            else if (line.startsWith("REMOVEBOT ")) {
+                int bots = Integer.parseInt(line.replace("REMOVEBOT ",""));
+                messageArea.append("**SERVER**: Number of bots set to " + bots + "\n");
             }
             else if (line.startsWith("CRAZYBOMBS ")) {
                 crazybombs = Boolean.parseBoolean(line.replace("CRAZYBOMBS ",""));
