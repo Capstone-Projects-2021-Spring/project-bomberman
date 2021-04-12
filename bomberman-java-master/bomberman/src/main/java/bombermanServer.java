@@ -373,7 +373,7 @@ public class bombermanServer{
                     }
                     else if (input.startsWith("Player")){
                         for (PrintWriter writer : socketWriters) {
-                            writer.println(input);
+                            writer.println(input + ": " + System.currentTimeMillis());
                         }
                     }
                     else if (input.startsWith("!ADDBOT")){
