@@ -26,6 +26,8 @@ public class bomberClient{
     JTextArea messageArea = new JTextArea(8, 40);
     JButton start = new JButton("Start");
     JButton ready = new JButton("Ready");
+    String map = "cool_map.csv";
+    boolean crazybombs = false;
 
     //main method
     public static void main(String[] args) throws Exception {
@@ -64,7 +66,12 @@ public class bomberClient{
         //action listener for messenger
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                out.println(textField.getText());
+            	if(textField.getText().equalsIgnoreCase("!help")) {
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n");
+            	}
+            	else{
+            		out.println(textField.getText());
+            	}
                 textField.setText("");
             }
         });
@@ -112,6 +119,9 @@ public class bomberClient{
         in = new BufferedReader(new InputStreamReader(
                                     socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        messageArea.append("**SERVER**: Welcome to bomberman! Use the !help command.\n");
+        
+        String[] mapData;
     
         // handle messages from the server
         while (true) {
@@ -154,9 +164,42 @@ public class bomberClient{
                 messageArea.append("**SERVER**: Game can not start till everyone is ready!\n");
             }
             else if (line.startsWith("CanStart")) {
-                player = Integer.parseInt(line.replace("CanStart ",""));
+            	String [] parts = line.replace("CanStart ","").split(" ");
+                player = Integer.parseInt(parts[0]);
+                mapData = parts[1].split("X");
                 messageArea.append("**SERVER**: Match Starting...\n");
                 break;
+            }
+            else if (line.startsWith("MAPOPTIONS ")) {
+                String[] maps = line.replace("MAPOPTIONS ","").split(",");
+                messageArea.append("**SERVER**: Map Options:\n");
+                for(int i = 0; i < maps.length; i++){
+                    messageArea.append(maps[i] + "\n");
+                }
+            }
+            else if (line.startsWith("MAPSET ")) {
+                map = line.replace("MAPSET ","");
+                messageArea.append("**SERVER**: Game map set to " + map + "\n");
+            }
+            else if (line.startsWith("ADDBOT ")) {
+                int bots = Integer.parseInt(line.replace("ADDBOT ",""));
+                messageArea.append("**SERVER**: Number of bots set to " + bots + "\n");
+            }
+            else if (line.startsWith("REMOVEBOT ")) {
+                int bots = Integer.parseInt(line.replace("REMOVEBOT ",""));
+                messageArea.append("**SERVER**: Number of bots set to " + bots + "\n");
+            }
+            else if (line.startsWith("CRAZYBOMBS ")) {
+                crazybombs = Boolean.parseBoolean(line.replace("CRAZYBOMBS ",""));
+                messageArea.append("**SERVER**: Crazy bombs set to " + crazybombs + "\n");
+            }
+            else if (line.startsWith("POWERUP ")) {
+                Boolean powerup = Boolean.parseBoolean(line.replace("POWERUP ",""));
+                messageArea.append("**SERVER**: Powerup set to " + powerup + "\n");
+            }
+            else if (line.startsWith("RANDOM ")) {
+            	Boolean randomGen = Boolean.parseBoolean(line.replace("RANDOM ",""));
+                messageArea.append("**SERVER**: Random map generation set to " + randomGen + "\n");
             }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");
@@ -170,15 +213,37 @@ public class bomberClient{
             }
 
         }
+        
+        //Create map file
+        String[] currentMapData = mapData[0].split("N");
+        File file = new File("./currentMap.csv");      
+		FileWriter filewriter = null;
+		try {
+			filewriter = new FileWriter(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < currentMapData.length; i++) {
+			if(currentMapData[i].startsWith(",")) {
+				filewriter.write(currentMapData[i].substring(1)+"\n");
+			}
+			else {
+				filewriter.write(currentMapData[i]+"\n");
+			}
+		}
+		filewriter.close();
+        
+        
         ResourceCollection.readFiles();
         ResourceCollection.init();
 
         GamePanel game;
         try {
-            game = new GamePanel("../Maps/cool_map.csv",out,in,player);
+            game = new GamePanel("./currentMap.csv",out,in,player,mapData,messageArea);
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println(e + ": Program args not given");
-            game = new GamePanel(null,out,in,player);
+            game = new GamePanel(null,out,in,player,mapData,messageArea);
         }
 
         game.initMultiplayer();

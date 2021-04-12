@@ -116,7 +116,7 @@ public class Powerup extends TileObject {
      * @param bomber Bomber object to be granted bonus
      */
     void grantBonus(Bomber bomber) {
-        SoundEffect.POWERUP.play();
+        //SoundEffect.POWERUP.play();
         this.type.grantBonus(bomber);
     }
 
@@ -145,7 +145,7 @@ public class Powerup extends TileObject {
         return this.breakable;
     }
 
-    public enum SoundEffect{
+    /*public enum SoundEffect{
         POWERUP("powerup.wav");
         
         public static enum Volume {
@@ -186,6 +186,6 @@ public class Powerup extends TileObject {
          static void init() {
             values(); // calls the constructor for all the elements
          }
-      }
+      }*/
 
 }

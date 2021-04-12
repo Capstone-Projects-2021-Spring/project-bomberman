@@ -169,6 +169,7 @@ class MapManager extends JFrame{
                 }
             }
         });
+        
         JButton downloadMap = new JButton("Download Map");
         downloadMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -178,6 +179,7 @@ class MapManager extends JFrame{
                 buttonPanel2.setVisible(true);
             }
         });
+        
         JButton deleteMap = new JButton("Delete");
         deleteMap.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
