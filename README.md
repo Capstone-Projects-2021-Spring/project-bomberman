@@ -89,3 +89,8 @@ Shows off basic movement and powerups available
 * Timer: Decrease bomb detonation timer by 15 (min: 160)
 
 ## Features: Online Multiplayer:
+The online multiplayer has many custom options that can be viewed by typing !help into the client lobby.
+It can support an "unlimited" amount of players in the game but performance will vary depending on the amount of players. 
+
+## Features: AI Enemies: 
+This feature is still in development but we have a basic AI bot that will move to plant bombs at its closest box. 
