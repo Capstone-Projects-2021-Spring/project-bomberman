@@ -77,6 +77,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
      */
     void solidCollision(GameObject obj) {
         Rectangle2D intersection = this.collider.createIntersection(obj.collider);
+
         // Vertical collision
         if (intersection.getWidth() >= intersection.getHeight()) {
             // From the top
