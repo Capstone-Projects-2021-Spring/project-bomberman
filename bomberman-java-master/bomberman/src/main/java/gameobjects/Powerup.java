@@ -99,7 +99,7 @@ public class Powerup extends TileObject {
         super(position, type.sprite);
         this.collider = new Rectangle2D.Float(position.x + 8, position.y + 8, this.width - 16, this.height - 16);
         this.type = type;
-        this.breakable = true;
+        this.breakable = false;
     }
 
     // Random powerups

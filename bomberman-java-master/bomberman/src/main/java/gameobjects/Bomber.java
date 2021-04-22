@@ -39,13 +39,14 @@ public class Bomber extends Player {
     //Bot movement variables
     private boolean player;
     private boolean resting; //wating for a new movement command or not
-    private float move_x; //the x position of the current movement command
-    private float move_y;//the y position of the current movement command
+    private float stuckX; //the x position of the current movement command
+    private float stuckY;//the y position of the current movement command
     private boolean bomb_planted;
     private int moveScore;
     private boolean test;
     private boolean gameStart;
     private static int counter = 0;
+
 
 
     /**
@@ -285,19 +286,30 @@ public class Bomber extends Player {
              //System.out.println("Current status of bomb_planted is " + this.bomb_planted);
              //System.out.println("Current number of bombs available is " + this.bombAmmo);
 
+
+
+
              if (this.bomb_planted) {
                  System.out.println("RUNNING AWAY");
                  moveDown();
-
+                 moveRight();
                  //runAway();
                  if (this.maxBombs == this.bombAmmo) {
                      this.bomb_planted = false;
                  }
-             } else if (!this.isDead() && resting) {
+             } else if (!this.isDead() && this.resting) {
                  //Generate_movement();
-                 whereToGO();
+                 try {
+                     whereToGO();
+
+
+                 }
+                 catch(Exception e){
+
+                 }
 
              }
+
          }
 
 
@@ -625,79 +637,190 @@ public class Bomber extends Player {
             tileObjInt.get((int)(closest[1]-1)*((int)xMax-1)+(int)closest[0]-1);
 
         if(this.resting) {
-            if (closest[1] == (int) yPlayerSpawn) { //this means they are on the same row (X direction)
-                int xDiff = closest[0] - (int) xPlayerSpawn;
-
-                if (xDiff > 0) { //right
-                    //xDiff  -=1 ;  //causes the bot to move to the right side of the box and not the left side
-
-                    for (int i = 0; i <= xDiff * tile/moveSpeed + 5; i++) { // +3 was nessicary to cause a collision.
-                        if ((int)(this.position.x/32) > ((-closest[0] + (int)xPlayerSpawn))+1 && this.resting) {
-                            this.toggleRightPressed();
-                            this.move();                                //the move function is just a copy of the player movement in update
-                            System.out.println("After move X: " + this.position.x/32);
-                            this.resting = false;
-                        }
-                    }
-                    this.unToggleRightPressed();
-                    this.resting = true;
-
-                } else {           //left
-                    xDiff = Math.abs(xDiff) - 1;
-
-                    for (int i = 0; i <= xDiff * tile / moveSpeed + 3; i++) { // +3 was nessicary to cause a collision.
-                        if ((int)(this.position.x / 32) > ((-closest[0] + (int)xPlayerSpawn)) && this.resting) {
-                            this.toggleLeftPressed();
-                            this.move();                                //the move function is just a copy of the player movement in update
-                            this.resting = false;
-                        }
-                    }
-                    this.unToggleLeftPressed();
-                    this.resting =true;
-                }
-            } //end of if target box and player are on the same row (X direction)
+           if(closest[1]%2 != 0) { // Turning on the horozontal direction
 
 
-            else if (closest[1] != yPlayerSpawn) { // if target box and bomber are not on the same row we need to work in the y direction
-                int yDiff = closest[1] - (int) yPlayerSpawn; //if diff is positive we go down, if diff is negative we go up
+               if (closest[1] == (int) yPlayerSpawn) { //this means they are on the same row (X direction)
+                   int xDiff = closest[0] - (int) xPlayerSpawn;
+
+                   if (xDiff > 0) { //right
+                       //xDiff  -=1 ;  //causes the bot to move to the right side of the box and not the left side
+
+                       for (int i = 0; i <= xDiff * tile / moveSpeed + 5; i++) { // +3 was nessicary to cause a collision.
+                           if ((int) (this.position.x / 32) > ((-closest[0] + (int) xPlayerSpawn)) + 1 && this.resting) {
+                               this.toggleRightPressed();
+                               this.move();                                //the move function is just a copy of the player movement in update
+                               System.out.println("After move X: " + this.position.x / 32);
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleRightPressed();
+                       this.resting = true;
+
+                   } else {           //left
+                       xDiff = Math.abs(xDiff) - 1;
+
+                       for (int i = 0; i <= xDiff * tile / moveSpeed + 3; i++) { // +3 was nessicary to cause a collision.
+                           if ((int) (this.position.x / 32) > ((-closest[0] + (int) xPlayerSpawn)) && this.resting) {
+                               this.toggleLeftPressed();
+                               this.move();                                //the move function is just a copy of the player movement in update
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleLeftPressed();
+                       this.resting = true;
+                   }
+               } //end of if target box and player are on the same row (X direction)
 
 
-                if (yDiff > 0) {             //DOWN
-                    for (int i = 0; i <= yDiff * tile / moveSpeed + 3; i++) {
-                        if ((int)(this.position.y / 32) > ((-closest[1] + (int)yPlayerSpawn)) && this.resting) {
-                            this.toggleDownPressed();
-                            this.move();
-                            this.resting = false;
-                        }
-                    }
-                    this.unToggleDownPressed();
-                    this.resting = true;
-                } else {                       //UP
-                    yDiff = Math.abs(yDiff) - 1;
-
-                    for (int i = 0; i <= yDiff * tile / moveSpeed + 5; i++) { //if this is not 5 it will cause a collision on the corner the bomb will be planted a tile early
-                        if ((int)(this.position.y / 32) > ((-closest[1] + (int)yPlayerSpawn)) && this.resting) {
-                            this.toggleUpPressed();
-                            this.move();
-                            this.resting = false;
-                        }
-                    }
-                    this.unToggleUpPressed();
-                    this.resting = true;
-
-                }
+               else if (closest[1] != yPlayerSpawn) { // if target box and bomber are not on the same row we need to work in the y direction
+                   int yDiff = closest[1] - (int) yPlayerSpawn; //if diff is positive we go down, if diff is negative we go up
 
 
-            } //end of Y direction
+                   if (yDiff > 0) {             //DOWN
+                       for (int i = 0; i <= yDiff * tile / moveSpeed + 3; i++) {
+                           if ((int) (this.position.y / 32) > ((-closest[1] + (int) yPlayerSpawn)) && this.resting) {
+                               this.toggleDownPressed();
+                               this.move();
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleDownPressed();
+                       this.resting = true;
+                   } else {                       //UP
+                       yDiff = Math.abs(yDiff) -1;
+
+                       for (int i = 0; i <= yDiff * tile / moveSpeed + 5; i++) { //if this is not 5 it will cause a collision on the corner the bomb will be planted a tile early
+                           if ((int) (this.position.y / 32) > ((-closest[1]-1 + (int) yPlayerSpawn)) && this.resting) {
+                               this.toggleUpPressed();
+                               this.move();
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleUpPressed();
+                       this.resting = true;
+
+                   }
 
 
+               } //end of Y direction
+
+           }
+           /*
+           Turning on the Verticle direction
+            */
+           else { //
+               if (closest[0] != (int) xPlayerSpawn) {
+                   int xDiff = closest[0] - (int) xPlayerSpawn;
+
+                   if (xDiff > 0) { //right
+                       //xDiff -=1 ;  //causes the bot to move to the right side of the box and not the left side
+
+                       for (int i = 0; i <= xDiff * tile / moveSpeed + 5; i++) { // +3 was nessicary to cause a collision.
+                           if ((int) (this.position.x / 32) > ((-closest[0] + (int) xPlayerSpawn)) + 1 && this.resting) {
+                               this.toggleRightPressed();
+                               this.move();                                //the move function is just a copy of the player movement in update
+                               System.out.println("After move X: " + this.position.x / 32);
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleRightPressed();
+                       this.resting = true;
+
+                   } else {           //left
+                       xDiff = Math.abs(xDiff) - 1;
+
+                       for (int i = 0; i <= xDiff * tile / moveSpeed + 3; i++) { // +3 was nessicary to cause a collision.
+                           if ((int) (this.position.x / 32) > ((-closest[0] + (int) xPlayerSpawn)) && this.resting) {
+                               this.toggleLeftPressed();
+                               this.move();                                //the move function is just a copy of the player movement in update
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleLeftPressed();
+                       this.resting = true;
+                   }
+               } //end of if target box and player are on the same row (X direction)
+
+
+               if (closest[0] == xPlayerSpawn) {
+
+                   int yDiff = closest[1] - (int) yPlayerSpawn; //if diff is positive we go down, if diff is negative we go up
+
+
+                   if (yDiff > 0) {             //DOWN
+                       for (int i = 0; i <= yDiff * tile / moveSpeed + 3; i++) {
+                           if ((int) (this.position.y / 32) > ((-closest[1] + (int) yPlayerSpawn)) && this.resting) {
+                               this.toggleDownPressed();
+                               this.move();
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleDownPressed();
+                       this.resting = true;
+                   } else {                       //UP
+                       yDiff = Math.abs(yDiff) - 1;
+
+                       for (int i = 0; i <= yDiff * tile / moveSpeed + 5; i++) { //if this is not 5 it will cause a collision on the corner the bomb will be planted a tile early
+                           if ((int) (this.position.y / 32) > ((-closest[1] + (int) yPlayerSpawn)) && this.resting) {
+                               this.toggleUpPressed();
+                               this.move();
+                               this.resting = false;
+                           }
+                       }
+                       this.unToggleUpPressed();
+                       this.resting = true;
+
+                   }
+
+
+               } //end of Y direction
+           }
         }
     }// end whereTOGO
 
 
 
+public void stuck(){
+        System.out.println("Hi im stuck!");
+
+        if (!this.resting && (stuckX == this.position.x || stuckY == this.position.y)){
+            this.moveUp();
+            this.moveDown();
+            this.moveLeft();
+            this.moveRight();
 
 
+        }
+
+
+
+    stuckX = this.position.x;
+    stuckY = this.position.y;
+}
+
+
+
+    private void move(){
+        // Movement
+
+         if (this.UpPressed) {
+             this.moveUp();
+             //System.out.println("Bot's current y position is " + this.position.y);
+         }
+         if (this.DownPressed) {
+             this.moveDown();
+             //System.out.println("Bot's current y position is " + this.position.y);
+         }
+         if (this.LeftPressed) {
+             this.moveLeft();
+         }
+         if (this.RightPressed) {
+             this.moveRight();
+         }
+
+
+    }
 
 
 
@@ -723,23 +846,7 @@ public class Bomber extends Player {
 
 
 
-private void move(){
-    // Movement
-    if (this.UpPressed) {
-        this.moveUp();
-        //System.out.println("Bot's current y position is " + this.position.y);
-    }
-    if (this.DownPressed) {
-        this.moveDown();
-        //System.out.println("Bot's current y position is " + this.position.y);
-    }
-    if (this.LeftPressed) {
-        this.moveLeft();
-    }
-    if (this.RightPressed) {
-        this.moveRight();
-    }
-}
+
 
 
 
