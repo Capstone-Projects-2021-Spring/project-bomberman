@@ -325,25 +325,24 @@ public class Bomber extends Player {
 
     //AI movement things
     private void runAway(){
-      System.out.println("Running Away");
-      System.out.println("Bomb position X " + this.bombPositionX/32 + "Bomb position Y " + bombPositionY/32);
+    System.out.println("Bomb x position /2 = " + this.bombPositionX/32 + "Find max /2 = " + (findMaxX())/2);
 
-        if(this.bombPositionX/2 < findMaxX()/2){         //left
+        if((this.bombPositionX/32) < (findMaxX())/2){         //left
           this.toggleLeftPressed();
           this.move();
           this.unToggleLeftPressed();
-
-          if (this.bombPositionY/2 < findMaxY()/2) {    //up
+            System.out.println("Running Away Left");
+          if (this.bombPositionY/32 < findMaxY()/2) {    //up
             this.toggleUpPressed();
             this.move();
             this.unToggleUpPressed();
-
+              System.out.println("Running Away Left + UP ");
           }
           else {                                         //down
              this.toggleDownPressed();
              this.move();
              this.unToggleDownPressed();
-
+              System.out.println("Running Away Left + Down");
           }
 
       }
@@ -351,15 +350,18 @@ public class Bomber extends Player {
           this.toggleRightPressed();
           this.move();
           this.unToggleRightPressed();
-          if (this.bombPositionY/2 < findMaxY()/2) {   //up
+            System.out.println("Running Away Right");
+            if (this.bombPositionY/32 < findMaxY()/2) {   //up
               this.toggleUpPressed();
               this.move();
               this.unToggleUpPressed();
+                System.out.println("Running Away Right + up");
           }
           else {                                        //down
               this.toggleDownPressed();
               this.move();
               this.unToggleDownPressed();
+                System.out.println("Running Away Right + down");
           }
       }
 
@@ -1102,7 +1104,7 @@ public void stuck(){
     public void handleCollision(Wall collidingObj) {
         this.solidCollision(collidingObj);
       if(!this.player)
-        if (collidingObj.isBreakable() && !this.bomb_planted){
+        if (collidingObj.isBreakable() ){
            this.plantBomb();
 
 
@@ -1112,7 +1114,7 @@ public void stuck(){
 
 
     public void handleCollision(Bomber collidingObj) {
-        if(!this.player){
+        if(!this.player && !this.bomb_planted ){
             this.plantBomb();
         }
     }
