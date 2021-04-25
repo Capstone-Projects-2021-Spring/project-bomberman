@@ -10,6 +10,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -44,6 +48,9 @@ public class bombermanServer{
     private static Boolean randomGen = false;
     //number of ai
     private static int bots = 0;
+    
+    private static MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+    private static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
     
     //AWS Credentials
     private static BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
@@ -154,6 +161,19 @@ public class bombermanServer{
                         ready.set(position,false);
                         for (PrintWriter writer : socketWriters) {
                             writer.println("ReadiedDown " + input.replace("ReadyDown ",""));
+                        }
+                    }
+                    else if (input.startsWith("!ServerStats")) {
+                    	String statLine = "Server Stats: ";
+                    	statLine += String.format("Server Memory Used: %.2f GB | ", (double)memoryMXBean.getHeapMemoryUsage().getUsed() /1073741824);
+                    	for(Long threadID : threadMXBean.getAllThreadIds()) {
+                            ThreadInfo info = threadMXBean.getThreadInfo(threadID);
+                            statLine += "Thread name: " + info.getThreadName() + " | ";
+                            statLine += "Thread State: " + info.getThreadState() + " | ";
+                            statLine += String.format("CPU time: %s ns | ", threadMXBean.getThreadCpuTime(threadID));
+                    	}
+                    	for (PrintWriter writer : socketWriters) {
+                            writer.println(statLine);
                         }
                     }
                     else if (input.startsWith("Start")){
