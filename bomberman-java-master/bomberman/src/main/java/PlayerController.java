@@ -3,7 +3,6 @@ import util.Key;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import static java.sql.DriverManager.println;
 import java.util.HashMap;
 
 /**
@@ -34,7 +33,6 @@ public class PlayerController implements KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        println("PlayerController class: 37: KeyPressed()");
         if (this.controls.get(e.getKeyCode()) == Key.up) {
             this.player.toggleUpPressed();
         }
@@ -58,7 +56,6 @@ public class PlayerController implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-        println("PlayerController class: 61: KeyReleased()");
         if (this.controls.get(e.getKeyCode()) == Key.up) {
             this.player.unToggleUpPressed();
         }
