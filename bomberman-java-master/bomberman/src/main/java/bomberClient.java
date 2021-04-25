@@ -67,7 +67,7 @@ public class bomberClient{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(textField.getText().equalsIgnoreCase("!help")) {
-            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n");
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n!ServerStats\n");
             	}
             	else{
             		out.println(textField.getText());
