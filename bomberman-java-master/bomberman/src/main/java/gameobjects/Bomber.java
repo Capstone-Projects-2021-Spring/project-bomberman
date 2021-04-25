@@ -782,6 +782,10 @@ public class Bomber extends Player {
         if(!this.player){
             this.plantBomb();
         }
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
+        }
     }
 
     /**
