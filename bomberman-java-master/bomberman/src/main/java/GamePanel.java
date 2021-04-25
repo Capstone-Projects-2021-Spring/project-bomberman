@@ -50,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls2;
     private HashMap<Integer, Key> controls3;
     private HashMap<Integer, Key> controls4;
+    private HashMap<Integer, Key> controls5;
 
     // private int enemyAi; //used for enemy ID for enemy generation
     private static double SOFTWALL_RATE;
@@ -274,11 +275,19 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
 
                     case ("EB"):    //Enemy Balloon
-                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
-                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
-                        GameObjectCollection.spawn(enemyBalloon);
-
+//                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+//                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+//                        GameObjectCollection.spawn(enemyBalloon);
+                        
+                    	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+                    	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,GameType,1);
+                    	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+                    	this.addKeyListener(playerController5);
+//                    	this.gameHUD.assignPlayer(player5, 0);
+                    	GameObjectCollection.spawn(player5);
                         break;
+
+//                        break;
 
                     default:
                         break;
@@ -521,6 +530,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.controls2 = new HashMap<>();
         this.controls3 = new HashMap<>();
         this.controls4 = new HashMap<>();
+        this.controls5 = new HashMap<>();
 
         // Set Player 1 controls
         this.controls1.put(KeyEvent.VK_UP, Key.up);
@@ -685,6 +695,23 @@ public class GamePanel extends JPanel implements Runnable {
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber) {
+	                if(((Bomber) obj).bot == true){
+	                	double randominput = Math.random();
+	                	if(randominput < 0.25) {
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if (randominput < 0.5 && randominput >= 0.25) {
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if (randominput < 0.75 && randominput >= 0.5) {
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if (randominput < 1 && randominput >= 0.75) {
+	                		((Bomber) obj).moveDown();
+	                	}
+	                }
+                }
                 obj.update();
                 if (obj.isDestroyed()) {
                     // Destroy and remove game objects that were marked for deletion
@@ -828,6 +855,13 @@ public class GamePanel extends JPanel implements Runnable {
             time = Long.parseLong(parts[2]);
             messageArea.append("**SERVER**: Player " + parts[0] + ": " + parts[1] + " (Delay "
                     + (System.currentTimeMillis() - time) + " ms)\n");
+        }
+        else if (line.startsWith("MESSAGE")) {
+        	messageArea.append(line.substring(8) + "\n");
+        }
+        else if (line.startsWith("Server Stats: ")) {
+        	String stats = line.replace("Server Stats: ","").replace(" | ", "\n");
+            messageArea.append("**SERVER**: Requested Statistics \n" + stats);
         }
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {

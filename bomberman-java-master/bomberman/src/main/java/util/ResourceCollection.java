@@ -41,7 +41,8 @@ public class ResourceCollection {
         HARD_WALLS,
         BOMB,
         BOMB_PIERCE,
-        EXPLOSION_SPRITEMAP;
+        EXPLOSION_SPRITEMAP,
+    	ENEMY_BALLOON;
 
 
 
@@ -102,6 +103,7 @@ public class ResourceCollection {
             SpriteMaps.BOMB.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb.png"));
             SpriteMaps.BOMB_PIERCE.image = ImageIO.read(ResourceCollection.class.getResource("/resources/bomb_pierce.png"));
             SpriteMaps.EXPLOSION_SPRITEMAP.image = ImageIO.read(ResourceCollection.class.getResource("/resources/explosion.png"));
+            SpriteMaps.ENEMY_BALLOON.image = ImageIO.read(ResourceCollection.class.getResource("/resources/enemy_Balloon.png"));
 
 
             Files.DEFAULT_MAP.file = new InputStreamReader(ResourceCollection.class.getResourceAsStream("/resources/default.csv"));
@@ -119,6 +121,7 @@ public class ResourceCollection {
         SpriteMaps.PLAYER_2.sprites = sliceSpriteMap(SpriteMaps.PLAYER_2.image, 32, 48);
         SpriteMaps.PLAYER_3.sprites = sliceSpriteMap(SpriteMaps.PLAYER_3.image, 32, 48);
         SpriteMaps.PLAYER_4.sprites = sliceSpriteMap(SpriteMaps.PLAYER_4.image, 32, 48);
+        SpriteMaps.ENEMY_BALLOON.sprites = sliceSpriteMap(SpriteMaps.ENEMY_BALLOON.image, 32, 48);
         SpriteMaps.HARD_WALLS.sprites = sliceSpriteMap(SpriteMaps.HARD_WALLS.image, 32, 32);
         SpriteMaps.BOMB.sprites = sliceSpriteMap(SpriteMaps.BOMB.image, 32, 32);
         SpriteMaps.BOMB_PIERCE.sprites = sliceSpriteMap(SpriteMaps.BOMB_PIERCE.image, 32, 32);

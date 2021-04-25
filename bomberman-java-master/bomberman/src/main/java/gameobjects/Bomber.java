@@ -46,8 +46,12 @@ public class Bomber extends Player {
     private static int counter = 0;
     private static PrintWriter out = null;
     private static int p;
+
+    public boolean bot = false;
+
     private float bombPositionY;
     private float bombPositionX;
+
 
     /**
      * Constructs a bomber at position with a two-dimensional array of sprites.
@@ -66,6 +70,7 @@ public class Bomber extends Player {
         this.spriteTimer = 0;
         this.player = true;
         this.p = player;
+        this.bot = false;
         // Default stats
         this.moveSpeed = 2; // temp change back to 1
         this.firepower = 2;// temp change back to 1
@@ -87,6 +92,33 @@ public class Bomber extends Player {
         this.spriteTimer = 0;
         this.player = true;
 
+        this.bot = false;
+        
+        // Default stats
+        this.moveSpeed = 2; //temp change back to 1
+        this.firepower = 2;//temp change back to 1
+        this.maxBombs = 1;
+        this.bombAmmo = this.maxBombs;
+        this.bombTimer = 250;
+        this.pierce = true; //temp change back to false
+        this.kick = false;
+        this.player = true;
+        this.moveScore = 100;
+    }
+    
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, int GameType, int bot) {
+        super(position, spriteMap[1][0]);
+        this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
+        this.GameType = GameType;
+        // Animation
+        this.sprites = spriteMap;
+        this.direction = 1;     // Facing down
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+        this.player = true;
+        this.bot = true;
+        
+
         // Default stats
         this.moveSpeed = 1;
         this.firepower = 1;
@@ -97,7 +129,6 @@ public class Bomber extends Player {
         this.kick = false;
         this.player = true;
         this.moveScore = 100;
-
     }
 
     public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, PrintWriter out, int p, boolean player) {
@@ -120,6 +151,7 @@ public class Bomber extends Player {
         this.kick = false;
         this.out = out;
         this.p = p;
+        this.bot = false;
 
         this.player = player;
         this.resting = true;
@@ -196,9 +228,11 @@ public class Bomber extends Player {
 
     // --- POWERUPS ---
     public void addAmmo(int value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": addAmmo," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": addAmmo," + value);
+    	}
+
         System.out.print("Bombs set from " + this.maxBombs);
         this.maxBombs = Math.min(6, this.maxBombs + value);
         this.restoreAmmo();
@@ -206,45 +240,55 @@ public class Bomber extends Player {
     }
 
     public void addFirepower(int value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": addFirepower," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": addFirepower," + value);
+    	}
+
         System.out.print("Firepower set from " + this.firepower);
         this.firepower = Math.min(6, this.firepower + value);
         System.out.println(" to " + this.firepower);
     }
 
     public void addSpeed(float value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": addSpeed," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": addSpeed," + value);
+    	}
+
         System.out.print("Move Speed set from " + this.moveSpeed);
         this.moveSpeed = Math.min(4, this.moveSpeed + value);
         System.out.println(" to " + this.moveSpeed);
     }
 
     public void setPierce(boolean value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": setPierce," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": setPierce," + value);
+    	}
+
         System.out.print("Pierce set from " + this.pierce);
         this.pierce = value;
         System.out.println(" to " + this.pierce);
     }
 
     public void setKick(boolean value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": setKick," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": setKick," + value);
+    	}
+
         System.out.print("Kick set from " + this.kick);
         this.kick = value;
         System.out.println(" to " + this.kick);
     }
 
     public void reduceTimer(int value) {
-        // if(super.out != null) {
-        // out.println("Player " + this.p + ": reduceTimer," + value);
-        // }
+
+    	if(super.out != null) {
+    		super.out.println("Player " + this.p + ": reduceTimer," + value);
+    	}
+
         System.out.print("Bomb Timer set from " + this.bombTimer);
         this.bombTimer = Math.max(160, this.bombTimer - value);
         System.out.println(" to " + this.bombTimer);
@@ -1123,6 +1167,10 @@ public class Bomber extends Player {
     public void handleCollision(Bomber collidingObj) {
         if (!this.player && !this.bomb_planted) {
             this.plantBomb();
+        }
+        if (!this.dead) {
+            this.dead = true;
+            this.spriteIndex = 0;
         }
     }
 
