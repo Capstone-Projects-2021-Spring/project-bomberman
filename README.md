@@ -77,7 +77,7 @@ Enter the map size with rows and columns with a comma between for example 30,50 
 * Enemy Balloon: `EB`
 
 ## Features: Single Player:
-Navigate a larger map by yourself and try to defeat all the enemies located on the map.
+Navigate a larger map by yourself and try to defeat all the enemies located on the map. Once defeated, the map is randomly reset and you play again for endless fun!
 
 ## Features: Tutorial:
 Shows off basic movement and powerups available
@@ -119,4 +119,11 @@ The player will show up as while and all enemies will show up as black.
 An unlimited number of players can join the lobby and take part in the match. The server must be up and running in order to connect to the lobby and start the match. Any commands set through the chat line take place for the entire lobby. If random map generation is set then it will overwrite any map selection and the game will run off of random map generation. If the map is set or random map generation is taking place, there will be random placement of players and power ups if on between each round. AI Bots can currently be added to the match but their movement is limited and adds very large overhead to the server making the latency very large. The chat box turns into a game console once the game starts. Player movements can be seen as well as the latency between the action and the server. Players can also still message once the match has started.
 
 ## Features: Ai Bots
-The development of the computer controlled enemies is currently still in development but some functionality is implimented into this version and the some of the code can be viewed in the bomber class
+The computer controlled enemy is working at a simple leve. It runs off of a prioity queue to break all the nearest creates and then attempt to bomb the nearest player. This works best on smaller maps in the local multiplayer and only one AI player is running at a time. The AI will only place 1 bomb down at time and then run away from the bombs location as to not kill itself. As for multiplayer the AI is set to do random movement commands and instead of placing bombs, it simple needs to colide with another player to defeat them at the cost of losing itself. 
+
+## Known Bugs
+* Multiplayer Latency Issues - Due to number of players and a large amount of requests to and from the server there is a large amount of desync between players
+* Multipayler PowerUp Issues - There is a desync between where the players see the locations of the powerups, collecting powerups adds more latency to the server
+* AI Issues - The AI can occasionally get stuck on hard walls when targetting creates, might not get out of bomb blast radius in time if it collects any powerups
+* Menu System Issues - Issues using JFrame lead to bugs from switching between menus, closing menus, and loading menus
+* Sound Issues - The music from 1 menu keeps playing even if that menu is closed and another is opened causing overlapping songs to play
