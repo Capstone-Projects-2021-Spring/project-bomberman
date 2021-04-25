@@ -59,7 +59,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
     /**
      * Mark this game object for deletion.
      */
-    public void destroy() {
+    void destroy() {
         this.destroyed = true;
     }
 
@@ -77,6 +77,7 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
      */
     void solidCollision(GameObject obj) {
         Rectangle2D intersection = this.collider.createIntersection(obj.collider);
+
         // Vertical collision
         if (intersection.getWidth() >= intersection.getHeight()) {
             // From the top
@@ -179,7 +180,6 @@ public abstract class GameObject implements Observable, Collidable, Comparable<G
         return Float.compare(this.position.y, o.position.y);
     }
 
-
 }
 
 /**
@@ -220,6 +220,7 @@ interface Collidable {
     default void handleCollision(Bomber collidingObj) {
 
     }
+
     default void handleCollision(Wall collidingObj) {
 
     }
@@ -234,9 +235,6 @@ interface Collidable {
 
     default void handleCollision(Powerup collidingObj) {
 
-    }
-    default void handleCollision(Ai collidingObj){
-        
     }
 
     default void handleCollision(Enemy collidingObj) {

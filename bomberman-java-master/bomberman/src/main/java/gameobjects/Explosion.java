@@ -13,10 +13,12 @@ import java.awt.image.BufferedImage;
  * Base class for two types of explosions: horizontal and vertical.
  */
 public abstract class Explosion extends GameObject {
+
     /**
      * Horizontal explosionContact class.
      */
     public static class Horizontal extends Explosion {
+
         /**
          * Constructs a horizontal explosionContact that varies in length depending on firepower and pierce.
          * @param position Coordinates of this object in the game world
@@ -37,7 +39,6 @@ public abstract class Explosion extends GameObject {
 
             this.sprite = this.animation[0];
         }
-       
 
         /**
          * Check for walls to determine explosionContact range. Used for left and right.
@@ -85,6 +86,7 @@ public abstract class Explosion extends GameObject {
             for (int i = 0; i < spriteAnimation.length; i++) {
                 spriteAnimation[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             }
+
             // Draw to each image in the array
             for (int i = 0; i < spriteAnimation.length; i++) {
                 Graphics2D g2 = spriteAnimation[i].createGraphics();
@@ -113,14 +115,13 @@ public abstract class Explosion extends GameObject {
             return spriteAnimation;
         }
 
-       
-
     }
 
     /**
      * Vertical explosionContact class.
      */
     public static class Vertical extends Explosion {
+
         /**
          * Constructs a horizontal explosionContact that varies in length depending on firepower and pierce.
          * @param position Coordinates of this object in the game world
@@ -129,7 +130,7 @@ public abstract class Explosion extends GameObject {
          */
         Vertical(Point2D.Float position, int firepower, boolean pierce) {
             super(position);
-            //this.GameType = GameType;
+
             float topY = this.checkVertical(this.position, firepower, pierce, -32);
             float bottomY = this.checkVertical(this.position, firepower, pierce, 32);
             this.centerOffset = position.y - topY;  // The offset is used to draw the center explosionContact sprite
@@ -184,8 +185,6 @@ public abstract class Explosion extends GameObject {
          */
         private BufferedImage[] drawSprite(int width, int height) {
             // Initialize each image in the array to be drawn to
-            //this.GameType = GameType;
-            
             BufferedImage[] spriteAnimation = new BufferedImage[ResourceCollection.SpriteMaps.EXPLOSION_SPRITEMAP.getImage().getWidth() / 32];
             for (int i = 0; i < spriteAnimation.length; i++) {
                 spriteAnimation[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
@@ -229,18 +228,19 @@ public abstract class Explosion extends GameObject {
     protected float centerOffset;
     private int spriteIndex;
     private int spriteTimer;
+
     /**
      * Constructor called in horizontal and vertical constructors.
      * @param position Coordinates of this object in the game world
      */
     Explosion(Point2D.Float position) {
-        super(position);    
+        super(position);
         this.sprites = ResourceCollection.SpriteMaps.EXPLOSION_SPRITEMAP.getSprites();
+
         this.centerOffset = 0;
         this.spriteIndex = 0;
         this.spriteTimer = 0;
     }
-    
 
     /**
      * Called later in the constructor to set collider.
