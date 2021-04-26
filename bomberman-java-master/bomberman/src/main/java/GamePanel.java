@@ -985,12 +985,13 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead
-                this.nextMap(gameHUDSingle.playerScore);
-                this.gameHUDSingle.matchSet = false;
-            }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
-                this.resetMapSingle();
+                this.resetMapSingle();//(gameHUDSingle.playerScore);
                 this.gameHUDSingle.matchSet = false;
             }
+//            }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
+//                this.resetMapSingle();
+//                this.gameHUDSingle.matchSet = false;
+//            }
         }
         // Used to prevent resetting the game really fast
         this.resetDelay++;
