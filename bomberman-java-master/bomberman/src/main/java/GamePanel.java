@@ -350,8 +350,16 @@ public class GamePanel extends JPanel implements Runnable {
 //                        GameObjectCollection.spawn(enemyBalloon);
 //
 //                        break;
-                    	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
-	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,GameType,1);
+//                    	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+//	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,GameType,1);
+//	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+//	                	this.addKeyListener(playerController5);
+//	//                	this.gameHUD.assignPlayer(player5, 0);
+//	                	GameObjectCollection.spawn(player5);
+//	                	break;
+	                	
+	                	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,false);
 	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
 	                	this.addKeyListener(playerController5);
 	//                	this.gameHUD.assignPlayer(player5, 0);
@@ -417,11 +425,20 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
                     case ("A1"):     // AI 1; enemy
                     	BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-	                    Bomber enemy1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1,false);
-	                    //this.gameHUDSingle.assignAi(Bomber, enemyID);
+                    	Bomber enemy1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1,GameType,1);
+	                    //PlayerController playerController5 = new PlayerController(enemy1, this.controls5);
+	                    //this.addKeyListener(playerController5);
+	                    this.gameHUDSingle.assignAi(enemy1, enemyID);
 	                    enemyID++;
 	                    GameObjectCollection.spawn(enemy1);
 	                    break;
+//	                    BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+//	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,false);
+//	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+//	                	this.addKeyListener(playerController5);
+//	//                	this.gameHUD.assignPlayer(player5, 0);
+//	                	GameObjectCollection.spawn(player5);
+//	                	break;
                     case ("PB"):    // Powerup Bomb
                         Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
                         GameObjectCollection.spawn(powerBomb);
@@ -813,14 +830,42 @@ public class GamePanel extends JPanel implements Runnable {
 	                	double randominput = Math.random();
 	                	if(randominput < 0.25) {
 	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
 	                	}
 	                	else if (randominput < 0.5 && randominput >= 0.25) {
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                	}
 	                	else if (randominput < 0.75 && randominput >= 0.5) {
 	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
 	                	}
 	                	else if (randominput < 1 && randominput >= 0.75) {
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                	}
 	                }
@@ -884,6 +929,23 @@ public class GamePanel extends JPanel implements Runnable {
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber) {
+	                if(((Bomber) obj).bot == true){
+	                	double randominput = Math.random();
+	                	if(randominput < 0.25) {
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if (randominput < 0.5 && randominput >= 0.25) {
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if (randominput < 0.75 && randominput >= 0.5) {
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if (randominput < 1 && randominput >= 0.75) {
+	                		((Bomber) obj).moveDown();
+	                	}
+	                }
+                }
                 obj.update();
                 if (obj.isDestroyed()) {
                     // Destroy and remove game objects that were marked for deletion
