@@ -12,6 +12,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.util.*;
 import com.amazonaws.*;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -49,6 +53,9 @@ public class bombermanServer{
     private static BasicAWSCredentials awsCreds = new BasicAWSCredentials("AKIATZZ6LHXNIHI6PCWU", "nJNomgXnz/C8W2m5ma7p1Os1s4F2ygvlnQontDCK");
     private static final AmazonS3 s3 = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds)).withRegion("us-east-2").build();
 
+    private static MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
+    private static ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+    
     //Server Map List
     private static ArrayList<String> serverMaps;
     
@@ -154,6 +161,19 @@ public class bombermanServer{
                         ready.set(position,false);
                         for (PrintWriter writer : socketWriters) {
                             writer.println("ReadiedDown " + input.replace("ReadyDown ",""));
+                        }
+                    }
+                    else if (input.startsWith("!ServerStats")) {
+                    	String statLine = "Server Stats: ";
+                    	statLine += String.format("Server Memory Used: %.2f GB | ", (double)memoryMXBean.getHeapMemoryUsage().getUsed() /1073741824);
+                    	for(Long threadID : threadMXBean.getAllThreadIds()) {
+                            ThreadInfo info = threadMXBean.getThreadInfo(threadID);
+                            statLine += "Thread name: " + info.getThreadName() + " | ";
+                            statLine += "Thread State: " + info.getThreadState() + " | ";
+                            statLine += String.format("CPU time: %s ns | ", threadMXBean.getThreadCpuTime(threadID));
+                    	}
+                    	for (PrintWriter writer : socketWriters) {
+                            writer.println(statLine);
                         }
                     }
                     else if (input.startsWith("Start")){
