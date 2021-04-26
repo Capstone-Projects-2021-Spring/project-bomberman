@@ -714,6 +714,7 @@ public class GamePanel extends JPanel implements Runnable {
         System.gc();
     }
     private void resetMapSingle(){ // reset map for single player
+        this.mapPhase++;
         GameObjectCollection.init();
         this.generateMapSingle();
         System.gc();
@@ -978,12 +979,8 @@ public class GamePanel extends JPanel implements Runnable {
         // Score is added immediately so there is no harm of dying when you are the last one
         // Reset map when there are 1 or less bombers left
         if (!this.gameHUDSingle.matchSet) { // check if the game has not already been done, if not check for score kills
-            if(this.mapPhase > 1){
-
-                this.gameHUDSingle.RetainUpdateScore();
-            }else{
                 this.gameHUDSingle.updateScore();
-            }
+            
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead

@@ -61,7 +61,7 @@ public class GameHUDSingle {
     }
     public void updateScore() {
         // Count dead AI's
-        int deadAi = 0; //this.playerScore;
+        int deadAi = 0;//this.playerScore
         for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
             System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
             if (this.enemies[i].isDead()) {
@@ -85,31 +85,6 @@ public class GameHUDSingle {
         
     }
 
-     public void RetainUpdateScore() {
-        // Count dead AI's
-        int deadAi = this.playerScore;
-        for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
-            System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
-            if (this.enemies[i].isDead()) {
-                deadAi++;
-            }
-        }
-        this.playerScore = deadAi;
-        // Check for no enemy standing and conclude the match
-        if (deadAi == this.enemies.length) {// check for amount dead to total enemies in arraylist 
-//            SoundEffect.VICTORY.play();   
-            this.matchSet = true;
-        }
-        if(this.player.isDead()){
-          //  SoundEffect.DEAD.play();
-            this.matchSet = true;
-        }
-        if(this.player.isDestroyed()){
-           // SoundEffect.DEAD.play();
-            this.matchSet = true;
-        }
-        
-    }
      void drawHUD() {
         Graphics playerGraphics = this.playerInfo.createGraphics();
                 
