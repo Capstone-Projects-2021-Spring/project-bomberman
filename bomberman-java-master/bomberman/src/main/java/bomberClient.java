@@ -67,7 +67,7 @@ public class bomberClient{
         textField.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             	if(textField.getText().equalsIgnoreCase("!help")) {
-            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n!ServerStats\n");
+            		 messageArea.append("**SERVER**: Server Commands \n!help\n!MAPOPTIONS\n!SETMAP <mapname>\n!GETMAP\n!RANDOM\n!POWERUP\n!ADDBOT\n!REMOVEBOT\n");
             	}
             	else{
             		out.println(textField.getText());
@@ -113,7 +113,7 @@ public class bomberClient{
     void run() throws IOException {
 
         // Make connection and initialize streams
-        String serverAddress = "127.0.0.1";
+        String serverAddress = "3.14.63.65";
         // Set up socket and IO streams
         Socket socket = new Socket(serverAddress, 80);
         in = new BufferedReader(new InputStreamReader(
@@ -200,10 +200,6 @@ public class bomberClient{
             else if (line.startsWith("RANDOM ")) {
             	Boolean randomGen = Boolean.parseBoolean(line.replace("RANDOM ",""));
                 messageArea.append("**SERVER**: Random map generation set to " + randomGen + "\n");
-            }
-            else if (line.startsWith("Server Stats: ")) {
-            	String stats = line.replace("Server Stats: ","").replace(" | ", "\n");
-                messageArea.append("**SERVER**: Requested Statistics \n" + stats);
             }
             else if (line.startsWith("Left ")) {
             	String[] leftParts = line.split(",");

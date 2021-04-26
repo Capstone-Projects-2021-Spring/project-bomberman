@@ -6,6 +6,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
+import java.io.*;
+import javax.sound.sampled.*;
 
 /**
  * Powerups with predefined types that spawn from breakable walls at random.
@@ -74,7 +76,6 @@ public class Powerup extends TileObject {
 
         /**
          * Sets the sprite of the powerup type.
-         * 
          * @param sprite Powerup sprite
          */
         Type(BufferedImage sprite) {
@@ -83,7 +84,6 @@ public class Powerup extends TileObject {
 
         /**
          * To be overridden by powerup types. Grants bonuses to bomber.
-         * 
          * @param bomber Bomber object to be granted bonus
          */
         protected abstract void grantBonus(Bomber bomber);
@@ -94,32 +94,29 @@ public class Powerup extends TileObject {
 
     /**
      * Construct a powerup of type. Type can be random.
-     * 
      * @param position Coordinates of this object in the game world
-     * @param type     Type of powerup
+     * @param type Type of powerup
      */
     public Powerup(Point2D.Float position, Type type) {
         super(position, type.sprite);
         this.collider = new Rectangle2D.Float(position.x + 8, position.y + 8, this.width - 16, this.height - 16);
         this.type = type;
-        this.breakable = false;
+        this.breakable = true;
     }
 
     // Random powerups
     private static Powerup.Type[] powerups = Powerup.Type.values();
     private static Random random = new Random();
-
     static final Powerup.Type randomPower() {
         return powerups[random.nextInt(powerups.length)];
     }
 
     /**
      * Grants bonuses to bomber.
-     * 
      * @param bomber Bomber object to be granted bonus
      */
     void grantBonus(Bomber bomber) {
-        // SoundEffect.POWERUP.play();
+        //SoundEffect.POWERUP.play();
         this.type.grantBonus(bomber);
     }
 
@@ -148,30 +145,47 @@ public class Powerup extends TileObject {
         return this.breakable;
     }
 
-    /*
-     * public enum SoundEffect{ POWERUP("powerup.wav");
-     * 
-     * public static enum Volume { MUTE, LOW, MEDIUM, HIGH }
-     * 
-     * public static Volume volume = Volume.LOW;
-     * 
-     * private Clip clip;
-     * 
-     * SoundEffect(String soundFileName) { try { String filePath =
-     * "/Users/jason/Desktop/CapstoneProject/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/"
-     * + soundFileName; File soundEffect = new File(filePath); AudioInputStream
-     * audioInputStream = AudioSystem.getAudioInputStream(soundEffect); clip =
-     * AudioSystem.getClip(); clip.open(audioInputStream); } catch
-     * (UnsupportedAudioFileException e) { e.printStackTrace(); } catch (IOException
-     * e) { e.printStackTrace(); } catch (LineUnavailableException e) {
-     * e.printStackTrace(); } }
-     * 
-     * // Play or Re-play the sound effect from the beginning, by rewinding. public
-     * void play() { if (volume != Volume.MUTE) { if (clip.isRunning()) clip.stop();
-     * clip.setFramePosition(0); clip.start(); } }
-     * 
-     * // Optional static method to pre-load all the sound files. static void init()
-     * { values(); // calls the constructor for all the elements } }
-     */
+    /*public enum SoundEffect{
+        POWERUP("powerup.wav");
+        
+        public static enum Volume {
+            MUTE, LOW, MEDIUM, HIGH
+         }
+         
+         public static Volume volume = Volume.LOW;
+         
+         private Clip clip;
+         
+         SoundEffect(String soundFileName) {
+            try {
+               String filePath = "/Users/jason/Desktop/CapstoneProject/project-bomberman/bomberman-java-master/bomberman/src/main/resources/Sound_Effects/" + soundFileName;
+               File soundEffect = new File(filePath);
+               AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundEffect);
+               clip = AudioSystem.getClip();
+               clip.open(audioInputStream);
+            } catch (UnsupportedAudioFileException e) {
+               e.printStackTrace();
+            } catch (IOException e) {
+               e.printStackTrace();
+            } catch (LineUnavailableException e) {
+               e.printStackTrace();
+            }
+         }
+         
+         // Play or Re-play the sound effect from the beginning, by rewinding.
+         public void play() {
+            if (volume != Volume.MUTE) {
+               if (clip.isRunning())
+                  clip.stop();   
+               clip.setFramePosition(0); 
+               clip.start();     
+            }
+         }
+         
+         // Optional static method to pre-load all the sound files.
+         static void init() {
+            values(); // calls the constructor for all the elements
+         }
+      }*/
 
 }
