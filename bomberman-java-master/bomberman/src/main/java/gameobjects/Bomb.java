@@ -57,7 +57,7 @@ public class Bomb extends TileObject {
         this.timeToDetonate = timer;
         this.bomber = bomber;
         this.timeElapsed = 0;
-        this.breakable = true;
+        this.breakable = false;
 
         // Kicking bomb
         this.kicked = false;
