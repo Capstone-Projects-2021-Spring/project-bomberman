@@ -65,6 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
     private HashMap<Integer, Key> controls2;
     private HashMap<Integer, Key> controls3;
     private HashMap<Integer, Key> controls4;
+    private HashMap<Integer, Key> controls5;
 
     
     //private int enemyAi; //used for enemy ID for enemy generation
@@ -344,11 +345,26 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
 
                     case ("EB"):    //Enemy Balloon
-                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
-                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
-                        GameObjectCollection.spawn(enemyBalloon);
-
-                        break;
+//                        BufferedImage EB = ResourceCollection.Images.ENEMY_BAlLOON.getImage();
+//                        Enemy enemyBalloon = new Enemy(new Point2D.Float(x * 32, y * 32), EB);
+//                        GameObjectCollection.spawn(enemyBalloon);
+//
+//                        break;
+//                    	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+//	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,GameType,1);
+//	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+//	                	this.addKeyListener(playerController5);
+//	//                	this.gameHUD.assignPlayer(player5, 0);
+//	                	GameObjectCollection.spawn(player5);
+//	                	break;
+	                	
+	                	BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,false);
+	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+	                	this.addKeyListener(playerController5);
+	//                	this.gameHUD.assignPlayer(player5, 0);
+	                	GameObjectCollection.spawn(player5);
+	                	break;
 
                     default:
                         break;
@@ -409,11 +425,20 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
                     case ("A1"):     // AI 1; enemy
                     	BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-	                    Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
+                    	Bomber enemy1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1,GameType,1);
+	                    //PlayerController playerController5 = new PlayerController(enemy1, this.controls5);
+	                    //this.addKeyListener(playerController5);
 	                    this.gameHUDSingle.assignAi(enemy1, enemyID);
 	                    enemyID++;
 	                    GameObjectCollection.spawn(enemy1);
 	                    break;
+//	                    BufferedImage[][] sprMapP5 = ResourceCollection.SpriteMaps.PLAYER_1.getSprites();
+//	                	Bomber player5 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP5,false);
+//	                	PlayerController playerController5 = new PlayerController(player5, this.controls5);
+//	                	this.addKeyListener(playerController5);
+//	//                	this.gameHUD.assignPlayer(player5, 0);
+//	                	GameObjectCollection.spawn(player5);
+//	                	break;
                     case ("PB"):    // Powerup Bomb
                         Powerup powerBomb = new Powerup(new Point2D.Float(x * 32, y * 32), Powerup.Type.Bomb);
                         GameObjectCollection.spawn(powerBomb);
@@ -550,7 +575,7 @@ public class GamePanel extends JPanel implements Runnable {
                 
                 else if(mapLayout.get(y).get(x).equals("AB")) { 
                 	BufferedImage[][] sprMapP3 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-                    Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3, out,10,false);
+                    Bomber player3 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapP3,false);
                     PlayerController playerController3 = new PlayerController(player3, this.controls2);
                     this.addKeyListener(playerController3);
                     GameObjectCollection.spawn(player3);
@@ -595,6 +620,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.controls2 = new HashMap<>();
         this.controls3 = new HashMap<>();
         this.controls4 = new HashMap<>();
+        this.controls5 = new HashMap<>();
 
         // Set Player 1 controls
         this.controls1.put(KeyEvent.VK_UP, Key.up);
@@ -688,6 +714,7 @@ public class GamePanel extends JPanel implements Runnable {
         System.gc();
     }
     private void resetMapSingle(){ // reset map for single player
+        this.mapPhase++;
         GameObjectCollection.init();
         this.generateMapSingle();
         System.gc();
@@ -799,6 +826,51 @@ public class GamePanel extends JPanel implements Runnable {
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber) {
+	                if(((Bomber) obj).bot == true){
+	                	double randominput = Math.random();
+	                	if(randominput < 0.25) {
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if (randominput < 0.5 && randominput >= 0.25) {
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if (randominput < 0.75 && randominput >= 0.5) {
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if (randominput < 1 && randominput >= 0.75) {
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                		((Bomber) obj).moveDown();
+	                	}
+	                }
+                }
                 obj.update();
                 if (obj.isDestroyed()) {
                     // Destroy and remove game objects that were marked for deletion
@@ -831,6 +903,7 @@ public class GamePanel extends JPanel implements Runnable {
         // Score is added immediately so there is no harm of dying when you are the last one
         // Reset map when there are 1 or less bombers left
         if (!this.gameHUD.matchSet) {
+          
             this.gameHUD.updateScore();
         } else {
             // Checking size of array list because when a bomber dies, they do not immediately get deleted
@@ -858,6 +931,23 @@ public class GamePanel extends JPanel implements Runnable {
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
                 GameObject obj = GameObjectCollection.gameObjects.get(list).get(objIndex);
+                if(obj instanceof Bomber) {
+	                if(((Bomber) obj).bot == true){
+	                	double randominput = Math.random();
+	                	if(randominput < 0.25) {
+	                		((Bomber) obj).moveLeft();
+	                	}
+	                	else if (randominput < 0.5 && randominput >= 0.25) {
+	                		((Bomber) obj).moveRight();
+	                	}
+	                	else if (randominput < 0.75 && randominput >= 0.5) {
+	                		((Bomber) obj).moveUp();
+	                	}
+	                	else if (randominput < 1 && randominput >= 0.75) {
+	                		((Bomber) obj).moveDown();
+	                	}
+	                }
+                }
                 obj.update();
                 if (obj.isDestroyed()) {
                     // Destroy and remove game objects that were marked for deletion
@@ -889,16 +979,18 @@ public class GamePanel extends JPanel implements Runnable {
         // Score is added immediately so there is no harm of dying when you are the last one
         // Reset map when there are 1 or less bombers left
         if (!this.gameHUDSingle.matchSet) { // check if the game has not already been done, if not check for score kills
-            this.gameHUDSingle.updateScore();
+                this.gameHUDSingle.updateScore();
+            
         } else {
             // Checking size of array list because when a enemy dies, they do not immediately get deleted
             if (GameObjectCollection.enemyObjects.isEmpty()) { // this should be change map when all enemies Ai are dead
-                this.nextMap(gameHUDSingle.playerScore);
-                this.gameHUDSingle.matchSet = false;
-            }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
-                this.resetMapSingle();
+                this.resetMapSingle();//(gameHUDSingle.playerScore);
                 this.gameHUDSingle.matchSet = false;
             }
+//            }else if(GameObjectCollection.bomberObjects.isEmpty()){ // this should be reset the map back to stage 1 when my character dies
+//                this.resetMapSingle();
+//                this.gameHUDSingle.matchSet = false;
+//            }
         }
         // Used to prevent resetting the game really fast
         this.resetDelay++;
@@ -935,6 +1027,13 @@ public class GamePanel extends JPanel implements Runnable {
         	time = Long.parseLong(parts[2]);
         	messageArea.append("**SERVER**: Player " + parts[0] + ": " + parts[1] + " (Delay " + (System.currentTimeMillis() - time) +" ms)\n");
         }
+        else if (line.startsWith("MESSAGE")) {
+        	messageArea.append(line.substring(8) + "\n");
+        }
+        else if (line.startsWith("Server Stats: ")) {
+        	String stats = line.replace("Server Stats: ","").replace(" | ", "\n");
+            messageArea.append("**SERVER**: Requested Statistics \n" + stats);
+        }
         // Loop through every game object arraylist
         for (int list = 0; list < GameObjectCollection.gameObjects.size(); list++) {
             for (int objIndex = 0; objIndex < GameObjectCollection.gameObjects.get(list).size();) {
@@ -946,8 +1045,10 @@ public class GamePanel extends JPanel implements Runnable {
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
 	                	}
 	                	else if(action.equals("Right Pressed")) {
+	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
@@ -958,8 +1059,10 @@ public class GamePanel extends JPanel implements Runnable {
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
 	                	}
 	                	else if(action.equals("Down Pressed")) {
+	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();

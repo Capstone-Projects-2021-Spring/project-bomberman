@@ -21,7 +21,7 @@ import javax.sound.sampled.*;
 public class GameHUDSingle {
     
     private Bomber player;
-    private Ai[] enemies;
+    private Bomber[] enemies;
     private BufferedImage playerInfo;
     protected int playerScore;
     boolean matchSet;
@@ -31,7 +31,7 @@ public class GameHUDSingle {
         this.playerInfo = null;
         this.playerScore = 0;
         this.matchSet = false;
-        this.enemies = new Ai[3]; //amount of enemies, must be set to the extract amount of enemies or get null pointer error in code
+        this.enemies = new Bomber[3]; //amount of enemies, must be set to the extract amount of enemies or get null pointer error in code
         
     }
     void init() {
@@ -53,7 +53,7 @@ public class GameHUDSingle {
     BufferedImage getPlinfo() {
         return this.playerInfo;
     }
-    void assignAi(Ai enemies, int enemyID){
+    void assignAi(Bomber enemies, int enemyID){
         this.enemies[enemyID] = enemies;
     }
     void assignPlayer(Bomber player) {
@@ -61,7 +61,7 @@ public class GameHUDSingle {
     }
     public void updateScore() {
         // Count dead AI's
-        int deadAi = 0; //this.playerScore;
+        int deadAi = 0;//this.playerScore
         for (int i = 0; i < this.enemies.length; i++) { //continueous going through loop, call after call to check on enemy status
             System.out.println(this.enemies[i].isDead()+" enemies["+i+"].isdead: line:59"); 
             if (this.enemies[i].isDead()) {
@@ -84,6 +84,7 @@ public class GameHUDSingle {
         }
         
     }
+
      void drawHUD() {
         Graphics playerGraphics = this.playerInfo.createGraphics();
                 
