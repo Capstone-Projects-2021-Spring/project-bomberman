@@ -407,7 +407,7 @@ public class GameLauncher extends JFrame{
                 clipMapCreator.loop(Clip.LOOP_CONTINUOUSLY);
                 
                 JFrame frame2 = new JFrame();
-                String mapsizes = JOptionPane.showInputDialog(frame2,"Map Size","Please enter the map size as rows,columns",JOptionPane.PLAIN_MESSAGE);
+                String mapsizes = JOptionPane.showInputDialog(frame2,"Please enter the map size as rows,columns","Map Size",JOptionPane.PLAIN_MESSAGE);
                 String[] mapsizes2 = mapsizes.split(",");
                 int xsize = Integer.parseInt(mapsizes2[0]);
                 int ysize = Integer.parseInt(mapsizes2[1]);
