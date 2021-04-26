@@ -48,8 +48,8 @@ public class GamePanel extends JPanel implements Runnable {
     private BufferedImage world;
     private Graphics2D buffer;
     private BufferedImage bg;
-    private GameHUD gameHUD;
-    private GameHUDSingle gameHUDSingle;
+    public GameHUD gameHUD;
+    public GameHUDSingle gameHUDSingle;
     public final int GameType;
     private int mapWidth;
     private int mapHeight;
@@ -1236,8 +1236,9 @@ public class GamePanel extends JPanel implements Runnable {
  * Used to control the game
  */
 class GameController  extends JFrame implements KeyListener {
-
-    private GamePanel gamePanel;
+    
+    public MenuPanel pauseMenu;
+    public GamePanel gamePanel;
 
     /**
      * Construct a universal game controller key listener for the game.
@@ -1246,6 +1247,7 @@ class GameController  extends JFrame implements KeyListener {
      */
     GameController(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        this.pauseMenu = new MenuPanel(this.gamePanel);
     }
 
     @Override
@@ -1265,7 +1267,7 @@ class GameController  extends JFrame implements KeyListener {
             System.out.println("Pause State: "+gamePanel.ispaused);
             if(gamePanel.ispaused == false){ // if it is running currently, then pause 
                 gamePanel.unPause();
-                MenuPanel.ShowPausePanel(e);
+                pauseMenu.ShowPausePanel(e);
             }else{
                 gamePanel.MenuUnPaused();
                 
@@ -1318,20 +1320,25 @@ class GameController  extends JFrame implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-    }
-}
- class MenuPanel { 
-     
-    private static final int ALPHA = 175; // how much see-thru. 0 to 255
-    private static final Color GP_BG = new Color(0, 0, 0, ALPHA);
-    private static DeDialogPanel Panel = new DeDialogPanel();  // jpanel shown in JDialog
+    public void keyReleased(KeyEvent e) {}
     
+    
+}
+ class MenuPanel{ 
+     
+    private  int ALPHA = 175; // how much see-thru. 0 to 255
+    private  Color GP_BG = new Color(0, 0, 0, ALPHA);
+    private DeDialogPanel Panel;// jpanel shown in JDialog
+    private GamePanel gamePanel;
     public MenuPanel(){
         
     }
+    public MenuPanel(GamePanel gamePanel){
+        this.gamePanel = gamePanel;
+        this.Panel = new DeDialogPanel(this.gamePanel);
+    }
     
-    public static void ShowPausePanel(KeyEvent e){
+    public void ShowPausePanel(KeyEvent e){
         
         Component comp = (Component) e.getSource();
         if (comp == null) {
@@ -1374,9 +1381,10 @@ class GameController  extends JFrame implements KeyListener {
 }
 @SuppressWarnings("serial")
 class DeDialogPanel extends JPanel {
-    private static final Color BackGroundColor = new Color(123, 63, 0);
-
-    public DeDialogPanel() {
+    private final Color BackGroundColor = new Color(123, 63, 0);
+    GamePanel gamePanel;
+    public DeDialogPanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
         JLabel pausedLabel = new JLabel("PAUSED");
         pausedLabel.setForeground(Color.ORANGE);
         JPanel pausedPanel = new JPanel();
@@ -1387,10 +1395,13 @@ class DeDialogPanel extends JPanel {
         int eb = 15;
         setBorder(BorderFactory.createEmptyBorder(eb, eb, eb, eb));
         setLayout(new GridLayout(0, 1, 10, 10));
+        FooAction action1 = new FooAction("RESUME");
+        restartAction action2 = new restartAction("RESTART");
+        quitAction action3 = new quitAction("EXIT");
         add(pausedPanel);
-        add(new JButton(new FooAction("RESUME")));
-        add(new JButton(new FooAction("RESTART")));
-        add(new JButton(new FooAction("EXIT TO MAP")));
+        add(new JButton(action1));
+        add(new JButton(action2));
+        add(new JButton(action3));
     }
 
     // simple action -- all it does is to make the dialog no longer visible
@@ -1404,6 +1415,44 @@ class DeDialogPanel extends JPanel {
             Component comp = (Component) e.getSource();
             Window win = SwingUtilities.getWindowAncestor(comp);
             win.dispose();  // here -- dispose of the JDialog
+        }
+
+    }
+    private class restartAction extends AbstractAction {
+        public restartAction(String name) {
+            super(name);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(gamePanel.GameType == 1){
+                 gamePanel.resetGameSingle();
+                 gamePanel.gameHUDSingle.matchSet = false;
+            }else{
+                gamePanel.resetGame();
+                gamePanel.gameHUD.matchSet = false;
+            }
+            Component comp = (Component) e.getSource();
+            Window win = SwingUtilities.getWindowAncestor(comp);
+            win.dispose();  // here -- dispose of the JDialog
+            
+            
+        }
+
+    }
+    private class quitAction extends AbstractAction {
+        public quitAction(String name) {
+            super(name);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Component comp = (Component) e.getSource();
+            Window win = SwingUtilities.getWindowAncestor(comp);
+            win.dispose();  // here -- dispose of the JDialog
+            gamePanel.exit();
+            gamePanel.removeAll();
+            
         }
 
     }
