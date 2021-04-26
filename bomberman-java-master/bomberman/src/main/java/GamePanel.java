@@ -409,8 +409,8 @@ public class GamePanel extends JPanel implements Runnable {
                         break;
                     case ("A1"):     // AI 1; enemy
                     	BufferedImage[][] sprMapA1 = ResourceCollection.SpriteMaps.PLAYER_2.getSprites();
-	                    Ai enemy1 = new Ai(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1);
-	                    this.gameHUDSingle.assignAi(enemy1, enemyID);
+	                    Bomber enemy1 = new Bomber(new Point2D.Float(x * 32, y * 32 - 16), sprMapA1,false);
+	                    //this.gameHUDSingle.assignAi(Bomber, enemyID);
 	                    enemyID++;
 	                    GameObjectCollection.spawn(enemy1);
 	                    break;

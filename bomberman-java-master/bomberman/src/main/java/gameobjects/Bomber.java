@@ -137,6 +137,36 @@ public class Bomber extends Player {
         this.bombPositionX = 0;
     }
 
+    public Bomber(Point2D.Float position, BufferedImage[][] spriteMap, boolean player) {
+        super(position, spriteMap[1][0]);
+        this.collider.setRect(this.position.x + 3, this.position.y + 16 + 3, this.width - 6, this.height - 16 - 6);
+
+        // Animation
+        this.sprites = spriteMap;
+        this.direction = 1;     // Facing down
+        this.spriteIndex = 0;
+        this.spriteTimer = 0;
+
+        // Default stats
+        this.moveSpeed = 1;
+        this.firepower = 1;
+        this.maxBombs = 1;
+        this.bombAmmo = this.maxBombs;
+        this.bombTimer = 250;
+        this.pierce = false;
+        this.kick = false;
+
+        //Bot movement variables
+        this.player = player;
+        this.resting = true;
+        this.bomb_planted = false;
+        this.moveScore = 100;
+        this.test = true;
+        this.gameStart = true;
+        this.bombPositionY = 0;
+        this.bombPositionX = 0;
+    }
+
     // --- MOVEMENT ---
     public void moveUp() {
         this.direction = 0;     // Using sprites that face up
