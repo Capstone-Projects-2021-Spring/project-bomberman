@@ -1045,8 +1045,10 @@ public class GamePanel extends JPanel implements Runnable {
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
 	                		((Bomber) obj).moveLeft();
+	                		((Bomber) obj).moveLeft();
 	                	}
 	                	else if(action.equals("Right Pressed")) {
+	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
 	                		((Bomber) obj).moveRight();
@@ -1057,8 +1059,10 @@ public class GamePanel extends JPanel implements Runnable {
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
 	                		((Bomber) obj).moveUp();
+	                		((Bomber) obj).moveUp();
 	                	}
 	                	else if(action.equals("Down Pressed")) {
+	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
 	                		((Bomber) obj).moveDown();
